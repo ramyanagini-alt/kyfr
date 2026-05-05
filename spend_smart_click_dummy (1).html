@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spend Smart</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;color:#1a1a18;background:#f5f4f0;min-height:100vh;padding:24px 16px 48px}
+.phone{background:#e8e7e2;border-radius:16px;padding:16px;max-width:360px;margin:0 auto}
+.screen{background:#fff;border-radius:12px;border:0.5px solid rgba(0,0,0,0.1);overflow:hidden;position:relative}
+.topbar{padding:12px 14px 10px;border-bottom:0.5px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:space-between}
+.topbar-title{font-size:15px;font-weight:500;color:#1a1a18}
+.topbar-sub{font-size:11px;color:#73726c;margin-top:2px}
+.avatar{width:32px;height:32px;border-radius:50%;background:#E6F1FB;color:#0C447C;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.section{padding:12px 14px}
+.section-label{font-size:11px;font-weight:500;color:#73726c;letter-spacing:.04em;margin-bottom:8px;text-transform:uppercase}
+.rec-card{border:2px solid #185FA5;border-radius:12px;padding:12px;background:#fff;cursor:pointer;transition:background .1s;margin-bottom:10px;position:relative}
+.rec-card:active{background:#f5f4f0}
+.rec-card.dimmed{border:0.5px solid rgba(0,0,0,0.1);opacity:.7}
+.rec-badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:99px;background:#E6F1FB;color:#0C447C;margin-bottom:6px}
+.rec-title{font-size:14px;font-weight:500;margin-bottom:2px;color:#1a1a18}
+.rec-sub{font-size:12px;color:#73726c;margin-bottom:8px}
+.rec-benefit{font-size:13px;color:#27500A;background:#EAF3DE;border-radius:6px;padding:5px 8px;margin-bottom:8px}
+.rec-actions{display:flex;gap:8px}
+.btn-primary{flex:1;padding:8px;border-radius:8px;border:none;background:#185FA5;color:#fff;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .1s}
+.btn-primary:active{opacity:.8}
+.btn-secondary{flex:1;padding:8px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.2);background:transparent;color:#1a1a18;font-size:13px;cursor:pointer;transition:background .1s}
+.btn-secondary:active{background:#f5f4f0}
+.spend-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid rgba(0,0,0,0.08);cursor:pointer}
+.spend-row:last-child{border-bottom:none}
+.spend-cat{display:flex;align-items:center;gap:8px}
+.spend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.spend-name{font-size:13px;color:#1a1a18}
+.spend-amt{font-size:13px;font-weight:500;color:#1a1a18}
+.divider{height:0.5px;background:rgba(0,0,0,0.08);margin:0 14px}
+.tab-bar{display:flex;border-top:0.5px solid rgba(0,0,0,0.08);margin-top:4px}
+.tab{flex:1;padding:10px 4px 8px;text-align:center;font-size:10px;color:#73726c;cursor:pointer}
+.tab.active{color:#185FA5;font-weight:500}
+.tab-icon{width:18px;height:18px;margin:0 auto 3px;display:flex;align-items:center;justify-content:center}
+.toast{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:#2C2C2A;color:#F1EFE8;font-size:11px;padding:5px 12px;border-radius:99px;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;z-index:10}
+.toast.show{opacity:1}
+
+.uid-bar{max-width:360px;margin:0 auto 12px;display:flex;gap:8px;align-items:center}
+.uid-bar input{flex:1;padding:7px 10px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.2);font-size:12px;font-family:inherit;background:#fff;color:#1a1a18;outline:none}
+.uid-bar input:focus{border-color:#185FA5}
+.uid-bar label{font-size:11px;color:#73726c;white-space:nowrap}
+
+.pm-panel{display:none;max-width:360px;margin:16px auto 0;background:#f5f4f0;border-radius:12px;border:0.5px solid rgba(0,0,0,0.1);padding:14px}
+.pm-panel.visible{display:block}
+.pm-header{font-size:12px;font-weight:500;color:#1a1a18;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.pm-badge{font-size:10px;background:#EAF3DE;color:#27500A;padding:2px 7px;border-radius:99px}
+.pm-hint{font-size:10px;color:#73726c;margin-top:-6px;margin-bottom:10px}
+.stat-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.stat{background:#fff;border-radius:8px;padding:8px 10px;text-align:center}
+.stat-n{font-size:20px;font-weight:500;color:#1a1a18}
+.stat-l{font-size:10px;color:#73726c;margin-top:2px}
+.pm-actions{display:flex;gap:8px;margin-bottom:10px}
+.pm-btn{flex:1;padding:6px;border-radius:7px;border:0.5px solid rgba(0,0,0,0.2);background:transparent;font-size:11px;color:#1a1a18;cursor:pointer;font-family:inherit}
+.pm-btn:active{background:#e8e7e2}
+.log-row{font-size:11px;padding:5px 0;border-bottom:0.5px solid rgba(0,0,0,0.08);display:flex;gap:8px}
+.log-row:last-child{border-bottom:none}
+.log-time{color:#b4b2a9;flex-shrink:0;width:44px}
+.log-uid{color:#185FA5;flex-shrink:0;width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.log-event{color:#1a1a18;font-weight:500;flex-shrink:0;width:80px}
+.log-detail{color:#73726c;flex:1}
+</style>
+</head>
+<body>
+
+<div class="uid-bar">
+  <label for="uid">Your name / ID</label>
+  <input type="text" id="uid" placeholder="e.g. Priya or T-07" maxlength="20">
+</div>
+
+<div class="phone">
+  <div class="screen">
+    <div id="toast" class="toast"></div>
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">Spend Smart</div>
+        <div class="topbar-sub">Your card recommendations</div>
+      </div>
+      <div class="avatar">PS</div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Top pick for you</div>
+
+      <div class="rec-card" id="card-fuel" onclick="tap('CTA_card','Fuel rec — BPCL SBI card')">
+        <div class="rec-badge">Fuel · 5× reward pts</div>
+        <div class="rec-title">BPCL SBI Credit Card</div>
+        <div class="rec-sub">You spent ₹4,200 on fuel last month</div>
+        <div class="rec-benefit">Save up to ₹100/month · surcharge waiver</div>
+        <div class="rec-actions">
+          <button class="btn-primary" onclick="event.stopPropagation();tap('CTA_apply','BPCL SBI — Apply now')">Apply now</button>
+          <button class="btn-secondary" onclick="event.stopPropagation();tap('CTA_learn','BPCL SBI — Learn more')">Learn more</button>
+        </div>
+      </div>
+
+      <div class="rec-card dimmed" id="card-grocery" onclick="tap('CTA_card','Grocery rec — Amazon Pay ICICI')">
+        <div class="rec-badge">Grocery · 5% cashback</div>
+        <div class="rec-title">Amazon Pay ICICI Card</div>
+        <div class="rec-sub">You spent ₹6,800 on groceries last month</div>
+        <div class="rec-benefit">₹340/month savings on current spend</div>
+        <div class="rec-actions">
+          <button class="btn-primary" onclick="event.stopPropagation();tap('CTA_apply','Amazon Pay ICICI — Apply now')">Apply now</button>
+          <button class="btn-secondary" onclick="event.stopPropagation();tap('CTA_dismiss','Amazon Pay ICICI — Not interested')">Not interested</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-label">Your last 30 days</div>
+      <div class="spend-row" onclick="tap('SPEND_drill','Fuel drilldown')">
+        <div class="spend-cat"><div class="spend-dot" style="background:#E24B4A"></div><div class="spend-name">Fuel</div></div>
+        <div class="spend-amt">₹4,200</div>
+      </div>
+      <div class="spend-row" onclick="tap('SPEND_drill','Grocery drilldown')">
+        <div class="spend-cat"><div class="spend-dot" style="background:#639922"></div><div class="spend-name">Grocery</div></div>
+        <div class="spend-amt">₹6,800</div>
+      </div>
+      <div class="spend-row" onclick="tap('SPEND_drill','Dining drilldown')">
+        <div class="spend-cat"><div class="spend-dot" style="background:#D85A30"></div><div class="spend-name">Dining</div></div>
+        <div class="spend-amt">₹3,100</div>
+      </div>
+      <div class="spend-row" onclick="tap('SPEND_drill','Online shopping drilldown')">
+        <div class="spend-cat"><div class="spend-dot" style="background:#7F77DD"></div><div class="spend-name">Online shopping</div></div>
+        <div class="spend-amt">₹8,500</div>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <div class="tab active" onclick="tap('NAV','Home tab')">
+        <div class="tab-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="8" width="5" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="5" width="5" height="9" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M2 6L8 2L14 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        Home
+      </div>
+      <div class="tab" onclick="tap('NAV','Cards tab')">
+        <div class="tab-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M1 7h14" stroke="currentColor" stroke-width="1.2"/></svg></div>
+        Cards
+      </div>
+      <div class="tab" onclick="tap('NAV','Spends tab')">
+        <div class="tab-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        Spends
+      </div>
+      <div class="tab" onclick="tap('NAV','Profile tab')">
+        <div class="tab-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        Profile
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pm-panel" id="pm-panel">
+  <div class="pm-header">
+    <span>PM tap log</span>
+    <span class="pm-badge">Press Shift+P to toggle</span>
+  </div>
+  <div class="pm-hint">Hidden from testers. All events include tester ID + timestamp.</div>
+  <div class="stat-row">
+    <div class="stat"><div class="stat-n" id="s-impressions">1</div><div class="stat-l">Impressions</div></div>
+    <div class="stat"><div class="stat-n" id="s-engage">0</div><div class="stat-l">Engagements</div></div>
+    <div class="stat"><div class="stat-n" id="s-apply">0</div><div class="stat-l">Apply taps</div></div>
+  </div>
+  <div class="pm-actions">
+    <button class="pm-btn" onclick="exportCSV()">Export CSV</button>
+    <button class="pm-btn" onclick="resetLog()">Reset</button>
+  </div>
+  <div id="log-list"><div style="font-size:11px;color:#b4b2a9;padding:4px 0">No taps yet</div></div>
+</div>
+
+<script>
+const allEvents = [];
+let engagements = 0;
+let applies = 0;
+
+function getUID(){
+  return document.getElementById('uid').value.trim() || 'anon';
+}
+
+function ts(){
+  return new Date().toISOString();
+}
+
+function tsDisplay(){
+  const d = new Date();
+  return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')+':'+d.getSeconds().toString().padStart(2,'0');
+}
+
+function tap(event, detail){
+  const uid = getUID();
+  const row = {ts: ts(), tsDisplay: tsDisplay(), uid, event, detail};
+  allEvents.unshift(row);
+  if(['CTA_apply','CTA_learn','CTA_card','SPEND_drill','NAV'].includes(event)) engagements++;
+  if(event==='CTA_apply') applies++;
+  renderLog();
+  showToast(detail);
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.classList.remove('show'), 1600);
+}
+
+function renderLog(){
+  document.getElementById('s-impressions').textContent = 1;
+  document.getElementById('s-engage').textContent = engagements;
+  document.getElementById('s-apply').textContent = applies;
+  const el = document.getElementById('log-list');
+  const visible = allEvents.slice(0, 20);
+  if(!visible.length){
+    el.innerHTML = '<div style="font-size:11px;color:#b4b2a9;padding:4px 0">No taps yet</div>';
+    return;
+  }
+  el.innerHTML = visible.map(r =>
+    `<div class="log-row">
+      <span class="log-time">${r.tsDisplay}</span>
+      <span class="log-uid">${r.uid}</span>
+      <span class="log-event">${r.event}</span>
+      <span class="log-detail">${r.detail}</span>
+    </div>`
+  ).join('');
+}
+
+function exportCSV(){
+  if(!allEvents.length){ alert('No events to export yet.'); return; }
+  const header = 'timestamp,tester_id,event,detail\n';
+  const rows = [...allEvents].reverse().map(r =>
+    `"${r.ts}","${r.uid}","${r.event}","${r.detail}"`
+  ).join('\n');
+  const blob = new Blob([header + rows], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'spend_smart_taps_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+function resetLog(){
+  allEvents.length = 0;
+  engagements = 0;
+  applies = 0;
+  renderLog();
+}
+
+document.addEventListener('keydown', e => {
+  if(e.shiftKey && e.key === 'P'){
+    document.getElementById('pm-panel').classList.toggle('visible');
+  }
+});
+
+tap('IMPRESSION', 'Page loaded');
+</script>
+</body>
+</html>
