@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KYFR — Spend Smart</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f7f6f2;
+  --surface:#ffffff;
+  --border:rgba(0,0,0,0.09);
+  --border-med:rgba(0,0,0,0.15);
+  --text:#1a1916;
+  --muted:#7a786e;
+  --hint:#b0ae a6;
+  --blue:#1a56db;
+  --blue-light:#eef3ff;
+  --green:#16a34a;
+  --green-light:#f0fdf4;
+  --amber:#d97706;
+  --amber-light:#fffbeb;
+  --red:#dc2626;
+  --red-light:#fef2f2;
+  --gold:#b8860b;
+  --radius:12px;
+  --radius-sm:8px;
+}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#e8e6e0;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:20px 16px 40px;
+  color:var(--text);
+}
+
+.phone-shell{
+  width:100%;
+  max-width:390px;
+  background:var(--bg);
+  border-radius:20px;
+  overflow:hidden;
+  border:1px solid rgba(0,0,0,0.12);
+  min-height:600px;
+}
+
+.status-bar{
+  background:var(--surface);
+  padding:10px 16px 8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:0.5px solid var(--border);
+}
+.status-time{font-size:13px;font-weight:600;color:var(--text)}
+.status-icons{display:flex;gap:5px;align-items:center}
+.status-icons svg{width:14px;height:14px;fill:var(--text)}
+
+.topbar{
+  background:var(--surface);
+  padding:10px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:0.5px solid var(--border);
+}
+.topbar-left{display:flex;align-items:center;gap:8px}
+.back-btn{width:30px;height:30px;border-radius:50%;border:0.5px solid var(--border-med);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.topbar-title{font-size:16px;font-weight:600;color:var(--text)}
+.topbar-logo{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.5px}
+.topbar-actions{display:flex;gap:8px}
+.icon-btn{width:32px;height:32px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px}
+
+.screen{display:none;flex-direction:column;animation:fadeIn .2s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+.content{flex:1;padding:16px;display:flex;flex-direction:column;gap:14px}
+
+/* SCREEN 1 — INPUT */
+.section-title{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.input-card{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px;display:flex;flex-direction:column;gap:12px}
+.field-label{font-size:11px;font-weight:500;color:var(--muted);margin-bottom:4px;display:block}
+.field-input{width:100%;border:0.5px solid var(--border-med);border-radius:var(--radius-sm);padding:9px 12px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);outline:none;transition:border-color .15s}
+.field-input:focus{border-color:var(--blue)}
+.field-input::placeholder{color:#b0ae a6;color:#bbb9b0}
+.quick-chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:5px 12px;border-radius:99px;border:0.5px solid var(--border-med);background:var(--bg);font-size:12px;font-weight:500;color:var(--text);cursor:pointer;transition:all .12s}
+.chip:active,.chip.selected{background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
+.chips-hint{font-size:11px;color:var(--muted);margin-top:-6px}
+.amount-row{display:flex;align-items:center;gap:8px}
+.amount-prefix{font-size:18px;font-weight:600;color:var(--muted)}
+.amount-input{flex:1;border:none;border-bottom:1.5px solid var(--border-med);border-radius:0;padding:4px 0;font-size:24px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text);background:transparent;outline:none}
+.amount-input:focus{border-bottom-color:var(--blue)}
+.tip-text{font-size:11px;color:var(--muted);font-style:italic}
+
+.btn-clear{width:100%;padding:11px;border-radius:var(--radius-sm);border:0.5px solid var(--border-med);background:transparent;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--muted);cursor:pointer;transition:background .12s}
+.btn-clear:active{background:var(--bg)}
+.btn-primary{width:100%;padding:13px;border-radius:var(--radius-sm);border:none;background:var(--text);color:#fff;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .12s}
+.btn-primary:active{opacity:.85}
+
+/* SCREEN 2 — BEST CARD */
+.best-card-hero{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);overflow:hidden}
+.hero-header{padding:12px 14px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.hero-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.best-badge{display:flex;align-items:center;gap:4px;background:var(--amber-light);color:var(--amber);font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px}
+.card-visual{background:linear-gradient(135deg,#1a1916 0%,#3d3a30 60%,#b8860b 100%);margin:12px;border-radius:10px;padding:18px;position:relative;overflow:hidden;min-height:110px}
+.card-visual::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:rgba(184,134,11,0.2)}
+.card-name-visual{font-size:15px;font-weight:600;color:#fff;margin-bottom:4px}
+.card-sub-visual{font-size:11px;color:rgba(255,255,255,0.6)}
+.card-chip{position:absolute;bottom:18px;right:18px;width:28px;height:20px;border-radius:4px;background:linear-gradient(135deg,#d4af37,#b8860b);opacity:.8}
+.card-info{padding:12px 14px;border-top:0.5px solid var(--border)}
+.card-info-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.card-info-sub{font-size:12px;color:var(--muted)}
+.card-info-actions{display:flex;gap:8px;margin-top:10px}
+.action-icon-btn{width:32px;height:32px;border-radius:50%;border:0.5px solid var(--border-med);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:background .12s}
+.action-icon-btn:active{background:#e8e6e0}
+.view-offers-btn{flex:1;padding:8px;border-radius:var(--radius-sm);border:0.5px solid var(--blue);background:var(--blue-light);color:var(--blue);font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity .12s}
+.view-offers-btn:active{opacity:.7}
+
+.breakdown-card{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px}
+.breakdown-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.breakdown-sub{font-size:11px;color:var(--muted);margin-bottom:12px}
+.breakdown-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.bkd-item{background:var(--bg);border-radius:var(--radius-sm);padding:10px 12px}
+.bkd-label{font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.bkd-value{font-size:18px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text)}
+.bkd-value.green{color:var(--green)}
+.bkd-value.blue{color:var(--blue)}
+.return-row{background:var(--green-light);border-radius:var(--radius-sm);padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
+.return-label{font-size:12px;font-weight:500;color:var(--green)}
+.return-value{font-size:20px;font-weight:700;font-family:'DM Mono',monospace;color:var(--green)}
+.return-vs{font-size:11px;color:var(--green);opacity:.7}
+
+.why-card{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px}
+.why-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.why-title{font-size:13px;font-weight:600;color:var(--text)}
+.why-sub{font-size:11px;color:var(--muted)}
+.how-btn{font-size:11px;color:var(--blue);background:transparent;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0}
+.why-reasons{display:flex;flex-direction:column;gap:10px}
+.reason-row{display:flex;gap:10px;align-items:flex-start}
+.reason-icon{width:28px;height:28px;border-radius:6px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.reason-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px}
+.reason-sub{font-size:11px;color:var(--muted);line-height:1.5}
+.reason-tag{display:inline-block;font-size:10px;font-weight:600;padding:1px 7px;border-radius:99px;background:var(--blue-light);color:var(--blue);margin-bottom:4px}
+
+.quick-actions{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px;display:flex;gap:10px}
+.qa-btn{flex:1;padding:10px;border-radius:var(--radius-sm);border:0.5px solid var(--border-med);background:var(--bg);font-size:12px;font-weight:500;color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:5px;transition:background .12s}
+.qa-btn:active{background:#e0dfd8}
+
+/* SCREEN 3 — ALTERNATIVES */
+.alt-card{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);overflow:hidden}
+.alt-header{padding:12px 14px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.alt-title{font-size:14px;font-weight:600;color:var(--text)}
+.compare-btn{font-size:12px;color:var(--blue);background:var(--blue-light);border:none;padding:5px 10px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500}
+.alt-row{padding:12px 14px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .1s}
+.alt-row:last-child{border-bottom:none}
+.alt-row:active{background:var(--bg)}
+.alt-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.alt-rank.gold{background:#fff8e7;color:#b8860b}
+.alt-rank.silver{background:#f4f4f4;color:#666}
+.alt-rank.bronze{background:#fdf2ee;color:#b05030}
+.alt-info{flex:1}
+.alt-name{font-size:13px;font-weight:600;color:var(--text)}
+.alt-desc{font-size:11px;color:var(--muted);margin-top:1px}
+.alt-value{text-align:right}
+.alt-total{font-size:13px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text)}
+.alt-breakdown{font-size:10px;color:var(--muted);margin-top:2px}
+
+.tip-card{background:var(--amber-light);border-radius:var(--radius);border:0.5px solid rgba(217,119,6,0.2);padding:14px}
+.tip-title{font-size:12px;font-weight:600;color:var(--amber);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.tip-title-main{font-size:13px;font-weight:600;color:#92400e;margin-bottom:6px}
+.tip-body{font-size:12px;color:#78350f;line-height:1.5}
+
+/* SCREEN 4 — VALUE MISSED */
+.missed-hero{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px}
+.missed-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.missed-title{font-size:14px;font-weight:600;color:var(--text)}
+.missed-sub{font-size:11px;color:var(--muted);margin-bottom:12px}
+.missed-default-btn{font-size:11px;color:var(--blue);background:var(--blue-light);border:none;padding:5px 10px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;white-space:nowrap}
+.missed-cost{background:var(--red-light);border-radius:var(--radius-sm);padding:12px;margin-bottom:10px}
+.missed-cost-label{font-size:11px;font-weight:500;color:#991b1b;margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.missed-cost-value{font-size:28px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red)}
+.missed-cost-desc{font-size:11px;color:#b91c1c;margin-top:2px}
+.missed-gain{background:var(--green-light);border-radius:var(--radius-sm);padding:12px}
+.missed-gain-label{font-size:11px;font-weight:500;color:#15803d;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.missed-gain-desc{font-size:12px;color:#166534;line-height:1.5}
+
+.action-stack{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.btn-ghost{width:100%;padding:12px;border-radius:var(--radius-sm);border:0.5px solid var(--border-med);background:transparent;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--muted);cursor:pointer;transition:background .12s}
+.btn-ghost:active{background:var(--bg)}
+
+/* BOTTOM NAV */
+.bottom-nav{background:var(--surface);border-top:0.5px solid var(--border);display:flex;padding:8px 0 12px}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;transition:opacity .1s}
+.nav-item:active{opacity:.6}
+.nav-icon{font-size:18px;line-height:1}
+.nav-label{font-size:10px;color:var(--muted);font-weight:500}
+.nav-item.active .nav-label{color:var(--blue)}
+.nav-item.active .nav-icon{filter:none}
+
+/* PM PANEL */
+.pm-panel{display:none;width:100%;max-width:390px;background:#1a1916;border-radius:12px;margin-top:12px;padding:14px}
+.pm-panel.visible{display:block}
+.pm-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.pm-heading{font-size:12px;font-weight:600;color:#f7f6f2;letter-spacing:.04em;text-transform:uppercase}
+.pm-hint{font-size:10px;color:#7a786e;margin-bottom:10px}
+.pm-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.pm-stat{background:#2a2820;border-radius:8px;padding:8px;text-align:center}
+.pm-stat-n{font-size:20px;font-weight:600;color:#f7f6f2;font-family:'DM Mono',monospace}
+.pm-stat-l{font-size:9px;color:#7a786e;margin-top:2px;text-transform:uppercase;letter-spacing:.04em}
+.pm-actions{display:flex;gap:8px;margin-bottom:10px}
+.pm-btn{flex:1;padding:6px;border-radius:6px;border:0.5px solid #3a3830;background:transparent;font-size:11px;color:#b0ae a6;color:#9a9890;cursor:pointer;font-family:'DM Sans',sans-serif}
+.pm-btn:active{background:#2a2820}
+.pm-log{display:flex;flex-direction:column;gap:0}
+.pm-row{font-size:10px;padding:5px 0;border-bottom:0.5px solid #2a2820;display:flex;gap:6px}
+.pm-row:last-child{border-bottom:none}
+.pm-ts{color:#4a4840;flex-shrink:0;width:40px;font-family:'DM Mono',monospace}
+.pm-uid{color:#378ADD;flex-shrink:0;width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'DM Mono',monospace}
+.pm-ev{color:#f7f6f2;font-weight:600;flex-shrink:0;width:88px}
+.pm-det{color:#7a786e;flex:1}
+.pm-empty{font-size:10px;color:#4a4840;padding:4px 0;font-family:'DM Mono',monospace}
+
+.uid-bar{width:100%;max-width:390px;margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.uid-label{font-size:11px;color:#5a5850;white-space:nowrap}
+.uid-input{flex:1;padding:7px 10px;border-radius:8px;border:0.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);font-size:12px;font-family:'DM Mono',sans-serif;color:#f7f6f2;outline:none}
+.uid-input::placeholder{color:#5a5850}
+.uid-input:focus{border-color:rgba(55,138,221,0.5)}
+</style>
+</head>
+<body>
+
+<div class="uid-bar">
+  <label class="uid-label" for="uid">Tester ID</label>
+  <input class="uid-input" type="text" id="uid" placeholder="enter your name" maxlength="20">
+</div>
+
+<div class="phone-shell">
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <span class="status-time">12:30</span>
+    <div class="status-icons">
+      <svg viewBox="0 0 24 24"><path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.56 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3"/><rect x="4" y="9" width="10" height="7" rx="1"/></svg>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: INPUT -->
+  <div class="screen active" id="screen-input">
+    <div class="topbar">
+      <span class="topbar-logo">KYFR</span>
+      <div class="topbar-actions">
+        <button class="icon-btn" onclick="tap('NAV','Settings')">⚙️</button>
+        <button class="icon-btn" onclick="tap('NAV','ID card')">🪪</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="input-card">
+        <div>
+          <label class="field-label">Merchant</label>
+          <input class="field-input" id="merchant-input" type="text" placeholder="e.g. Swiggy / Amazon / MakeMyTrip">
+          <div style="margin-top:8px">
+            <div class="quick-chips">
+              <button class="chip" onclick="selectChip(this,'Swiggy')">Swiggy</button>
+              <button class="chip" onclick="selectChip(this,'Amazon')">Amazon</button>
+              <button class="chip" onclick="selectChip(this,'MakeMyTrip')">MakeMyTrip</button>
+            </div>
+            <div class="chips-hint" style="margin-top:6px">Pick one to get faster, more accurate recommendations</div>
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Amount (₹)</label>
+          <div class="amount-row">
+            <span class="amount-prefix">₹</span>
+            <input class="amount-input" id="amount-input" type="number" placeholder="0" value="1200">
+          </div>
+          <div class="tip-text" style="margin-top:6px">Tip: enter 1–2 details for fastest recommendations</div>
+        </div>
+      </div>
+      <button class="btn-clear" onclick="tap('INPUT_clear','Clear form')">Clear</button>
+      <button class="btn-primary" onclick="tap('CTA_recommend','Recommend Best Card');goTo('screen-result')">
+        <span>🔍</span> Recommend Best Card
+      </button>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item active" onclick="tap('NAV','Home tab')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="tap('NAV','Scan tab')"><div class="nav-icon">🔎</div><div class="nav-label">Scan</div></div>
+      <div class="nav-item" onclick="tap('NAV','Recs tab');goTo('screen-result')"><div class="nav-icon">🏆</div><div class="nav-label">Recommendations</div></div>
+      <div class="nav-item" onclick="tap('NAV','History tab')"><div class="nav-icon">🧾</div><div class="nav-label">History</div></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: BEST CARD -->
+  <div class="screen" id="screen-result">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="back-btn" onclick="tap('NAV','Back to input');goTo('screen-input')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="#1a1916" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="topbar-title">Best Card</span>
+      </div>
+      <span style="font-size:20px">🏆</span>
+    </div>
+    <div class="content" style="overflow-y:auto;max-height:calc(100vh - 180px)">
+
+      <div class="best-card-hero">
+        <div class="hero-header">
+          <div>
+            <div class="hero-label">Best Card Match</div>
+            <div style="font-size:11px;color:var(--muted)">Selected for max rewards + strong offers</div>
+          </div>
+          <div class="best-badge">🏆 Best</div>
+        </div>
+        <div style="padding:0 12px;padding-top:8px">
+          <div style="font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px">🏆 Best Card for This Transaction</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Spend ₹1200 • Highest net value</div>
+        </div>
+        <div class="card-visual" style="margin:0 12px 12px">
+          <div class="card-name-visual">HSBC TravelOne</div>
+          <div class="card-sub-visual">Premium Travel & Dining Card</div>
+          <div class="card-chip"></div>
+          <div style="position:absolute;bottom:18px;left:18px;font-size:11px;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace">•••• •••• •••• 4521</div>
+        </div>
+        <div class="card-info">
+          <div class="card-info-name">HSBC TravelOne</div>
+          <div class="card-info-sub">Spend ₹1200 • Rewards ₹30 • Offers ₹120</div>
+          <div class="card-info-actions">
+            <button class="action-icon-btn" onclick="tap('CTA_save','Save card')">⭐</button>
+            <button class="action-icon-btn" onclick="tap('CTA_notify','Set alert')">🔔</button>
+            <button class="view-offers-btn" onclick="tap('CTA_offers','View offers — HSBC TravelOne')">View offers</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="breakdown-card">
+        <div class="breakdown-title">Transaction Value</div>
+        <div class="breakdown-sub">Breakdown for ₹1200 spend</div>
+        <div class="breakdown-grid">
+          <div class="bkd-item"><div class="bkd-label">Spend</div><div class="bkd-value">₹1,200</div></div>
+          <div class="bkd-item"><div class="bkd-label">Rewards</div><div class="bkd-value green">₹30</div></div>
+          <div class="bkd-item"><div class="bkd-label">Offers</div><div class="bkd-value blue">₹120</div></div>
+          <div class="bkd-item"><div class="bkd-label">Total Value</div><div class="bkd-value green">₹150</div></div>
+        </div>
+        <div class="return-row">
+          <div>
+            <div class="return-label">Effective Return</div>
+            <div class="return-vs">+₹30 vs average</div>
+          </div>
+          <div class="return-value">12.5%</div>
+        </div>
+      </div>
+
+      <div class="why-card">
+        <div class="why-header">
+          <div>
+            <div class="why-title">💡 Why this card?</div>
+            <div class="why-sub">Not a black box — here's the reasoning</div>
+          </div>
+          <button class="how-btn" onclick="tap('CTA_howcalc','How we calculate')">How we calculate ›</button>
+        </div>
+        <div class="why-reasons">
+          <div class="reason-row">
+            <div class="reason-icon">🍽️</div>
+            <div>
+              <div class="reason-tag">DINING transaction</div>
+              <div class="reason-title">Matches your category</div>
+              <div class="reason-sub">HSBC gives the highest rewards + offers for dining-like spends at your selected merchant.</div>
+            </div>
+          </div>
+          <div class="reason-row">
+            <div class="reason-icon">🤝</div>
+            <div>
+              <div class="reason-title">Merchant partnerships</div>
+              <div class="reason-sub">Strong partner offers — better deal stacking for this merchant group improves your net value.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <button class="qa-btn" onclick="tap('CTA_save','Save card preference')">⭐ Save card</button>
+        <button class="qa-btn" onclick="tap('CTA_prefs','Use my preferences')">🧠 Use my preferences</button>
+      </div>
+
+      <button class="btn-primary" onclick="tap('CTA_alternatives','View top alternatives');goTo('screen-alts')">
+        View top alternatives 🧾
+      </button>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="tap('NAV','Home');goTo('screen-input')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="tap('NAV','Scan tab')"><div class="nav-icon">🔎</div><div class="nav-label">Scan</div></div>
+      <div class="nav-item active"><div class="nav-icon">🏆</div><div class="nav-label">Recommendations</div></div>
+      <div class="nav-item" onclick="tap('NAV','History tab')"><div class="nav-icon">🧾</div><div class="nav-label">History</div></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: ALTERNATIVES -->
+  <div class="screen" id="screen-alts">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="back-btn" onclick="tap('NAV','Back to result');goTo('screen-result')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="#1a1916" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="topbar-title">Top Alternatives</span>
+      </div>
+      <span style="font-size:16px;color:var(--muted)">🧾</span>
+    </div>
+    <div class="content">
+      <div class="alt-card">
+        <div class="alt-header">
+          <div>
+            <div class="alt-title">Top Alternatives</div>
+            <div style="font-size:11px;color:var(--muted)">Compare returns instantly</div>
+          </div>
+          <button class="compare-btn" onclick="tap('CTA_compare','Compare details')">Compare details ›</button>
+        </div>
+        <div class="alt-row" onclick="tap('CTA_alt_select','HSBC TravelOne — Highest net value')">
+          <div class="alt-rank gold">🏅</div>
+          <div class="alt-info">
+            <div class="alt-name">HSBC TravelOne</div>
+            <div class="alt-desc">Highest net value</div>
+          </div>
+          <div class="alt-value">
+            <div class="alt-total">₹150</div>
+            <div class="alt-breakdown">₹30 + ₹120</div>
+          </div>
+        </div>
+        <div class="alt-row" onclick="tap('CTA_alt_select','Axis Select — Strong offer stacking')">
+          <div class="alt-rank silver">🏦</div>
+          <div class="alt-info">
+            <div class="alt-name">Axis Select</div>
+            <div class="alt-desc">Strong offer stacking</div>
+          </div>
+          <div class="alt-value">
+            <div class="alt-total">₹120</div>
+            <div class="alt-breakdown">₹20 + ₹100</div>
+          </div>
+        </div>
+        <div class="alt-row" onclick="tap('CTA_alt_select','Regalia Gold — Better rewards')">
+          <div class="alt-rank bronze">💳</div>
+          <div class="alt-info">
+            <div class="alt-name">Regalia Gold</div>
+            <div class="alt-desc">Better rewards in some cases</div>
+          </div>
+          <div class="alt-value">
+            <div class="alt-total">₹90</div>
+            <div class="alt-breakdown">₹40 + ₹50</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-title">💡 Tip</div>
+        <div class="tip-title-main">Choose based on what you want most</div>
+        <div class="tip-body">
+          <strong style="color:#92400e">Max rewards vs max offers</strong><br>
+          If rewards matter more, pick the card with higher rewards. If immediate discounts matter, pick the one with stronger offers.
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="tap('CTA_value_missed','See value missed');goTo('screen-missed')">
+        ⚠️ See value if you use wrong card
+      </button>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="tap('NAV','Home');goTo('screen-input')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="tap('NAV','Scan tab')"><div class="nav-icon">🔎</div><div class="nav-label">Scan</div></div>
+      <div class="nav-item active"><div class="nav-icon">🏆</div><div class="nav-label">Recommendations</div></div>
+      <div class="nav-item" onclick="tap('NAV','History tab')"><div class="nav-icon">🧾</div><div class="nav-label">History</div></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: VALUE MISSED -->
+  <div class="screen" id="screen-missed">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="back-btn" onclick="tap('NAV','Back to alts');goTo('screen-alts')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="#1a1916" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="topbar-title">Value Missed</span>
+      </div>
+      <span style="font-size:18px">⚠️</span>
+    </div>
+    <div class="content">
+      <div class="missed-hero">
+        <div class="missed-header">
+          <div>
+            <div class="missed-title">⚠️ Value Missed</div>
+            <div class="missed-sub">Choose the right card to avoid loss</div>
+          </div>
+          <button class="missed-default-btn" onclick="tap('CTA_make_default','Make it my default')">Make it my default</button>
+        </div>
+
+        <div class="missed-cost">
+          <div class="missed-cost-label">💸 Potential cost this time</div>
+          <div class="missed-cost-value">₹80</div>
+          <div class="missed-cost-desc">If you use the wrong card on this transaction</div>
+        </div>
+
+        <div class="missed-gain">
+          <div class="missed-gain-label">✅ What you gain instead</div>
+          <div class="missed-gain-desc">If you use HSBC TravelOne — use the selected card to unlock the higher rewards + offers that drive the ₹150 total value.</div>
+        </div>
+      </div>
+
+      <div class="action-stack">
+        <button class="btn-ghost" onclick="tap('CTA_not_now','Not now — dismiss')">Not now</button>
+        <button class="btn-primary" onclick="tap('CTA_make_default','Make it my default — confirmed')">Make it my default</button>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="tap('NAV','Home');goTo('screen-input')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="tap('NAV','Scan tab')"><div class="nav-icon">🔎</div><div class="nav-label">Scan</div></div>
+      <div class="nav-item active"><div class="nav-icon">🏆</div><div class="nav-label">Recommendations</div></div>
+      <div class="nav-item" onclick="tap('NAV','History tab')"><div class="nav-icon">🧾</div><div class="nav-label">History</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- PM PANEL -->
+<div class="pm-panel" id="pm-panel">
+  <div class="pm-top">
+    <span class="pm-heading">PM tap log</span>
+    <span style="font-size:10px;color:#4a4840">Shift+P to toggle</span>
+  </div>
+  <div class="pm-hint">Hidden from testers · includes screen, event, tester ID</div>
+  <div class="pm-stats">
+    <div class="pm-stat"><div class="pm-stat-n" id="s-imp">1</div><div class="pm-stat-l">Impressions</div></div>
+    <div class="pm-stat"><div class="pm-stat-n" id="s-eng">0</div><div class="pm-stat-l">Engagements</div></div>
+    <div class="pm-stat"><div class="pm-stat-n" id="s-app">0</div><div class="pm-stat-l">Apply / CTA</div></div>
+  </div>
+  <div class="pm-actions">
+    <button class="pm-btn" onclick="exportCSV()">Export CSV</button>
+    <button class="pm-btn" onclick="resetLog()">Reset</button>
+  </div>
+  <div id="pm-log"><div class="pm-empty">No taps yet — interact with the prototype above</div></div>
+</div>
+
+<script>
+const allEvents = [];
+let engagements = 0;
+let ctas = 0;
+
+function getUID(){ return document.getElementById('uid').value.trim() || 'anon'; }
+function currentScreen(){
+  const s = document.querySelector('.screen.active');
+  return s ? s.id.replace('screen-','') : '?';
+}
+function tsISO(){ return new Date().toISOString(); }
+function tsDisplay(){
+  const d = new Date();
+  return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')+':'+d.getSeconds().toString().padStart(2,'0');
+}
+
+function tap(event, detail){
+  const row = { ts: tsISO(), tsd: tsDisplay(), uid: getUID(), screen: currentScreen(), event, detail };
+  allEvents.unshift(row);
+  if(allEvents.length > 200) allEvents.pop();
+  if(!event.startsWith('NAV')) engagements++;
+  if(event.startsWith('CTA')) ctas++;
+  renderLog();
+}
+
+function goTo(screenId){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+}
+
+function selectChip(el, val){
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('merchant-input').value = val;
+  tap('INPUT_chip', 'Merchant chip: ' + val);
+}
+
+function renderLog(){
+  document.getElementById('s-imp').textContent = 1;
+  document.getElementById('s-eng').textContent = engagements;
+  document.getElementById('s-app').textContent = ctas;
+  const el = document.getElementById('pm-log');
+  const visible = allEvents.slice(0, 25);
+  if(!visible.length){ el.innerHTML = '<div class="pm-empty">No taps yet</div>'; return; }
+  el.innerHTML = visible.map(r =>
+    `<div class="pm-row">
+      <span class="pm-ts">${r.tsd}</span>
+      <span class="pm-uid">${r.uid}</span>
+      <span class="pm-ev">${r.event}</span>
+      <span class="pm-det">[${r.screen}] ${r.detail}</span>
+    </div>`
+  ).join('');
+}
+
+function exportCSV(){
+  if(!allEvents.length){ alert('No events yet.'); return; }
+  const hdr = 'timestamp,tester_id,screen,event,detail\n';
+  const rows = [...allEvents].reverse().map(r =>
+    `"${r.ts}","${r.uid}","${r.screen}","${r.event}","${r.detail}"`
+  ).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([hdr+rows],{type:'text/csv'}));
+  a.download = 'kyfr_taps_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+function resetLog(){
+  allEvents.length = 0; engagements = 0; ctas = 0; renderLog();
+}
+
+document.addEventListener('keydown', e => {
+  if(e.shiftKey && e.key === 'P') document.getElementById('pm-panel').classList.toggle('visible');
+});
+
+tap('IMPRESSION', 'App loaded — screen: input');
+</script>
+</body>
+</html>
