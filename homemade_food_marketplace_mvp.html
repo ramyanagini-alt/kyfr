@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HomePlate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --brand: #C1440E;
+    --brand-light: #FAF0EB;
+    --brand-mid: #E8865A;
+    --surface: #FDFAF7;
+    --white: #FFFFFF;
+    --text: #1A1208;
+    --text-2: #6B5E4E;
+    --text-3: #A09080;
+    --border: #EDE5DA;
+    --green: #2D6A4F;
+    --green-light: #EAF5EF;
+    --amber: #92400E;
+    --amber-light: #FEF3C7;
+    --font-disp: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+    --r: 14px;
+    --r-sm: 8px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  }
+  body { font-family: var(--font-body); background: var(--surface); color: var(--text); min-height: 100vh; }
+
+  /* NAV */
+  nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .logo { font-family: var(--font-disp); font-size: 22px; color: var(--brand); letter-spacing: -0.5px; }
+  .logo span { color: var(--text); }
+  .nav-tabs { display: flex; gap: 4px; }
+  .tab { padding: 7px 16px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--text-2); transition: all 0.2s; }
+  .tab.active { background: var(--brand); color: #fff; }
+  .tab:hover:not(.active) { background: var(--brand-light); color: var(--brand); }
+  .apt-badge { font-size: 13px; color: var(--text-3); display: flex; align-items: center; gap: 5px; }
+  .apt-badge strong { color: var(--text-2); }
+
+  /* MAIN */
+  main { max-width: 860px; margin: 0 auto; padding: 1.5rem; }
+
+  /* SECTION */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* BUYER FEED */
+  .feed-header { margin-bottom: 1.25rem; }
+  .feed-header h2 { font-family: var(--font-disp); font-size: 26px; font-weight: 600; margin-bottom: 4px; }
+  .feed-header p { color: var(--text-2); font-size: 14px; }
+  .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .filter-chip { padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--text-2); transition: all 0.15s; }
+  .filter-chip.active { border-color: var(--brand); background: var(--brand-light); color: var(--brand); }
+  .dishes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+  .dish-card { background: var(--white); border-radius: var(--r); border: 1px solid var(--border); overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+  .dish-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .dish-img { width: 100%; height: 160px; object-fit: cover; background: var(--brand-light); display: flex; align-items: center; justify-content: center; font-size: 52px; }
+  .dish-body { padding: 12px 14px; }
+  .dish-name { font-weight: 500; font-size: 15px; margin-bottom: 3px; }
+  .dish-cook { font-size: 13px; color: var(--text-2); display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
+  .cook-avatar { width: 20px; height: 20px; border-radius: 50%; background: var(--brand-light); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: var(--brand); }
+  .dish-meta { display: flex; align-items: center; justify-content: space-between; }
+  .dish-price { font-weight: 600; font-size: 16px; color: var(--brand); }
+  .dish-tags { display: flex; gap: 5px; }
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+  .tag-veg { background: var(--green-light); color: var(--green); }
+  .tag-nonveg { background: #FEE2E2; color: #991B1B; }
+  .tag-avail { background: var(--amber-light); color: var(--amber); }
+  .dish-footer { padding: 10px 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .dish-time { font-size: 12px; color: var(--text-3); display: flex; align-items: center; gap: 4px; }
+  .btn-order { padding: 7px 16px; background: var(--brand); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-body); transition: opacity 0.15s; }
+  .btn-order:hover { opacity: 0.88; }
+  .stars { color: #F59E0B; font-size: 12px; }
+
+  /* ORDER MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .modal { background: var(--white); border-radius: var(--r); width: 100%; max-width: 420px; overflow: hidden; }
+  .modal-header { padding: 1.25rem 1.25rem 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; }
+  .modal-title { font-family: var(--font-disp); font-size: 20px; }
+  .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-3); line-height: 1; }
+  .modal-body { padding: 1.25rem; }
+  .modal-cook-info { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+  .cook-avatar-lg { width: 40px; height: 40px; border-radius: 50%; background: var(--brand-light); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; color: var(--brand); }
+  .modal-label { font-size: 13px; font-weight: 500; color: var(--text-2); margin-bottom: 6px; }
+  .qty-control { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+  .qty-btn { width: 32px; height: 32px; border-radius: 8px; border: 1.5px solid var(--border); background: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text); }
+  .qty-num { font-size: 18px; font-weight: 500; min-width: 28px; text-align: center; }
+  .modal-total { background: var(--brand-light); border-radius: var(--r-sm); padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+  .modal-total-label { font-size: 14px; color: var(--text-2); }
+  .modal-total-val { font-size: 20px; font-weight: 600; color: var(--brand); }
+  .pay-opts { display: flex; gap: 8px; margin-bottom: 1rem; }
+  .pay-opt { flex: 1; padding: 8px; border: 1.5px solid var(--border); border-radius: var(--r-sm); text-align: center; font-size: 13px; cursor: pointer; color: var(--text-2); transition: all 0.15s; }
+  .pay-opt.selected { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+  .btn-confirm { width: 100%; padding: 12px; background: var(--brand); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 500; cursor: pointer; font-family: var(--font-body); }
+  .btn-confirm:hover { opacity: 0.9; }
+
+  /* SUCCESS TOAST */
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: var(--green); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 500; z-index: 300; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+
+  /* SELLER DASHBOARD */
+  .seller-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.25rem; }
+  .seller-header h2 { font-family: var(--font-disp); font-size: 26px; }
+  .btn-add { padding: 10px 18px; background: var(--brand); color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: var(--font-body); display: flex; align-items: center; gap: 6px; }
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+  .stat-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 14px; }
+  .stat-label { font-size: 12px; color: var(--text-3); margin-bottom: 4px; }
+  .stat-val { font-size: 22px; font-weight: 600; color: var(--text); }
+  .stat-val.green { color: var(--green); }
+  .listings-list { display: flex; flex-direction: column; gap: 10px; }
+  .listing-row { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+  .listing-emoji { font-size: 32px; min-width: 44px; text-align: center; }
+  .listing-info { flex: 1; }
+  .listing-name { font-weight: 500; font-size: 15px; }
+  .listing-detail { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+  .listing-sold { font-size: 13px; color: var(--text-3); }
+  .listing-actions { display: flex; gap: 8px; }
+  .btn-sm { padding: 6px 12px; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-body); border: 1.5px solid var(--border); background: none; color: var(--text-2); transition: all 0.15s; }
+  .btn-sm:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+  .btn-sm.danger:hover { border-color: #DC2626; color: #DC2626; background: #FEE2E2; }
+  .badge-live { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; background: var(--green-light); color: var(--green); }
+  .badge-soldout { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; background: #F3F4F6; color: #6B7280; }
+
+  /* ADD LISTING FORM */
+  .form-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 1.25rem; margin-bottom: 1.25rem; }
+  .form-card h3 { font-family: var(--font-disp); font-size: 18px; margin-bottom: 1rem; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 13px; font-weight: 500; color: var(--text-2); }
+  input, select, textarea { padding: 9px 12px; border: 1.5px solid var(--border); border-radius: var(--r-sm); font-size: 14px; font-family: var(--font-body); color: var(--text); background: var(--surface); outline: none; transition: border-color 0.15s; }
+  input:focus, select:focus, textarea:focus { border-color: var(--brand); }
+  textarea { resize: vertical; min-height: 70px; }
+  .emoji-pick { display: flex; gap: 8px; flex-wrap: wrap; }
+  .emoji-opt { width: 40px; height: 40px; border-radius: 8px; border: 1.5px solid var(--border); background: none; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .emoji-opt.selected { border-color: var(--brand); background: var(--brand-light); }
+  .form-actions { display: flex; gap: 10px; margin-top: 1rem; }
+  .btn-cancel { padding: 10px 18px; border: 1.5px solid var(--border); border-radius: 10px; background: none; font-size: 14px; font-weight: 500; cursor: pointer; font-family: var(--font-body); color: var(--text-2); }
+
+  /* ORDERS SECTION */
+  .orders-header h2 { font-family: var(--font-disp); font-size: 26px; margin-bottom: 0.25rem; }
+  .orders-header p { color: var(--text-2); font-size: 14px; margin-bottom: 1.25rem; }
+  .order-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 1rem 1.25rem; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; }
+  .order-emoji { font-size: 36px; min-width: 50px; text-align: center; }
+  .order-info { flex: 1; }
+  .order-name { font-weight: 500; font-size: 15px; }
+  .order-cook { font-size: 13px; color: var(--text-2); margin: 2px 0 6px; }
+  .order-status { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; }
+  .status-ready { background: var(--green-light); color: var(--green); }
+  .status-prep { background: var(--amber-light); color: var(--amber); }
+  .status-done { background: #F3F4F6; color: #6B7280; }
+  .order-price { font-size: 17px; font-weight: 600; color: var(--brand); }
+  .rate-btn { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .star-rate { display: flex; gap: 3px; }
+  .star-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #D1D5DB; transition: color 0.1s; }
+  .star-btn.lit { color: #F59E0B; }
+
+  /* EMPTY STATE */
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--text-3); }
+  .empty-icon { font-size: 48px; margin-bottom: 0.75rem; }
+  .empty p { font-size: 15px; }
+
+  @media (max-width: 580px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .form-grid { grid-template-columns: 1fr; }
+    .nav-tabs .tab { padding: 6px 10px; font-size: 13px; }
+    .apt-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Home<span>Plate</span></div>
+  <div class="nav-tabs">
+    <button class="tab active" onclick="showSection('buyer')">Discover</button>
+    <button class="tab" onclick="showSection('orders')">My Orders</button>
+    <button class="tab" onclick="showSection('seller')">Sell</button>
+  </div>
+  <div class="apt-badge">📍 <strong>Prestige Lakeside</strong></div>
+</nav>
+
+<main>
+
+  <!-- BUYER SECTION -->
+  <div id="buyer" class="section active">
+    <div class="feed-header">
+      <h2>Today's Homemade Food</h2>
+      <p>Fresh dishes from home cooks in your building</p>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-chip active" onclick="filterDishes('all', this)">All</button>
+      <button class="filter-chip" onclick="filterDishes('veg', this)">🌿 Veg</button>
+      <button class="filter-chip" onclick="filterDishes('breakfast', this)">☀️ Breakfast</button>
+      <button class="filter-chip" onclick="filterDishes('lunch', this)">🍱 Lunch</button>
+      <button class="filter-chip" onclick="filterDishes('snacks', this)">🍿 Snacks</button>
+      <button class="filter-chip" onclick="filterDishes('sweets', this)">🍮 Sweets</button>
+    </div>
+    <div class="dishes-grid" id="dishes-grid"></div>
+  </div>
+
+  <!-- ORDERS SECTION -->
+  <div id="orders" class="section">
+    <div class="orders-header">
+      <h2>My Orders</h2>
+      <p>Track and rate your recent orders</p>
+    </div>
+    <div id="orders-list"></div>
+  </div>
+
+  <!-- SELLER SECTION -->
+  <div id="seller" class="section">
+    <div class="seller-header">
+      <div>
+        <h2>Seller Dashboard</h2>
+        <p style="color: var(--text-2); font-size: 14px;">Priya's Kitchen · Block C, Flat 304</p>
+      </div>
+      <button class="btn-add" onclick="toggleAddForm()">+ Add Dish</button>
+    </div>
+
+    <!-- Add Listing Form -->
+    <div id="add-form" class="form-card" style="display:none">
+      <h3>New Listing</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Dish Name</label>
+          <input type="text" id="f-name" placeholder="e.g. Chole Bhature">
+        </div>
+        <div class="form-group">
+          <label>Price per serving (₹)</label>
+          <input type="number" id="f-price" placeholder="e.g. 120">
+        </div>
+        <div class="form-group">
+          <label>Available Qty</label>
+          <input type="number" id="f-qty" placeholder="e.g. 10">
+        </div>
+        <div class="form-group">
+          <label>Ready by</label>
+          <input type="time" id="f-time" value="13:00">
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select id="f-type">
+            <option value="veg">Veg</option>
+            <option value="nonveg">Non-veg</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="f-cat">
+            <option value="lunch">Lunch</option>
+            <option value="breakfast">Breakfast</option>
+            <option value="snacks">Snacks</option>
+            <option value="sweets">Sweets</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Pick an icon</label>
+          <div class="emoji-pick" id="emoji-pick">
+            <button class="emoji-opt selected" onclick="selectEmoji(this,'🍛')">🍛</button>
+            <button class="emoji-opt" onclick="selectEmoji(this,'🍚')">🍚</button>
+            <button class="emoji-opt" onclick="selectEmoji(this,'🥘')">🥘</button>
+            <button class="emoji-opt" onclick="selectEmoji(this,'🫓')">🫓</button>
+            <button class="emoji-opt" onclick="selectEmoji(this,'🥗')">🥗</button>
+            <button class="emoji-opt" onclick="selectEmoji(this,'🍜')">🍜</button>
+            <button class="emoji-opt" onclick="selectEmoji(this,'🧆')">🧆</button>
+            <button class="emoji-opt" onclick="selectEmoji(this,'🍩')">🍩</button>
+            <button class="emoji-opt" onclick="selectEmoji(this,'🧁')">🧁</button>
+            <button class="emoji-opt" onclick="selectEmoji(this,'🥞')">🥞</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-confirm" onclick="addListing()" style="width:auto;padding:10px 24px;border-radius:10px;">Publish Listing</button>
+        <button class="btn-cancel" onclick="toggleAddForm()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Today's orders</div><div class="stat-val" id="stat-orders">3</div></div>
+      <div class="stat-card"><div class="stat-label">Week revenue</div><div class="stat-val green" id="stat-rev">₹2,840</div></div>
+      <div class="stat-card"><div class="stat-label">Active listings</div><div class="stat-val" id="stat-listings">2</div></div>
+      <div class="stat-card"><div class="stat-label">Avg rating</div><div class="stat-val">4.8 ★</div></div>
+    </div>
+
+    <!-- Listings -->
+    <div class="listings-list" id="seller-listings"></div>
+  </div>
+
+</main>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="modal" style="display:none" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-dish-name">Chole Bhature</div>
+        <div style="font-size:13px;color:var(--text-2);margin-top:3px" id="modal-dish-sub">Ready by 1:00 PM</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-cook-info">
+        <div class="cook-avatar-lg" id="modal-avatar">PK</div>
+        <div>
+          <div style="font-weight:500;font-size:14px" id="modal-cook">Priya's Kitchen</div>
+          <div style="font-size:13px;color:var(--text-2)">Block C · 4.9 ★ · 128 orders</div>
+        </div>
+      </div>
+      <div class="modal-label">Quantity</div>
+      <div class="qty-control">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <div class="qty-num" id="modal-qty">1</div>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+        <div style="font-size:13px;color:var(--text-3)" id="modal-left"></div>
+      </div>
+      <div class="modal-total">
+        <div class="modal-total-label">Total</div>
+        <div class="modal-total-val" id="modal-total">₹120</div>
+      </div>
+      <div class="modal-label">Pay via</div>
+      <div class="pay-opts">
+        <div class="pay-opt selected" onclick="selectPay(this)">UPI</div>
+        <div class="pay-opt" onclick="selectPay(this)">Card</div>
+        <div class="pay-opt" onclick="selectPay(this)">Cash</div>
+      </div>
+      <button class="btn-confirm" onclick="placeOrder()">Confirm Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+let dishes = [
+  { id:1, name:'Chole Bhature', cook:'Priya K.', initials:'PK', price:120, qty:8, sold:4, emoji:'🍛', cat:'lunch', type:'veg', time:'1:00 PM', rating:4.9, block:'Block C' },
+  { id:2, name:'Idli Sambar', cook:'Meena R.', initials:'MR', price:60, qty:12, sold:6, emoji:'🍚', cat:'breakfast', type:'veg', time:'8:30 AM', rating:4.7, block:'Block A' },
+  { id:3, name:'Chicken Biryani', cook:'Fatima S.', initials:'FS', price:180, qty:5, sold:3, emoji:'🥘', cat:'lunch', type:'nonveg', time:'12:30 PM', rating:5.0, block:'Block D' },
+  { id:4, name:'Masala Chai & Samosas', cook:'Anita P.', initials:'AP', price:50, qty:20, sold:8, emoji:'🧆', cat:'snacks', type:'veg', time:'4:30 PM', rating:4.8, block:'Block B' },
+  { id:5, name:'Gulab Jamun (6 pcs)', cook:'Priya K.', initials:'PK', price:80, qty:10, sold:7, emoji:'🍮', cat:'sweets', type:'veg', time:'5:00 PM', rating:4.9, block:'Block C' },
+  { id:6, name:'Andhra Egg Curry', cook:'Lakshmi V.', initials:'LV', price:140, qty:6, sold:2, emoji:'🍳', cat:'lunch', type:'nonveg', time:'1:30 PM', rating:4.6, block:'Block E' },
+];
+
+let myOrders = [
+  { id:101, dish:'Chicken Biryani', cook:'Fatima S.', emoji:'🥘', price:360, qty:2, status:'ready', rated:0 },
+  { id:102, dish:'Idli Sambar', cook:'Meena R.', emoji:'🍚', price:60, qty:1, status:'done', rated:4 },
+];
+
+let sellerListings = [
+  { id:1, name:'Chole Bhature', emoji:'🍛', price:120, qty:8, sold:4, live:true },
+  { id:5, name:'Gulab Jamun (6 pcs)', emoji:'🍮', price:80, qty:10, sold:7, live:true },
+];
+
+let currentFilter = 'all';
+let modalDish = null;
+let modalQty = 1;
+let selectedEmoji = '🍛';
+
+function renderDishes() {
+  const grid = document.getElementById('dishes-grid');
+  let filtered = currentFilter === 'all' ? dishes : (currentFilter === 'veg' ? dishes.filter(d=>d.type==='veg') : dishes.filter(d=>d.cat===currentFilter));
+  if (!filtered.length) { grid.innerHTML = '<div class="empty"><div class="empty-icon">🍽️</div><p>No dishes in this category right now</p></div>'; return; }
+  grid.innerHTML = filtered.map(d => {
+    const left = d.qty - d.sold;
+    const stars = '★'.repeat(Math.floor(d.rating)) + (d.rating % 1 ? '½' : '');
+    return `<div class="dish-card" onclick="openModal(${d.id})">
+      <div class="dish-img">${d.emoji}</div>
+      <div class="dish-body">
+        <div class="dish-name">${d.name}</div>
+        <div class="dish-cook"><span class="cook-avatar">${d.initials}</span>${d.cook} · ${d.block}</div>
+        <div class="dish-meta">
+          <div class="dish-price">₹${d.price}</div>
+          <div class="dish-tags">
+            <span class="tag ${d.type==='veg'?'tag-veg':'tag-nonveg'}">${d.type==='veg'?'Veg':'Non-veg'}</span>
+            ${left<=3?`<span class="tag tag-avail">${left} left</span>`:''}
+          </div>
+        </div>
+      </div>
+      <div class="dish-footer">
+        <div class="dish-time">🕐 ${d.time}</div>
+        <div class="stars">${stars} ${d.rating}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterDishes(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderDishes();
+}
+
+function openModal(id) {
+  modalDish = dishes.find(d=>d.id===id);
+  modalQty = 1;
+  document.getElementById('modal-dish-name').textContent = modalDish.name;
+  document.getElementById('modal-dish-sub').textContent = `Ready by ${modalDish.time} · ${modalDish.block}`;
+  document.getElementById('modal-avatar').textContent = modalDish.initials;
+  document.getElementById('modal-cook').textContent = modalDish.cook;
+  document.getElementById('modal-qty').textContent = 1;
+  document.getElementById('modal-total').textContent = `₹${modalDish.price}`;
+  const left = modalDish.qty - modalDish.sold;
+  document.getElementById('modal-left').textContent = `${left} available`;
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal(e) {
+  if (!e || e.target===document.getElementById('modal')) document.getElementById('modal').style.display='none';
+}
+
+function changeQty(d) {
+  const left = modalDish.qty - modalDish.sold;
+  modalQty = Math.max(1, Math.min(left, modalQty + d));
+  document.getElementById('modal-qty').textContent = modalQty;
+  document.getElementById('modal-total').textContent = `₹${modalDish.price * modalQty}`;
+}
+
+function selectPay(el) {
+  document.querySelectorAll('.pay-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function placeOrder() {
+  document.getElementById('modal').style.display='none';
+  myOrders.unshift({ id:Date.now(), dish:modalDish.name, cook:modalDish.cook, emoji:modalDish.emoji, price:modalDish.price*modalQty, qty:modalQty, status:'prep', rated:0 });
+  showToast(`✓ Order placed! ${modalDish.name} will be ready by ${modalDish.time}`);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+function renderOrders() {
+  const el = document.getElementById('orders-list');
+  if (!myOrders.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">📦</div><p>No orders yet. Discover food from your neighbors!</p></div>'; return; }
+  el.innerHTML = myOrders.map(o => {
+    const statusLabel = o.status==='ready'?'Ready for pickup':o.status==='prep'?'Being prepared':'Delivered';
+    const statusClass = o.status==='ready'?'status-ready':o.status==='prep'?'status-prep':'status-done';
+    const stars = [1,2,3,4,5].map(i=>`<button class="star-btn ${o.rated>=i?'lit':''}" onclick="rateOrder(${o.id},${i})">★</button>`).join('');
+    return `<div class="order-card">
+      <div class="order-emoji">${o.emoji}</div>
+      <div class="order-info">
+        <div class="order-name">${o.dish} × ${o.qty}</div>
+        <div class="order-cook">From ${o.cook}</div>
+        <span class="order-status ${statusClass}">● ${statusLabel}</span>
+      </div>
+      <div class="rate-btn">
+        <div class="order-price">₹${o.price}</div>
+        ${o.status==='done'?`<div class="star-rate">${stars}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function rateOrder(id, stars) {
+  myOrders = myOrders.map(o=>o.id===id?{...o,rated:stars}:o);
+  renderOrders();
+  showToast(`★ Rated ${stars}/5 — thanks for your feedback!`);
+}
+
+function renderSellerListings() {
+  const el = document.getElementById('seller-listings');
+  if (!sellerListings.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">🍳</div><p>No listings yet. Add your first dish!</p></div>'; return; }
+  el.innerHTML = sellerListings.map(l => `<div class="listing-row">
+    <div class="listing-emoji">${l.emoji}</div>
+    <div class="listing-info">
+      <div class="listing-name">${l.name}</div>
+      <div class="listing-detail">₹${l.price} per serving · ${l.qty - l.sold} of ${l.qty} remaining</div>
+    </div>
+    <div class="listing-sold">${l.sold} sold</div>
+    <div class="listing-actions">
+      <span class="${l.live?'badge-live':'badge-soldout'}">${l.live?'Live':'Sold out'}</span>
+      <button class="btn-sm danger" onclick="removeListing(${l.id})">Remove</button>
+    </div>
+  </div>`).join('');
+  document.getElementById('stat-listings').textContent = sellerListings.filter(l=>l.live).length;
+}
+
+function removeListing(id) {
+  sellerListings = sellerListings.filter(l=>l.id!==id);
+  renderSellerListings();
+  showToast('Listing removed.');
+}
+
+function toggleAddForm() {
+  const f = document.getElementById('add-form');
+  f.style.display = f.style.display==='none'?'block':'none';
+}
+
+function selectEmoji(el, emoji) {
+  document.querySelectorAll('.emoji-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedEmoji = emoji;
+}
+
+function addListing() {
+  const name = document.getElementById('f-name').value.trim();
+  const price = parseInt(document.getElementById('f-price').value);
+  const qty = parseInt(document.getElementById('f-qty').value);
+  const time = document.getElementById('f-time').value;
+  if (!name || !price || !qty) { showToast('Please fill in all fields'); return; }
+  const newId = Date.now();
+  sellerListings.push({ id:newId, name, emoji:selectedEmoji, price, qty, sold:0, live:true });
+  dishes.push({ id:newId, name, cook:"Priya K.", initials:"PK", price, qty, sold:0, emoji:selectedEmoji, cat:document.getElementById('f-cat').value, type:document.getElementById('f-type').value, time, rating:5.0, block:'Block C' });
+  document.getElementById('add-form').style.display='none';
+  document.getElementById('f-name').value='';
+  document.getElementById('f-price').value='';
+  document.getElementById('f-qty').value='';
+  renderSellerListings();
+  renderDishes();
+  showToast(`✓ ${name} is now live!`);
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  if (id==='orders') renderOrders();
+  if (id==='seller') renderSellerListings();
+}
+
+renderDishes();
+</script>
+</body>
+</html>
