@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KYFR</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f2f1ed;
+  --white:#ffffff;
+  --text:#111110;
+  --muted:#6b6a64;
+  --hint:#a8a69e;
+  --border:rgba(0,0,0,0.08);
+  --border-med:rgba(0,0,0,0.13);
+  --blue:#2563eb;
+  --blue-bg:#eff6ff;
+  --green:#15803d;
+  --green-bg:#f0fdf4;
+  --red:#dc2626;
+  --red-bg:#fef2f2;
+  --amber:#b45309;
+  --amber-bg:#fffbeb;
+  --gold-dark:#92400e;
+  --r:14px;
+  --r-sm:10px;
+}
+body{
+  font-family:'Inter',sans-serif;
+  background:#dddbd4;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:20px 12px 40px;
+}
+
+/* PHONE FRAME */
+.phone{
+  width:100%;
+  max-width:375px;
+  background:var(--bg);
+  border-radius:44px;
+  overflow:hidden;
+  box-shadow:0 2px 0 rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12);
+  min-height:700px;
+  display:flex;
+  flex-direction:column;
+}
+
+/* STATUS */
+.status{
+  background:var(--white);
+  padding:14px 20px 10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.status-time{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.2px}
+.status-right{display:flex;gap:5px;align-items:center}
+.status-right svg{width:15px;height:15px;color:var(--text)}
+
+/* SCREENS */
+.screen{display:none;flex-direction:column;flex:1;animation:up .2s ease}
+.screen.active{display:flex}
+@keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* TOPBAR */
+.bar{
+  background:var(--white);
+  padding:12px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.bar-logo{font-size:20px;font-weight:700;color:var(--text);letter-spacing:-1px}
+.bar-sub{font-size:11px;color:var(--muted);font-weight:500;margin-top:1px}
+.bar-right{display:flex;gap:6px}
+.icon-pill{width:34px;height:34px;border-radius:50%;background:var(--bg);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--muted)}
+.back-row{display:flex;align-items:center;gap:10px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:var(--bg);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.bar-title{font-size:16px;font-weight:600;color:var(--text)}
+
+/* SCROLL BODY */
+.body{flex:1;overflow-y:auto;padding:20px 16px 8px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
+
+/* CARDS */
+.card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);overflow:hidden}
+.card-pad{padding:16px}
+
+/* INPUT SCREEN */
+.field-group{display:flex;flex-direction:column;gap:6px}
+.field-label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.02em}
+.field-input{
+  width:100%;border:1.5px solid var(--border-med);border-radius:var(--r-sm);
+  padding:12px 14px;font-size:15px;font-family:'Inter',sans-serif;
+  color:var(--text);background:var(--bg);outline:none;
+  transition:border-color .15s,background .15s
+}
+.field-input:focus{border-color:var(--blue);background:var(--white)}
+.field-input::placeholder{color:var(--hint)}
+
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:2px}
+.chip{
+  padding:7px 14px;border-radius:99px;
+  border:1.5px solid var(--border-med);
+  background:transparent;font-size:13px;font-weight:500;
+  color:var(--muted);cursor:pointer;transition:all .12s;
+  font-family:'Inter',sans-serif
+}
+.chip.on{background:var(--blue-bg);border-color:var(--blue);color:var(--blue)}
+
+.amount-wrap{
+  display:flex;align-items:center;gap:6px;
+  border:1.5px solid var(--border-med);border-radius:var(--r-sm);
+  padding:10px 14px;background:var(--bg);transition:all .15s
+}
+.amount-wrap:focus-within{border-color:var(--blue);background:var(--white)}
+.amount-sym{font-size:20px;font-weight:700;color:var(--muted)}
+.amount-in{
+  flex:1;border:none;background:transparent;
+  font-size:28px;font-weight:700;font-family:'Inter',sans-serif;
+  color:var(--text);outline:none;min-width:0
+}
+.amount-in::placeholder{color:var(--hint)}
+
+.tip{font-size:12px;color:var(--hint);text-align:center;padding:4px 0}
+
+.btn{
+  width:100%;padding:15px;border-radius:var(--r-sm);border:none;
+  font-size:15px;font-family:'Inter',sans-serif;font-weight:600;
+  cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px
+}
+.btn-dark{background:var(--text);color:#fff}
+.btn-dark:active{opacity:.85}
+.btn-outline{background:transparent;color:var(--muted);border:1.5px solid var(--border-med)}
+.btn-outline:active{background:var(--bg)}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:active{opacity:.85}
+
+/* RESULT SCREEN */
+.winner-card{background:var(--text);border-radius:var(--r);overflow:hidden;position:relative}
+.winner-bg-circle{position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.04);top:-60px;right:-40px;pointer-events:none}
+.winner-bg-circle2{position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.03);bottom:-30px;left:-20px;pointer-events:none}
+.winner-inner{padding:20px;position:relative;z-index:1}
+.winner-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.1);border-radius:99px;padding:4px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);margin-bottom:14px}
+.winner-name{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.5px;margin-bottom:4px}
+.winner-sub{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:20px}
+.winner-numbers{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid rgba(255,255,255,0.1);padding-top:16px}
+.winner-num{text-align:center}
+.winner-num+.winner-num{border-left:1px solid rgba(255,255,255,0.1)}
+.winner-num-val{font-size:18px;font-weight:700;color:#fff;display:block}
+.winner-num-val.accent{color:#86efac}
+.winner-num-label{font-size:10px;color:rgba(255,255,255,0.4);font-weight:500;margin-top:2px;display:block}
+.winner-actions{padding:14px 20px;display:flex;gap:8px;border-top:1px solid rgba(255,255,255,0.08)}
+.wa-btn{flex:1;padding:10px;border-radius:var(--r-sm);border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);font-size:13px;font-weight:500;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:background .1s}
+.wa-btn:active{background:rgba(255,255,255,0.15)}
+.wa-btn.primary{background:#fff;color:var(--text);border-color:transparent}
+.wa-btn.primary:active{opacity:.9}
+
+.return-pill{
+  background:var(--green-bg);border-radius:var(--r);
+  padding:14px 16px;display:flex;align-items:center;justify-content:space-between
+}
+.return-left-label{font-size:12px;font-weight:600;color:var(--green);margin-bottom:2px}
+.return-left-sub{font-size:11px;color:var(--green);opacity:.7}
+.return-big{font-size:32px;font-weight:700;color:var(--green);letter-spacing:-1px}
+
+.breakdown-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bk{background:var(--bg);border-radius:var(--r-sm);padding:12px 14px}
+.bk-label{font-size:11px;font-weight:600;color:var(--hint);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.bk-val{font-size:20px;font-weight:700;color:var(--text)}
+.bk-val.g{color:var(--green)}
+.bk-val.b{color:var(--blue)}
+
+.why-row{display:flex;gap:12px;padding:12px 0;align-items:flex-start}
+.why-row+.why-row{border-top:1px solid var(--border)}
+.why-icon{width:36px;height:36px;border-radius:10px;background:var(--blue-bg);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.why-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--blue-bg);color:var(--blue);margin-bottom:4px;letter-spacing:.02em;text-transform:uppercase}
+.why-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.why-body{font-size:12px;color:var(--muted);line-height:1.6}
+
+.section-head{display:flex;justify-content:space-between;align-items:center;padding:0 2px}
+.section-head-title{font-size:14px;font-weight:600;color:var(--text)}
+.section-head-link{font-size:12px;color:var(--blue);font-weight:500;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* ALTS SCREEN */
+.alt-row{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .1s}
+.alt-row:active{background:var(--bg)}
+.alt-row+.alt-row{border-top:1px solid var(--border)}
+.rank-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.rank-gold{background:#fef9c3}
+.rank-silver{background:#f4f4f5}
+.rank-bronze{background:#fff7ed}
+.alt-info{flex:1;min-width:0}
+.alt-name{font-size:14px;font-weight:600;color:var(--text)}
+.alt-desc{font-size:11px;color:var(--muted);margin-top:2px}
+.alt-right{text-align:right;flex-shrink:0}
+.alt-total{font-size:16px;font-weight:700;color:var(--text)}
+.alt-detail{font-size:11px;color:var(--muted);margin-top:2px}
+.alt-winner{background:var(--blue-bg);border-left:3px solid var(--blue)}
+
+.compare-bar{display:flex;gap:8px;padding:14px 16px;border-top:1px solid var(--border)}
+.compare-bar-btn{flex:1;padding:10px;border-radius:var(--r-sm);border:1.5px solid var(--border-med);background:transparent;font-size:13px;font-weight:500;color:var(--text);cursor:pointer;font-family:'Inter',sans-serif}
+.compare-bar-btn:active{background:var(--bg)}
+
+.tip-box{background:var(--amber-bg);border-radius:var(--r);padding:14px 16px;border:1px solid rgba(180,83,9,0.15)}
+.tip-box-title{font-size:12px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.tip-box-main{font-size:13px;font-weight:600;color:var(--gold-dark);margin-bottom:6px}
+.tip-box-body{font-size:12px;color:var(--amber);line-height:1.6;opacity:.85}
+
+/* MISSED SCREEN */
+.missed-hero{background:var(--white);border-radius:var(--r);overflow:hidden}
+.missed-top{padding:16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start}
+.missed-top-left{}
+.missed-top-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px}
+.missed-top-sub{font-size:12px;color:var(--muted)}
+.default-pill{background:var(--blue-bg);color:var(--blue);border:none;border-radius:99px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+.missed-cost{padding:16px;border-bottom:1px solid var(--border)}
+.missed-cost-label{font-size:11px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.missed-cost-amount{font-size:40px;font-weight:800;color:var(--red);letter-spacing:-2px;line-height:1}
+.missed-cost-desc{font-size:12px;color:var(--muted);margin-top:6px}
+.missed-gain{padding:16px;background:var(--green-bg)}
+.missed-gain-label{font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.missed-gain-body{font-size:13px;color:#166534;line-height:1.6}
+
+/* BOTTOM NAV */
+.nav{background:var(--white);border-top:1px solid var(--border);display:flex;padding:8px 0 16px}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 0;border:none;background:transparent}
+.nav-icon{font-size:20px;line-height:1}
+.nav-label{font-size:10px;font-weight:500;color:var(--hint)}
+.nav-item.on .nav-label{color:var(--blue)}
+
+/* PM PANEL */
+.pm{display:none;width:100%;max-width:375px;background:#18181b;border-radius:16px;margin-top:12px;padding:16px}
+.pm.on{display:block}
+.pm-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.pm-title{font-size:11px;font-weight:700;color:#fff;letter-spacing:.08em;text-transform:uppercase}
+.pm-hint-text{font-size:10px;color:#52525b;margin-bottom:12px}
+.pm-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.pm-s{background:#27272a;border-radius:8px;padding:10px;text-align:center}
+.pm-s-n{font-size:22px;font-weight:700;color:#fff;font-family:'Inter',monospace}
+.pm-s-l{font-size:9px;color:#71717a;margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+.pm-btns{display:flex;gap:8px;margin-bottom:10px}
+.pm-b{flex:1;padding:7px;border-radius:7px;border:1px solid #3f3f46;background:transparent;font-size:11px;color:#a1a1aa;cursor:pointer;font-family:'Inter',sans-serif}
+.pm-b:active{background:#27272a}
+.pm-rows{}
+.pm-row{font-size:10px;padding:5px 0;border-bottom:1px solid #27272a;display:flex;gap:6px}
+.pm-row:last-child{border-bottom:none}
+.pm-ts{color:#3f3f46;flex-shrink:0;width:40px;font-family:monospace}
+.pm-uid{color:#60a5fa;flex-shrink:0;width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace}
+.pm-ev{color:#f4f4f5;font-weight:600;flex-shrink:0;width:90px}
+.pm-det{color:#71717a;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pm-empty{font-size:10px;color:#3f3f46;padding:4px 0;font-family:monospace}
+
+.uid-bar{width:100%;max-width:375px;margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.uid-lbl{font-size:11px;color:#52525b;white-space:nowrap;font-family:'Inter',sans-serif}
+.uid-in{flex:1;padding:7px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.05);font-size:12px;font-family:monospace;color:#f4f4f5;outline:none}
+.uid-in::placeholder{color:#52525b}
+.uid-in:focus{border-color:rgba(96,165,250,0.4)}
+</style>
+</head>
+<body>
+
+<div class="uid-bar">
+  <label class="uid-lbl" for="uid">Tester</label>
+  <input class="uid-in" id="uid" type="text" placeholder="enter your name" maxlength="20">
+</div>
+
+<div class="phone">
+  <div class="status">
+    <span class="status-time">12:30</span>
+    <div class="status-right">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v3"/><rect x="4" y="9" width="8" height="6" rx="1" fill="currentColor" stroke="none"/></svg>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 1: INPUT ── -->
+  <div class="screen active" id="s1">
+    <div class="bar">
+      <div>
+        <div class="bar-logo">KYFR</div>
+      </div>
+      <div class="bar-right">
+        <button class="icon-pill" onclick="tap('NAV','History')">🧾</button>
+        <button class="icon-pill" onclick="tap('NAV','Settings')">⚙️</button>
+      </div>
+    </div>
+
+    <div class="body">
+      <div class="card card-pad" style="display:flex;flex-direction:column;gap:20px">
+        <div class="field-group">
+          <label class="field-label">Which card are you using?</label>
+          <input class="field-input" id="card-input" type="text" placeholder="e.g. HDFC Regalia, Axis Flipkart">
+          <div class="chips" style="margin-top:6px">
+            <button class="chip card-chip" onclick="pickCard(this,'HDFC Regalia')">HDFC Regalia</button>
+            <button class="chip card-chip" onclick="pickCard(this,'Axis Flipkart')">Axis Flipkart</button>
+            <button class="chip card-chip" onclick="pickCard(this,'SBI SimplyCLICK')">SBI SimplyCLICK</button>
+            <button class="chip card-chip" onclick="pickCard(this,'Amazon Pay ICICI')">Amazon Pay ICICI</button>
+            <button class="chip card-chip" onclick="pickCard(this,'HSBC TravelOne')">HSBC TravelOne</button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Where are you spending?</label>
+          <input class="field-input" id="merchant" type="text" placeholder="e.g. Swiggy, Amazon, MakeMyTrip">
+          <div class="chips" style="margin-top:4px">
+            <button class="chip" onclick="pick(this,'Swiggy')">🍔 Swiggy</button>
+            <button class="chip" onclick="pick(this,'Amazon')">📦 Amazon</button>
+            <button class="chip" onclick="pick(this,'MakeMyTrip')">✈️ MakeMyTrip</button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">How much?</label>
+          <div class="amount-wrap">
+            <span class="amount-sym">₹</span>
+            <input class="amount-in" id="amount" type="number" placeholder="0" value="1200">
+          </div>
+        </div>
+      </div>
+
+      <div class="tip">Tap a merchant above for faster recommendations</div>
+
+      <button class="btn btn-dark" onclick="tap('CTA_recommend','Recommend Best Card');go('s2')">
+        Find my best card →
+      </button>
+    </div>
+
+    <div class="nav">
+      <button class="nav-item on" onclick="tap('NAV','Home')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></button>
+      <button class="nav-item" onclick="tap('NAV','Scan')"><div class="nav-icon">🔍</div><div class="nav-label">Scan</div></button>
+      <button class="nav-item" onclick="tap('NAV','Recs');go('s2')"><div class="nav-icon">🏆</div><div class="nav-label">Picks</div></button>
+      <button class="nav-item" onclick="tap('NAV','History')"><div class="nav-icon">🧾</div><div class="nav-label">History</div></button>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 2: BEST CARD ── -->
+  <div class="screen" id="s2">
+    <div class="bar">
+      <div class="back-row">
+        <button class="back-btn" onclick="tap('NAV','Back');go('s1')">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="bar-title">Best card for ₹1,200</span>
+      </div>
+    </div>
+
+    <div class="body">
+      <!-- Winner card -->
+      <div class="winner-card">
+        <div class="winner-bg-circle"></div>
+        <div class="winner-bg-circle2"></div>
+        <div class="winner-inner">
+          <div class="winner-tag">🏆 Best match for dining</div>
+          <div class="winner-name">HSBC TravelOne</div>
+          <div class="winner-sub">Highest net value on this transaction</div>
+          <div class="winner-numbers">
+            <div class="winner-num">
+              <span class="winner-num-val">₹30</span>
+              <span class="winner-num-label">Rewards</span>
+            </div>
+            <div class="winner-num">
+              <span class="winner-num-val accent">₹120</span>
+              <span class="winner-num-label">Offers</span>
+            </div>
+            <div class="winner-num">
+              <span class="winner-num-val accent">₹150</span>
+              <span class="winner-num-label">Total back</span>
+            </div>
+          </div>
+        </div>
+        <div class="winner-actions">
+          <button class="wa-btn" onclick="tap('CTA_save','Save card')">⭐ Save</button>
+          <button class="wa-btn" onclick="tap('CTA_notify','Set alert')">🔔 Alert</button>
+          <button class="wa-btn primary" onclick="tap('CTA_offers','View offers')">View offers</button>
+        </div>
+      </div>
+
+      <!-- Return pill -->
+      <div class="return-pill">
+        <div>
+          <div class="return-left-label">Effective return</div>
+          <div class="return-left-sub">+₹30 above average cards</div>
+        </div>
+        <div class="return-big">12.5%</div>
+      </div>
+
+      <!-- Breakdown -->
+      <div>
+        <div class="section-head" style="margin-bottom:10px">
+          <div class="section-head-title">Breakdown</div>
+        </div>
+        <div class="breakdown-grid">
+          <div class="bk"><div class="bk-label">You spend</div><div class="bk-val">₹1,200</div></div>
+          <div class="bk"><div class="bk-label">Rewards</div><div class="bk-val g">₹30</div></div>
+          <div class="bk"><div class="bk-label">Offers</div><div class="bk-val b">₹120</div></div>
+          <div class="bk"><div class="bk-label">Total value</div><div class="bk-val g">₹150</div></div>
+        </div>
+      </div>
+
+      <!-- Why -->
+      <div class="card card-pad">
+        <div class="section-head" style="margin-bottom:14px">
+          <div class="section-head-title">Why this card?</div>
+          <button class="section-head-link" onclick="tap('CTA_howcalc','How we calculate')">How we calculate</button>
+        </div>
+        <div class="why-row">
+          <div class="why-icon">🍽️</div>
+          <div>
+            <div class="why-tag">Dining</div>
+            <div class="why-title">Top rewards for this category</div>
+            <div class="why-body">HSBC gives highest rewards + offers for dining and food-delivery merchants.</div>
+          </div>
+        </div>
+        <div class="why-row">
+          <div class="why-icon">🤝</div>
+          <div>
+            <div class="why-title">Merchant partnership</div>
+            <div class="why-body">Strong deal stacking at this merchant — partner offers stack on top of base rewards.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline" style="flex:1" onclick="tap('CTA_prefs','Use preferences')">🧠 Use preferences</button>
+        <button class="btn btn-dark" style="flex:1" onclick="tap('CTA_alts','See alternatives');go('s3')">Compare →</button>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="nav-item" onclick="tap('NAV','Home');go('s1')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></button>
+      <button class="nav-item" onclick="tap('NAV','Scan')"><div class="nav-icon">🔍</div><div class="nav-label">Scan</div></button>
+      <button class="nav-item on"><div class="nav-icon">🏆</div><div class="nav-label">Picks</div></button>
+      <button class="nav-item" onclick="tap('NAV','History')"><div class="nav-icon">🧾</div><div class="nav-label">History</div></button>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 3: ALTERNATIVES ── -->
+  <div class="screen" id="s3">
+    <div class="bar">
+      <div class="back-row">
+        <button class="back-btn" onclick="tap('NAV','Back to result');go('s2')">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="bar-title">All options</span>
+      </div>
+    </div>
+
+    <div class="body">
+      <div class="card">
+        <div class="alt-row alt-winner" onclick="tap('CTA_alt','HSBC TravelOne selected')">
+          <div class="rank-circle rank-gold">🥇</div>
+          <div class="alt-info">
+            <div class="alt-name">HSBC TravelOne</div>
+            <div class="alt-desc">Highest net value · Best pick</div>
+          </div>
+          <div class="alt-right">
+            <div class="alt-total">₹150</div>
+            <div class="alt-detail">₹30 + ₹120</div>
+          </div>
+        </div>
+        <div class="alt-row" onclick="tap('CTA_alt','Axis Select tapped')">
+          <div class="rank-circle rank-silver">🥈</div>
+          <div class="alt-info">
+            <div class="alt-name">Axis Select</div>
+            <div class="alt-desc">Strong offer stacking</div>
+          </div>
+          <div class="alt-right">
+            <div class="alt-total">₹120</div>
+            <div class="alt-detail">₹20 + ₹100</div>
+          </div>
+        </div>
+        <div class="alt-row" onclick="tap('CTA_alt','Regalia Gold tapped')">
+          <div class="rank-circle rank-bronze">🥉</div>
+          <div class="alt-info">
+            <div class="alt-name">Regalia Gold</div>
+            <div class="alt-desc">Better rewards in some cases</div>
+          </div>
+          <div class="alt-right">
+            <div class="alt-total">₹90</div>
+            <div class="alt-detail">₹40 + ₹50</div>
+          </div>
+        </div>
+        <div class="compare-bar">
+          <button class="compare-bar-btn" onclick="tap('CTA_compare','Compare details')">Compare details</button>
+          <button class="compare-bar-btn" style="background:var(--bg)" onclick="tap('CTA_missed','See value missed');go('s4')">⚠️ Value missed</button>
+        </div>
+      </div>
+
+      <div class="tip-box">
+        <div class="tip-box-title">💡 Pro tip</div>
+        <div class="tip-box-main">Rewards vs offers — which matters more?</div>
+        <div class="tip-box-body">If you want cash back now, pick the card with the highest offers. If you're building points for travel, prioritise rewards instead.</div>
+      </div>
+
+      <button class="btn btn-dark" onclick="tap('CTA_missed','See value missed');go('s4')">
+        ⚠️ What if I use the wrong card?
+      </button>
+    </div>
+
+    <div class="nav">
+      <button class="nav-item" onclick="tap('NAV','Home');go('s1')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></button>
+      <button class="nav-item" onclick="tap('NAV','Scan')"><div class="nav-icon">🔍</div><div class="nav-label">Scan</div></button>
+      <button class="nav-item on"><div class="nav-icon">🏆</div><div class="nav-label">Picks</div></button>
+      <button class="nav-item" onclick="tap('NAV','History')"><div class="nav-icon">🧾</div><div class="nav-label">History</div></button>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 4: VALUE MISSED ── -->
+  <div class="screen" id="s4">
+    <div class="bar">
+      <div class="back-row">
+        <button class="back-btn" onclick="tap('NAV','Back to alts');go('s3')">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="bar-title">Value you'd miss</span>
+      </div>
+    </div>
+
+    <div class="body">
+      <div class="missed-hero">
+        <div class="missed-top">
+          <div class="missed-top-left">
+            <div class="missed-top-title">Wrong card costs you</div>
+            <div class="missed-top-sub">On this ₹1,200 transaction</div>
+          </div>
+          <button class="default-pill" onclick="tap('CTA_make_default','Make default — top')">Set default</button>
+        </div>
+        <div class="missed-cost">
+          <div class="missed-cost-label">💸 You lose</div>
+          <div class="missed-cost-amount">₹80</div>
+          <div class="missed-cost-desc">Difference between best card (₹150) and a typical card (₹70)</div>
+        </div>
+        <div class="missed-gain">
+          <div class="missed-gain-label">✅ With HSBC TravelOne</div>
+          <div class="missed-gain-body">You unlock ₹30 in rewards + ₹120 in offers — ₹150 total value instead of ₹70. Over 12 months at this spend level, that's <strong>₹960 saved</strong>.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="btn btn-blue" onclick="tap('CTA_make_default','Make it my default — confirmed')">
+          Make HSBC TravelOne my default
+        </button>
+        <button class="btn btn-outline" onclick="tap('CTA_not_now','Not now')">
+          Not now
+        </button>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="nav-item" onclick="tap('NAV','Home');go('s1')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></button>
+      <button class="nav-item" onclick="tap('NAV','Scan')"><div class="nav-icon">🔍</div><div class="nav-label">Scan</div></button>
+      <button class="nav-item on"><div class="nav-icon">🏆</div><div class="nav-label">Picks</div></button>
+      <button class="nav-item" onclick="tap('NAV','History')"><div class="nav-icon">🧾</div><div class="nav-label">History</div></button>
+    </div>
+  </div>
+
+</div>
+
+<!-- PM PANEL -->
+<div class="pm" id="pm">
+  <div class="pm-head">
+    <span class="pm-title">PM log</span>
+    <span style="font-size:10px;color:#3f3f46">Shift+P</span>
+  </div>
+  <div class="pm-hint-text">Hidden from testers · screen + event + tester ID tracked</div>
+  <div class="pm-stats">
+    <div class="pm-s"><div class="pm-s-n" id="si">1</div><div class="pm-s-l">Impressions</div></div>
+    <div class="pm-s"><div class="pm-s-n" id="se">0</div><div class="pm-s-l">Engagements</div></div>
+    <div class="pm-s"><div class="pm-s-n" id="sc">0</div><div class="pm-s-l">CTAs</div></div>
+  </div>
+  <div class="pm-btns">
+    <button class="pm-b" onclick="exportCSV()">Export CSV</button>
+    <button class="pm-b" onclick="resetLog()">Reset</button>
+  </div>
+  <div class="pm-rows" id="pm-log"><div class="pm-empty">No taps yet</div></div>
+</div>
+
+<script>
+const evts=[];let eng=0,ctas=0;
+function uid(){return document.getElementById('uid').value.trim()||'anon'}
+function scr(){const s=document.querySelector('.screen.active');return s?s.id:'?'}
+function tsd(){const d=new Date();return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')+':'+d.getSeconds().toString().padStart(2,'0')}
+function tap(ev,det){
+  evts.unshift({ts:new Date().toISOString(),tsd:tsd(),uid:uid(),scr:scr(),ev,det});
+  if(evts.length>200)evts.pop();
+  if(!ev.startsWith('NAV'))eng++;
+  if(ev.startsWith('CTA'))ctas++;
+  render();
+}
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function pick(el,val){
+  document.querySelectorAll('.chip:not(.card-chip)').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('merchant').value=val;
+  tap('INPUT_chip','Merchant: '+val);
+}
+function pickCard(el,val){
+  document.querySelectorAll('.card-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('card-input').value=val;
+  tap('INPUT_card','Card selected: '+val);
+}
+function render(){
+  document.getElementById('si').textContent=1;
+  document.getElementById('se').textContent=eng;
+  document.getElementById('sc').textContent=ctas;
+  const el=document.getElementById('pm-log');
+  if(!evts.length){el.innerHTML='<div class="pm-empty">No taps yet</div>';return}
+  el.innerHTML=evts.slice(0,25).map(r=>`<div class="pm-row"><span class="pm-ts">${r.tsd}</span><span class="pm-uid">${r.uid}</span><span class="pm-ev">${r.ev}</span><span class="pm-det">[${r.scr}] ${r.det}</span></div>`).join('');
+}
+function exportCSV(){
+  if(!evts.length){alert('No events yet.');return}
+  const h='timestamp,tester_id,screen,event,detail\n';
+  const rows=[...evts].reverse().map(r=>`"${r.ts}","${r.uid}","${r.scr}","${r.ev}","${r.det}"`).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([h+rows],{type:'text/csv'}));
+  a.download='kyfr_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+function resetLog(){evts.length=0;eng=0;ctas=0;render()}
+document.addEventListener('keydown',e=>{if(e.shiftKey&&e.key==='P')document.getElementById('pm').classList.toggle('on')});
+tap('IMPRESSION','App loaded');
+</script>
+</body>
+</html>
