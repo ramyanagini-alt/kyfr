@@ -26,31 +26,34 @@
   --ff-mono:    'DM Mono', monospace;
 }
 
-html, body { height: 100%; overflow: hidden; }
+html { height: 100%; } body { height: 100%; overflow: hidden; position: fixed; width: 100%; }
 
 body {
   font-family: var(--ff-body);
   background: var(--ink);
   color: var(--paper);
-  overscroll-behavior: none;
+  overscroll-behavior: none; -webkit-text-size-adjust: 100%;
 }
 
 /* ── STACK ── */
 #app {
-  height: 100vh;
+  height: 100%;
+  height: 100dvh;
   display: flex; flex-direction: column;
   max-width: 430px; margin: 0 auto;
   position: relative; overflow: hidden;
+  background: var(--ink);
 }
 
 /* ── SCREENS ── */
 .screen {
-  position: absolute; inset: 0;
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   display: flex; flex-direction: column;
   opacity: 0; pointer-events: none;
   transform: translateY(24px);
   transition: opacity .35s ease, transform .35s ease;
   overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 .screen.active {
   opacity: 1; pointer-events: all; transform: translateY(0);
@@ -159,15 +162,16 @@ h1.display .u { text-decoration: underline; text-decoration-color: var(--orange)
 .field::placeholder { color: rgba(255,255,255,.2); }
 
 /* ── OTP ── */
-.otp-wrap { display: flex; gap: .5rem; margin: 1rem 0 .5rem; }
+.otp-wrap { display: flex; gap: .5rem; margin: 1.2rem 0 .6rem; width: 100%; }
 .otp-box {
-  flex: 1; height: 54px;
+  flex: 1; height: 52px; min-width: 0;
   background: rgba(255,255,255,.07);
   border: 1.5px solid rgba(255,255,255,.12);
   border-radius: 12px;
-  font-family: var(--ff-mono); font-size: 1.5rem; font-weight: 500;
+  font-family: var(--ff-mono); font-size: 1.4rem; font-weight: 500;
   text-align: center; color: var(--paper); outline: none;
   transition: border-color .2s;
+  -webkit-appearance: none;
 }
 .otp-box:focus { border-color: rgba(233,30,140,.5); }
 
@@ -467,7 +471,7 @@ h1.display .u { text-decoration: underline; text-decoration-color: var(--orange)
 <!-- ══════════════════════════════════════ -->
 <!-- SPLASH B — Description-led (light)    -->
 <!-- ══════════════════════════════════════ -->
-<div id="splash-b" class="screen" style="position:absolute;inset:0;overflow-y:auto;">
+<div id="splash-b" class="screen" style="background:var(--paper);">
   <div class="bg-rule"></div>
   <div class="nav s1" style="padding-top:1.4rem">
     <div class="logo-mark">KY<b>F</b>R</div>
@@ -520,7 +524,7 @@ h1.display .u { text-decoration: underline; text-decoration-color: var(--orange)
 <!-- ══════════════════════════════════════ -->
 <!-- SPLASH C — Problem-led                -->
 <!-- ══════════════════════════════════════ -->
-<div id="splash-c" class="screen" style="position:absolute;inset:0;overflow-y:auto;">
+<div id="splash-c" class="screen" style="background:var(--ink);">
   <div class="nav s1">
     <div class="logo-mark">KY<b>F</b>R</div>
     <div style="font-family:var(--ff-mono);font-size:.65rem;color:rgba(255,255,255,.2)">Beta · C</div>
@@ -565,7 +569,7 @@ h1.display .u { text-decoration: underline; text-decoration-color: var(--orange)
 <!-- ══════════════════════════════════════ -->
 <!-- SHARED: OTP                           -->
 <!-- ══════════════════════════════════════ -->
-<div id="screen-otp" class="screen">
+<div id="screen-otp" class="screen" style="background:var(--ink)">
   <div class="nav">
     <div class="logo-mark">KY<b>F</b>R</div>
   </div>
@@ -589,7 +593,7 @@ h1.display .u { text-decoration: underline; text-decoration-color: var(--orange)
 </div>
 
 <!-- OTP VERIFY -->
-<div id="screen-otp-verify" class="screen">
+<div id="screen-otp-verify" class="screen" style="background:var(--ink)">
   <div class="nav">
     <button class="back" onclick="goBack()">← Back</button>
   </div>
@@ -616,7 +620,7 @@ h1.display .u { text-decoration: underline; text-decoration-color: var(--orange)
 <!-- ══════════════════════════════════════ -->
 <!-- SHARED: INTENT (B+C arrive here)      -->
 <!-- ══════════════════════════════════════ -->
-<div id="screen-intent" class="screen">
+<div id="screen-intent" class="screen" style="background:var(--ink)">
   <div class="nav">
     <div class="logo-mark">KY<b>F</b>R</div>
   </div>
@@ -660,7 +664,7 @@ h1.display .u { text-decoration: underline; text-decoration-color: var(--orange)
 <!-- ══════════════════════════════════════ -->
 <!-- SHARED: DATA CONNECT                  -->
 <!-- ══════════════════════════════════════ -->
-<div id="screen-connect" class="screen">
+<div id="screen-connect" class="screen" style="background:var(--ink)">
   <div class="nav"><button class="back" onclick="goBack()">← Back</button></div>
   <div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div>
   <div class="pad">
@@ -704,7 +708,7 @@ h1.display .u { text-decoration: underline; text-decoration-color: var(--orange)
 </div>
 
 <!-- AA Simulated webview -->
-<div id="screen-aa-webview" class="screen">
+<div id="screen-aa-webview" class="screen" style="background:var(--ink)">
   <div class="nav"><button class="back" onclick="goBack()">← Back</button></div>
   <div class="pad" style="align-items:center;justify-content:center;text-align:center;gap:1rem">
     <div style="font-size:3rem">🏦</div>
@@ -724,7 +728,7 @@ h1.display .u { text-decoration: underline; text-decoration-color: var(--orange)
 <!-- ══════════════════════════════════════ -->
 <!-- INTENT RESULTS — BUY                  -->
 <!-- ══════════════════════════════════════ -->
-<div id="screen-buy" class="screen">
+<div id="screen-buy" class="screen" style="background:var(--ink)">
   <div class="nav"><div class="logo-mark">KY<b>F</b>R</div></div>
   <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
   <div class="pad">
@@ -758,7 +762,7 @@ h1.display .u { text-decoration: underline; text-decoration-color: var(--orange)
 <!-- ══════════════════════════════════════ -->
 <!-- INTENT RESULTS — SPEND                -->
 <!-- ══════════════════════════════════════ -->
-<div id="screen-spend" class="screen">
+<div id="screen-spend" class="screen" style="background:var(--ink)">
   <div class="nav"><div class="logo-mark">KY<b>F</b>R</div></div>
   <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
   <div class="pad">
@@ -802,7 +806,7 @@ h1.display .u { text-decoration: underline; text-decoration-color: var(--orange)
 <!-- ══════════════════════════════════════ -->
 <!-- INTENT RESULTS — HEALTH               -->
 <!-- ══════════════════════════════════════ -->
-<div id="screen-health" class="screen">
+<div id="screen-health" class="screen" style="background:var(--ink)">
   <div class="nav"><div class="logo-mark">KY<b>F</b>R</div></div>
   <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
   <div class="pad">
@@ -853,7 +857,7 @@ h1.display .u { text-decoration: underline; text-decoration-color: var(--orange)
 <!-- ══════════════════════════════════════ -->
 <!-- HOME                                  -->
 <!-- ══════════════════════════════════════ -->
-<div id="screen-home" class="screen">
+<div id="screen-home" class="screen" style="background:var(--ink)">
   <div class="nav">
     <div class="logo-mark">KY<b>F</b>R</div>
     <div style="font-family:var(--ff-mono);font-size:.65rem;color:var(--stone)" id="home-variant-tag"></div>
@@ -950,15 +954,26 @@ function pickVariant(v) {
 // ── NAVIGATION ──
 function show(id) {
   const cur = document.querySelector('.screen.active');
-  if (cur) {
-    cur.classList.add('exit');
-    setTimeout(() => { cur.classList.remove('active','exit'); }, 300);
+  const next = document.getElementById(id);
+  if (!next) return;
+  
+  if (cur && cur.id !== id) {
     history.push(cur.id);
+    cur.style.opacity = '0';
+    cur.style.transform = 'translateY(-16px)';
+    cur.style.transition = 'opacity .22s ease, transform .22s ease';
+    setTimeout(() => {
+      cur.classList.remove('active');
+      cur.style.cssText = '';
+    }, 220);
   }
+  
   setTimeout(() => {
-    const next = document.getElementById(id);
-    if (next) { next.classList.add('active'); window.scrollTo(0,0); }
-  }, cur ? 200 : 0);
+    next.classList.add('active');
+    next.scrollTop = 0;
+    // Force repaint
+    void next.offsetHeight;
+  }, cur && cur.id !== id ? 180 : 0);
 }
 
 function go(id) { show(id); track('screen', { to: id }); }
@@ -967,11 +982,16 @@ function goBack() {
   if (!history.length) return;
   const prev = history.pop();
   const cur = document.querySelector('.screen.active');
-  if (cur) { cur.classList.add('exit'); setTimeout(() => cur.classList.remove('active','exit'), 300); }
-  setTimeout(() => {
-    const p = document.getElementById(prev);
-    if (p) { p.classList.add('active'); window.scrollTo(0,0); }
-  }, 200);
+  const p = document.getElementById(prev);
+  if (!p) return;
+  
+  if (cur) {
+    cur.style.opacity = '0';
+    cur.style.transform = 'translateY(16px)';
+    cur.style.transition = 'opacity .22s ease, transform .22s ease';
+    setTimeout(() => { cur.classList.remove('active'); cur.style.cssText = ''; }, 220);
+  }
+  setTimeout(() => { p.classList.add('active'); p.scrollTop = 0; }, cur ? 180 : 0);
 }
 
 function setP(pct) {
@@ -979,22 +999,21 @@ function setP(pct) {
 }
 
 // ── INTENT A (on splash) ──
-let intentA = null;
+// ── INTENT A (on splash) ──
 function pickIntent(el, i) {
   document.querySelectorAll('#splash-a .tile').forEach(t => t.classList.remove('on'));
   el.classList.add('on');
-  intentA = i; intent = i;
+  intent = i; // single source of truth
   const cta = document.getElementById('cta-a');
   cta.classList.remove('btn-disabled');
   track('intent_picked', { intent: i, on_splash: true });
 }
 
 // ── INTENT SCREEN (B+C) ──
-let intentShared = null;
 function pickIntent2(el, i) {
   document.querySelectorAll('#screen-intent .tile').forEach(t => t.classList.remove('on'));
   el.classList.add('on');
-  intentShared = i; intent = i;
+  intent = i; // single source of truth
   const cta = document.getElementById('cta-intent');
   cta.classList.remove('btn-disabled');
   track('intent_picked', { intent: i, on_splash: false });
@@ -1004,18 +1023,21 @@ function pickIntent2(el, i) {
 function afterOTP() {
   track('otp_complete', {});
   if (V === 'A') {
-    // A already has intent — go straight to connect
+    if (!intent) {
+      // Safety fallback — intent must be picked before OTP in Variant A
+      go('screen-intent');
+      return;
+    }
     updateConnectCopy();
     go('screen-connect');
   } else {
-    // B + C — show intent screen
     go('screen-intent');
   }
 }
 
 // ── FROM INTENT SCREEN → CONNECT ──
 function goToConnect() {
-  intent = intentShared;
+  // intent already set by pickIntent2
   updateConnectCopy();
   go('screen-connect');
   track('intent_confirmed', { intent });
