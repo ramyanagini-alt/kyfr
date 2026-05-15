@@ -1,0 +1,205 @@
+
+<h2 class="sr-only">Interactive mapping matrix: every intent_category crossed with user_needs_to_be, showing which artifact gets triggered for each combination.</h2>
+<style>
+  .mx { padding: 1rem 0; }
+  .controls { display: flex; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+  .controls label { font-size: 13px; color: var(--color-text-secondary); }
+  select { font-size: 13px; padding: 6px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); }
+  .legend { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .leg { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--color-text-secondary); }
+  .leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+  .grid-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; font-size: 12px; min-width: 600px; }
+  th { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-align: left; padding: 6px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); position: sticky; top: 0; background: var(--color-background-primary); }
+  td { padding: 7px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .cat-group td:first-child { font-weight: 500; font-size: 12px; color: var(--color-text-primary); }
+  .intent-cat { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); font-family: var(--font-mono); white-space: nowrap; }
+  .state-col { font-size: 11px; color: var(--color-text-secondary); white-space: nowrap; }
+  .artifact-pill { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: var(--border-radius-md); white-space: nowrap; }
+  .pill-goal       { background: var(--color-background-success); color: var(--color-text-success); }
+  .pill-commit     { background: var(--color-background-info); color: var(--color-text-info); }
+  .pill-decision   { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .pill-calc       { background: var(--color-background-secondary); color: var(--color-text-secondary); border: 0.5px solid var(--color-border-secondary); }
+  .pill-insight    { background: var(--color-background-secondary); color: var(--color-text-secondary); border: 0.5px solid var(--color-border-secondary); }
+  .pill-none       { font-size: 11px; color: var(--color-text-tertiary); }
+  .pill-ground     { background: var(--color-background-danger); color: var(--color-text-danger); }
+  .note-col { font-size: 11.5px; color: var(--color-text-secondary); line-height: 1.4; max-width: 260px; }
+  .group-header td { background: var(--color-background-secondary); font-size: 11px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; color: var(--color-text-tertiary); padding: 5px 10px; }
+  .hidden { display: none; }
+</style>
+
+<div class="mx">
+  <div class="controls">
+    <label>Filter by artifact:</label>
+    <select id="filterArtifact" onchange="applyFilter()">
+      <option value="all">All artifacts</option>
+      <option value="goal">Goal</option>
+      <option value="commitment">Commitment</option>
+      <option value="decision">Decision</option>
+      <option value="calculation">Calculation</option>
+      <option value="insight">Insight</option>
+      <option value="ground">Ground first</option>
+      <option value="none">No artifact</option>
+    </select>
+    <label>Filter by category:</label>
+    <select id="filterCat" onchange="applyFilter()">
+      <option value="all">All categories</option>
+      <option value="spending">Spending</option>
+      <option value="obligations">Obligations</option>
+      <option value="building">Building</option>
+      <option value="health">Financial health</option>
+    </select>
+  </div>
+
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:var(--color-text-success)"></div>Goal artifact</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--color-text-info)"></div>Commitment artifact</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--color-text-warning)"></div>Decision artifact</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--color-border-secondary)"></div>Queried artifact</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--color-text-danger)"></div>Ground first — no artifact</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--color-border-tertiary)"></div>Respond only</div>
+  </div>
+
+  <div class="grid-wrap">
+  <table id="matrix">
+    <thead>
+      <tr>
+        <th style="min-width:140px">Intent category</th>
+        <th style="min-width:170px">user_needs_to_be</th>
+        <th style="min-width:140px">Artifact triggered</th>
+        <th>Constraint / note</th>
+      </tr>
+    </thead>
+    <tbody id="matrixBody"></tbody>
+  </table>
+  </div>
+</div>
+
+<script>
+const rows = [
+  {group:"spending", cat:"FOOD_DINING", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"Show spend total for period. No judgment on amount."},
+  {group:"spending", cat:"FOOD_DINING", state:"GROUND_FIRST", artifact:"ground", pill:"pill-ground", note:"User is distressed about food spend. Ground before any numbers."},
+  {group:"spending", cat:"FOOD_DINING", state:"BREAK_AVOIDANCE", artifact:"none", pill:"pill-none", note:"Respond only. One micro-action: 'check your food spend this week'."},
+  {group:"spending", cat:"FOOD_DINING", state:"CRYSTALLISE_GOAL", artifact:"goal", pill:"pill-goal", note:"User wants to reduce food spend. Crystallise as goal if specific."},
+  {group:"spending", cat:"FOOD_DINING", state:"BUILD_MOMENTUM", artifact:"insight", pill:"pill-insight", note:"Surface spending trend insight. Reinforce the improvement."},
+
+  {group:"spending", cat:"DISCRETIONARY_PURCHASE", state:"STABILISE_DECISION", artifact:"decision", pill:"pill-decision", note:"iPhone / gadget scenario. Help them decide, then hold the decision."},
+  {group:"spending", cat:"DISCRETIONARY_PURCHASE", state:"REFRAME_COMPARISON", artifact:"none", pill:"pill-none", note:"Respond only. Move from 'everyone has it' to 'what do I actually want'."},
+  {group:"spending", cat:"DISCRETIONARY_PURCHASE", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"EMI calculation, affordability check. Show numbers, no recommendation."},
+  {group:"spending", cat:"DISCRETIONARY_PURCHASE", state:"GROUND_FIRST", artifact:"ground", pill:"pill-ground", note:"Post-purchase regret or pre-purchase panic. Ground first."},
+  {group:"spending", cat:"DISCRETIONARY_PURCHASE", state:"CRYSTALLISE_GOAL", artifact:"goal", pill:"pill-goal", note:"User wants to save for the purchase. Crystallise the savings goal."},
+
+  {group:"spending", cat:"SUBSCRIPTIONS", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"List active subscriptions and total. Insight artifact if data available."},
+  {group:"spending", cat:"SUBSCRIPTIONS", state:"STABILISE_DECISION", artifact:"decision", pill:"pill-decision", note:"User deciding which to cancel. Help them decide, hold the decision."},
+  {group:"spending", cat:"SUBSCRIPTIONS", state:"BUILD_MOMENTUM", artifact:"insight", pill:"pill-insight", note:"Surface subscription reduction insight. Reinforce the saving."},
+
+  {group:"spending", cat:"TRANSPORT", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"Spend on cab / fuel for period. Purely informational."},
+  {group:"spending", cat:"TRANSPORT", state:"STABILISE_DECISION", artifact:"decision", pill:"pill-decision", note:"Own vs rent, cab vs car EMI. Comparison + decision artifact."},
+
+  {group:"spending", cat:"ENTERTAINMENT_SOCIAL", state:"REFRAME_COMPARISON", artifact:"none", pill:"pill-none", note:"Social pressure around lifestyle spend. Respond only, no artifact."},
+  {group:"spending", cat:"ENTERTAINMENT_SOCIAL", state:"GROUND_FIRST", artifact:"ground", pill:"pill-ground", note:"Guilt after social spending. Ground, no numbers yet."},
+  {group:"spending", cat:"ENTERTAINMENT_SOCIAL", state:"STABILISE_DECISION", artifact:"decision", pill:"pill-decision", note:"Should I go to the wedding / trip. Decision artifact after resolve."},
+
+  {group:"obligations", cat:"EMI_DEBT", state:"GROUND_FIRST", artifact:"ground", pill:"pill-ground", note:"High anxiety about debt. Always ground first. Never push product here."},
+  {group:"obligations", cat:"EMI_DEBT", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"Total EMI burden, debt-to-income. Numbers only, no advice unless asked."},
+  {group:"obligations", cat:"EMI_DEBT", state:"RESTORE_AGENCY", artifact:"none", pill:"pill-none", note:"Respond only. Identify one small action — not a product."},
+  {group:"obligations", cat:"EMI_DEBT", state:"CRYSTALLISE_GOAL", artifact:"goal", pill:"pill-goal", note:"User wants to pay off debt. Crystallise as goal with milestone."},
+  {group:"obligations", cat:"EMI_DEBT", state:"STABILISE_DECISION", artifact:"decision", pill:"pill-decision", note:"Prepay vs invest debate. Decision artifact after stability."},
+
+  {group:"obligations", cat:"RENT_HOUSING", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"Rent as % of income. Show number, no immediate advice."},
+  {group:"obligations", cat:"RENT_HOUSING", state:"STABILISE_DECISION", artifact:"decision", pill:"pill-decision", note:"Rent vs buy debate. High stakes — decision artifact after stability."},
+  {group:"obligations", cat:"RENT_HOUSING", state:"GROUND_FIRST", artifact:"ground", pill:"pill-ground", note:"Housing stress / instability. Ground before anything."},
+  {group:"obligations", cat:"RENT_HOUSING", state:"CRYSTALLISE_GOAL", artifact:"goal", pill:"pill-goal", note:"Saving for down payment. Clear goal — crystallise it."},
+
+  {group:"obligations", cat:"FAMILY_DEPENDENTS", state:"GROUND_FIRST", artifact:"ground", pill:"pill-ground", note:"Family financial stress is high sensitivity. Always ground first."},
+  {group:"obligations", cat:"FAMILY_DEPENDENTS", state:"RESTORE_AGENCY", artifact:"none", pill:"pill-none", note:"User feels overwhelmed by responsibility. Respond only."},
+  {group:"obligations", cat:"FAMILY_DEPENDENTS", state:"CRYSTALLISE_GOAL", artifact:"goal", pill:"pill-goal", note:"User wants to better provide. Crystallise the goal specifically."},
+  {group:"obligations", cat:"FAMILY_DEPENDENTS", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"How much goes to family monthly. Number only."},
+
+  {group:"obligations", cat:"INSURANCE_PROTECTION", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"Coverage gaps, premium totals. Information only."},
+  {group:"obligations", cat:"INSURANCE_PROTECTION", state:"STABILISE_DECISION", artifact:"decision", pill:"pill-decision", note:"Which policy, how much cover. Decision artifact after resolve."},
+  {group:"obligations", cat:"INSURANCE_PROTECTION", state:"EARN_CONSENT", artifact:"none", pill:"pill-none", note:"Respond only. Surface recommendation only after consent + trust ≥ 0.72."},
+
+  {group:"building", cat:"SAVINGS_GENERAL", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"Current savings rate, months of runway. Show numbers."},
+  {group:"building", cat:"SAVINGS_GENERAL", state:"BREAK_AVOIDANCE", artifact:"none", pill:"pill-none", note:"Respond only. Micro-action: check savings balance once."},
+  {group:"building", cat:"SAVINGS_GENERAL", state:"CRYSTALLISE_GOAL", artifact:"goal", pill:"pill-goal", note:"User wants to build emergency fund or hit a savings target. Crystallise."},
+  {group:"building", cat:"SAVINGS_GENERAL", state:"HONOUR_COMMITMENT", artifact:"commitment", pill:"pill-commit", note:"Re-seeded from prior commitment to save. Check in warmly."},
+  {group:"building", cat:"SAVINGS_GENERAL", state:"BUILD_MOMENTUM", artifact:"insight", pill:"pill-insight", note:"Savings streak insight. Reinforce without being patronising."},
+
+  {group:"building", cat:"INVESTMENTS", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"SIP amount, returns estimate. Information only — no product push."},
+  {group:"building", cat:"INVESTMENTS", state:"STABILISE_DECISION", artifact:"decision", pill:"pill-decision", note:"SIP vs lump sum, which fund. Decision artifact after stability."},
+  {group:"building", cat:"INVESTMENTS", state:"EARN_CONSENT", artifact:"none", pill:"pill-none", note:"Respond only. Product recommendation only after consent + trust ≥ 0.72."},
+  {group:"building", cat:"INVESTMENTS", state:"CRYSTALLISE_GOAL", artifact:"goal", pill:"pill-goal", note:"User wants to start investing. Crystallise the intention."},
+  {group:"building", cat:"INVESTMENTS", state:"GROUND_FIRST", artifact:"ground", pill:"pill-ground", note:"Market anxiety, fear of loss. Ground before any numbers."},
+
+  {group:"building", cat:"GOAL_SAVINGS", state:"CRYSTALLISE_GOAL", artifact:"goal", pill:"pill-goal", note:"Primary artifact for this category. Always crystallise when specific."},
+  {group:"building", cat:"GOAL_SAVINGS", state:"HONOUR_COMMITMENT", artifact:"commitment", pill:"pill-commit", note:"Re-seeded from prior goal savings commitment. Check in."},
+  {group:"building", cat:"GOAL_SAVINGS", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"How long to reach target at current rate. Numbers only."},
+  {group:"building", cat:"GOAL_SAVINGS", state:"BUILD_MOMENTUM", artifact:"insight", pill:"pill-insight", note:"Progress toward goal. Surface as insight, reinforce."},
+
+  {group:"building", cat:"RETIREMENT", state:"CRYSTALLISE_GOAL", artifact:"goal", pill:"pill-goal", note:"User names retirement intention. Crystallise even without a plan yet."},
+  {group:"building", cat:"RETIREMENT", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"Corpus needed, years to go. Numbers — no product unless asked."},
+  {group:"building", cat:"RETIREMENT", state:"BREAK_AVOIDANCE", artifact:"none", pill:"pill-none", note:"User knows they're avoiding this. One micro-action only."},
+
+  {group:"health", cat:"INCOME_SALARY", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"Take-home, savings rate as % of income. Show number."},
+  {group:"health", cat:"INCOME_SALARY", state:"STABILISE_DECISION", artifact:"decision", pill:"pill-decision", note:"Job change, salary negotiation decision. Decision artifact."},
+  {group:"health", cat:"INCOME_SALARY", state:"GROUND_FIRST", artifact:"ground", pill:"pill-ground", note:"Job loss or income uncertainty. Ground first — no numbers."},
+  {group:"health", cat:"INCOME_SALARY", state:"CRYSTALLISE_GOAL", artifact:"goal", pill:"pill-goal", note:"Income growth goal. Crystallise if specific and motivated."},
+
+  {group:"health", cat:"CREDIT_BUREAU", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"Score, factors. Information only. High sensitivity category."},
+  {group:"health", cat:"CREDIT_BUREAU", state:"EARN_CONSENT", artifact:"none", pill:"pill-none", note:"Respond only. Bureau access only after trust ≥ 0.88 — hard gate."},
+  {group:"health", cat:"CREDIT_BUREAU", state:"GROUND_FIRST", artifact:"ground", pill:"pill-ground", note:"Score anxiety. Ground before any bureau discussion."},
+
+  {group:"health", cat:"NET_WORTH_OVERVIEW", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"Assets minus liabilities. Overview — needs data consent first."},
+  {group:"health", cat:"NET_WORTH_OVERVIEW", state:"BREAK_AVOIDANCE", artifact:"none", pill:"pill-none", note:"User avoiding full picture. One micro-action: look at one account."},
+  {group:"health", cat:"NET_WORTH_OVERVIEW", state:"BUILD_MOMENTUM", artifact:"insight", pill:"pill-insight", note:"Net worth trend. Surface positively. Do not lead with negatives."},
+
+  {group:"health", cat:"TAX", state:"GRANT_CLARITY", artifact:"calculation", pill:"pill-calc", note:"Tax liability, 80C room. Informational. Seasonal priority."},
+  {group:"health", cat:"TAX", state:"CRYSTALLISE_GOAL", artifact:"goal", pill:"pill-goal", note:"Tax saving goal before deadline. Crystallise if motivated."},
+  {group:"health", cat:"TAX", state:"STABILISE_DECISION", artifact:"decision", pill:"pill-decision", note:"Which instrument to invest in for tax saving. Decision artifact."},
+];
+
+const groupLabels = { spending:"Spending", obligations:"Obligations", building:"Building", health:"Financial health" };
+let lastGroup = "";
+
+function buildMatrix(data) {
+  const tbody = document.getElementById("matrixBody");
+  tbody.innerHTML = "";
+  let lastG = "";
+  data.forEach(r => {
+    if (r.group !== lastG) {
+      const gr = document.createElement("tr");
+      gr.className = "group-header";
+      gr.innerHTML = `<td colspan="4">${groupLabels[r.group]}</td>`;
+      tbody.appendChild(gr);
+      lastG = r.group;
+    }
+    const tr = document.createElement("tr");
+    tr.setAttribute("data-group", r.group);
+    tr.setAttribute("data-artifact", r.artifact);
+    const artifactLabel = r.artifact === "none" ? "<span class='pill-none'>Respond only</span>" :
+      `<span class='artifact-pill ${r.pill}'>${r.artifact.charAt(0).toUpperCase()+r.artifact.slice(1)}</span>`;
+    tr.innerHTML = `
+      <td><span class="intent-cat">${r.cat}</span></td>
+      <td><span class="state-col">${r.state}</span></td>
+      <td>${artifactLabel}</td>
+      <td class="note-col">${r.note}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function applyFilter() {
+  const art = document.getElementById("filterArtifact").value;
+  const cat = document.getElementById("filterCat").value;
+  const filtered = rows.filter(r => {
+    const artMatch = art === "all" || r.artifact === art;
+    const catMatch = cat === "all" || r.group === cat;
+    return artMatch && catMatch;
+  });
+  buildMatrix(filtered);
+}
+
+buildMatrix(rows);
+</script>
