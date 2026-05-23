@@ -1,0 +1,3744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kyfr. — Know Your Financial Rizz</title>
+  <!-- Google Fonts: Inter (UI) & Playfair Display (Serif Italic) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,600;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Reset & CSS Variables */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    :root {
+      /* Theme colors */
+      --bg-cream: #F5F3EF;
+      --bg-slate: #0A0F1E;
+      --card-dark: #121829;
+      --text-dark: #111827;
+      --text-muted: #6B7280;
+      --border-color: #E5E7EB;
+      --border-dark: rgba(255, 255, 255, 0.08);
+      
+      /* Gradients for Archetypes */
+      --grad-guardian: linear-gradient(135deg, #9CB3A3 0%, #798E80 100%);
+      --grad-essentialist: linear-gradient(135deg, #E6E8E2 0%, #CCD2C8 100%);
+      --grad-explorer: linear-gradient(135deg, #FFAE63 0%, #C850C0 50%, #4158D0 100%);
+      --grad-curator: linear-gradient(135deg, #EAD8B1 0%, #C5A880 100%);
+      --grad-optimiser: linear-gradient(135deg, #3AA6B7 0%, #1D545E 100%);
+
+      /* Active button colors */
+      --btn-guardian: #0F1E16;
+      --btn-essentialist: #1F2820;
+      --btn-explorer: #2E1B4E;
+      --btn-curator: #2B1D0E;
+      --btn-optimiser: #082226;
+      
+      /* State colors */
+      --color-anxiety: #F87171;
+      --color-shame: #FB923C;
+      --color-avoidance: #FBBF24;
+      --color-stability: #34D399;
+      --color-receptivity: #60A5FA;
+
+      /* ===== kyfr. dark + neon brand identity ===== */
+      --obsidian: #0B0B0F;       /* deepest background */
+      --midnight: #121218;       /* phone surface */
+      --charcoal: #17171F;       /* raised card surface */
+      --neon-violet: #7C3AED;
+      --neon-magenta: #EC4899;
+      --neon-gold: #F97316;
+      --neon-grad: linear-gradient(125deg, #7C3AED 0%, #EC4899 52%, #F97316 100%);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --ink-hi: #F4F4F8;         /* primary text on dark */
+      --ink-mid: #A6A6B5;        /* secondary text on dark */
+      --ink-low: #6A6A78;        /* tertiary text on dark */
+      --font-display: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-slate);
+      color: #F1F5F9;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Container Transitions */
+    .app-container {
+      display: flex;
+      width: 100%;
+      max-width: 1400px;
+      height: 900px;
+      padding: 24px;
+      gap: 24px;
+      transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Phone Mockup Frame */
+    .phone-wrapper {
+      width: 410px;
+      height: 840px;
+      background-color: var(--obsidian);
+      border: 12px solid #0A0A0E;
+      border-radius: 44px;
+      position: relative;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), inset 0 0 2px rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      flex-shrink: 0;
+      transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    /* iOS Notch & Status Bar */
+    .phone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 130px;
+      height: 24px;
+      background-color: #1C2333;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      z-index: 1000;
+    }
+
+    .phone-status {
+      height: 38px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      color: var(--text-dark);
+      font-size: 11.5px;
+      font-weight: 600;
+      position: relative;
+      z-index: 999;
+      background-color: transparent;
+      user-select: none;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-dot {
+      width: 4px;
+      height: 4px;
+      background-color: var(--text-dark);
+      border-radius: 50%;
+    }
+
+    /* Phone Content Area */
+    .phone-content {
+      height: calc(100% - 38px);
+      width: 100%;
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      color: var(--ink-hi);
+      background-color: var(--obsidian);
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .phone-content::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Typewriter & Serif styles */
+    .serif-italic {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    /* Screens System */
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex-grow: 1;
+      padding: 24px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      animation: fadeIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Header component inside Phone */
+    .brand-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+    }
+
+    .logo-square {
+      width: 20px;
+      height: 20px;
+      background-color: var(--text-dark);
+      color: var(--bg-cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      border-radius: 4px;
+    }
+
+    /* Progress Indicators (dots and dashes) */
+    .progress-bar-container {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .progress-dot {
+      width: 6px;
+      height: 6px;
+      background-color: #D1D5DB;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .progress-dot.active {
+      background-color: var(--text-dark);
+    }
+
+    .progress-dash {
+      width: 18px;
+      height: 6px;
+      background-color: var(--text-dark);
+      border-radius: 3px;
+    }
+
+    /* --- SCREEN 1: WELCOME SCREEN --- */
+    .welcome-intro {
+      margin-top: 30px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .welcome-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #9CA3AF;
+      margin-bottom: 12px;
+    }
+
+    .welcome-title {
+      font-size: 38px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .welcome-body {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #4B5563;
+      margin-bottom: 36px;
+    }
+
+    /* Premium inputs styling */
+    .input-group {
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .input-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6B7280;
+      margin-bottom: 8px;
+    }
+
+    .phone-input-field {
+      width: 100%;
+      padding: 16px;
+      border: 1px solid #D1D5DB;
+      border-radius: 12px;
+      background-color: #FFFFFF;
+      font-size: 16px;
+      color: var(--text-dark);
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .phone-input-field:focus {
+      border-color: var(--text-dark);
+    }
+
+    .input-prefix {
+      position: absolute;
+      left: 16px;
+      top: 38px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #9CA3AF;
+    }
+
+    .phone-input-field.prefixed {
+      padding-left: 54px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 18px;
+      background-color: var(--text-dark);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    .btn-arrow {
+      font-size: 16px;
+    }
+
+    .welcome-footer {
+      font-size: 11px;
+      color: #9CA3AF;
+      text-align: center;
+      margin-top: 24px;
+      line-height: 1.5;
+    }
+
+    /* --- SCREEN 2: OTP VERIFICATION --- */
+    .otp-wrapper {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      margin: 28px 0;
+    }
+
+    .otp-digit {
+      width: 48px;
+      height: 54px;
+      border: 1px solid #D1D5DB;
+      border-radius: 12px;
+      background-color: #FFFFFF;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .otp-digit:focus {
+      border-color: var(--text-dark);
+    }
+
+    .otp-resend {
+      font-size: 13px;
+      color: #6B7280;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .otp-change-number {
+      color: #6B7280;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* --- SCREEN 3: 5-QUESTION ONBOARDING --- */
+    .onboarding-flow {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .question-card {
+      margin-top: 10px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .question-text {
+      font-size: 23px;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 28px;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-grow: 1;
+    }
+
+    .option-btn {
+      width: 100%;
+      padding: 16px 20px;
+      background-color: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 14px;
+      text-align: left;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.45;
+      color: #374151;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .option-btn:hover {
+      border-color: #9CA3AF;
+      background-color: #FAFAF9;
+    }
+
+    .option-btn.selected {
+      border-color: var(--text-dark);
+      background-color: #F3F4F6;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    /* --- SCREEN 4: PROFILING LOADER --- */
+    .loader-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+      padding: 0 12px;
+    }
+
+    .loader-spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--text-dark);
+      animation: spin 1s linear infinite;
+      margin-bottom: 40px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .loader-logs {
+      width: 100%;
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #4B5563;
+      height: 180px;
+      overflow-y: auto;
+    }
+
+    .log-line {
+      margin-bottom: 8px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      opacity: 0;
+      animation: logFadeIn 0.3s forwards;
+    }
+
+    .log-line.success {
+      color: #059669;
+    }
+
+    .log-bullet {
+      color: #9CA3AF;
+    }
+
+    @keyframes logFadeIn {
+      to { opacity: 1; }
+    }
+
+    /* --- SCREEN 5: PERSONALITY CARD --- */
+    .card-screen {
+      padding: 16px !important;
+      background-color: #F3F1EC;
+    }
+
+    .aha-card {
+      background-color: #FFFFFF;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      margin-bottom: 16px;
+      overflow: hidden;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Recognition section */
+    .card-recognition {
+      background: var(--grad-guardian);
+      border-radius: 16px;
+      padding: 24px;
+      color: #FFFFFF;
+      position: relative;
+    }
+
+    .recognition-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .recognition-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    .badge-pill {
+      background-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 9.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge-dot {
+      width: 5px;
+      height: 5px;
+      background-color: #FFFFFF;
+      border-radius: 50%;
+    }
+
+    .recognition-title {
+      font-size: 25px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+
+    .recognition-support {
+      font-size: 12px;
+      line-height: 1.5;
+      opacity: 0.85;
+    }
+
+    /* Section Labeling */
+    .section-eyebrow {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #9CA3AF;
+      margin-bottom: 2px;
+    }
+
+    /* Insight section */
+    .card-insight {
+      background-color: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .insight-tag {
+      display: inline-block;
+      background-color: #F3F4F6;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 500;
+      color: #4B5563;
+      margin-bottom: 8px;
+    }
+
+    .insight-text {
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    /* Simulation section */
+    .card-simulation {
+      background-color: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .simulation-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .simulation-col-label {
+      font-size: 9.5px;
+      color: #6B7280;
+      margin-bottom: 2px;
+    }
+
+    .simulation-col-val {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .simulation-col-val.green { color: #047857; }
+    .simulation-col-val.red { color: #B91C1C; }
+
+    .simulation-row {
+      border-top: 1px dashed #E5E7EB;
+      padding-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .simulation-row-label {
+      font-size: 9.5px;
+      color: #6B7280;
+    }
+
+    .simulation-row-val {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .simulation-row-sub {
+      font-size: 10px;
+      color: #9CA3AF;
+    }
+
+    /* Simulation variant explorer runway blocks */
+    .runway-blocks {
+      display: flex;
+      gap: 4px;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+
+    .runway-block {
+      flex: 1;
+      height: 16px;
+      border-radius: 4px;
+      background-color: #E5E7EB;
+    }
+
+    .runway-block.active {
+      background: var(--grad-explorer);
+    }
+
+    /* Feature Bridge section */
+    .card-feature-bridge {
+      background-color: #0A1E14; /* Default dark green, dynamically swapped */
+      border-radius: 16px;
+      padding: 20px;
+      color: #FFFFFF;
+    }
+
+    .bridge-tag {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 4px;
+    }
+
+    .bridge-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .bridge-body {
+      font-size: 11.5px;
+      line-height: 1.45;
+      opacity: 0.8;
+      margin-bottom: 12px;
+    }
+
+    .bridge-quote {
+      border-left: 2px solid rgba(255, 255, 255, 0.3);
+      padding-left: 10px;
+      font-style: italic;
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .card-action-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 14px;
+      background-color: var(--text-dark);
+      color: #FFFFFF;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s;
+    }
+
+    .card-action-footer {
+      font-size: 10px;
+      color: #9CA3AF;
+      text-align: center;
+    }
+
+    /* --- SCREEN 6: CORE CHAT SURFACE --- */
+    .chat-screen {
+      padding: 0 !important;
+      background-color: #FFFFFF;
+    }
+
+    .chat-header {
+      background-color: var(--bg-cream);
+      padding: 14px 20px;
+      border-bottom: 1px solid #E5E7EB;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-profile-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-avatar {
+      width: 32px;
+      height: 32px;
+      background-color: var(--text-dark);
+      color: #FFFFFF;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .chat-username {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .chat-tagline {
+      font-size: 10px;
+      color: #6B7280;
+    }
+
+    .trust-badge-pill {
+      background-color: #FEF3C7;
+      color: #D97706;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 9px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.3s;
+    }
+
+    .trust-badge-pill.connected {
+      background-color: #D1FAE5;
+      color: #059669;
+    }
+
+    /* Chat messages scroll container */
+    .chat-messages-container {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background-color: #FAF9F6;
+    }
+
+    .chat-messages-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .message-bubble {
+      max-width: 82%;
+      padding: 14px 16px;
+      border-radius: 18px;
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+
+    .message-bubble.user {
+      align-self: flex-end;
+      background-color: var(--text-dark);
+      color: #FFFFFF;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message-bubble.system {
+      align-self: flex-start;
+      background-color: #FFFFFF;
+      color: var(--text-dark);
+      border-bottom-left-radius: 4px;
+      border: 1px solid #E5E7EB;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    }
+
+    .message-time {
+      font-size: 9px;
+      color: #9CA3AF;
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      background-color: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 18px;
+      border-bottom-left-radius: 4px;
+      padding: 14px 20px;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      background-color: #9CA3AF;
+      border-radius: 50%;
+      animation: pulse 1.2s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Prompt chips */
+    .chips-container {
+      padding: 12px 16px;
+      background-color: #FFFFFF;
+      border-top: 1px solid #E5E7EB;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .chips-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip-btn {
+      background-color: #FAF9F6;
+      border: 1px solid #E5E7EB;
+      border-radius: 50px;
+      padding: 8px 16px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: #4B5563;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .chip-btn:hover {
+      background-color: #E5E7EB;
+      color: var(--text-dark);
+      border-color: #9CA3AF;
+    }
+
+    /* Input area inside mobile */
+    .chat-input-area {
+      padding: 12px 16px;
+      background-color: #FFFFFF;
+      border-top: 1px solid #E5E7EB;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .chat-input-box {
+      flex-grow: 1;
+      border: 1px solid #D1D5DB;
+      border-radius: 24px;
+      padding: 12px 18px;
+      font-size: 13.5px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .chat-input-box:focus {
+      border-color: var(--text-dark);
+    }
+
+    .chat-send-btn {
+      width: 40px;
+      height: 40px;
+      background-color: var(--text-dark);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.2s;
+    }
+
+    .chat-send-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Dynamic Inline Cards in Chat */
+    .inline-insight-card {
+      margin-top: 10px;
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      width: 100%;
+    }
+
+    .inline-insight-header {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #9CA3AF;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .inline-insight-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+    }
+
+    .inline-aff-bar {
+      height: 8px;
+      border-radius: 4px;
+      background-color: #E5E7EB;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .inline-aff-progress {
+      height: 100%;
+      background-color: var(--color-stability);
+      width: 0%;
+      transition: width 1s ease-in-out;
+    }
+
+    .inline-aff-progress.over {
+      background-color: var(--color-anxiety);
+    }
+
+    .inline-card-reco {
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .reco-card-name {
+      font-weight: 700;
+      font-size: 12.5px;
+      color: var(--text-dark);
+    }
+
+    .reco-card-benefit {
+      font-size: 11px;
+      color: #059669;
+      font-weight: 600;
+    }
+
+    /* --- RIGHT PANEL: ORCHESTRATION CONSOLE --- */
+    .orchestrator-console {
+      flex-grow: 1;
+      height: 840px;
+      background-color: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 28px;
+      padding: 24px;
+      display: none; /* Shown dynamically on split mode */
+      flex-direction: column;
+      gap: 20px;
+      animation: expandConsole 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    }
+
+    @keyframes expandConsole {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .console-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-dark);
+      padding-bottom: 16px;
+    }
+
+    .console-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #34D399;
+      border-radius: 50%;
+      animation: pulseGreen 1.5s infinite;
+    }
+
+    @keyframes pulseGreen {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.6; }
+    }
+
+    .console-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #94A3B8;
+    }
+
+    /* State Vector Grid layout */
+    .state-vector-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--border-dark);
+    }
+
+    .state-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .state-name {
+      font-size: 9.5px;
+      font-weight: 600;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .state-meter-bg {
+      width: 100%;
+      height: 6px;
+      background-color: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .state-meter-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .state-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Need state and code compiler split layout */
+    .console-split {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 20px;
+      flex-grow: 1;
+      height: 0; /* Let flexbox control expansion */
+    }
+
+    .console-left-split {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .console-panel {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94A3B8;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .need-state-active {
+      font-size: 18px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 6px;
+    }
+
+    .need-state-desc {
+      font-size: 12px;
+      color: #94A3B8;
+      line-height: 1.45;
+    }
+
+    /* Critic candidate logger */
+    .critic-logs-container {
+      flex-grow: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 4px;
+    }
+
+    .critic-logs-container::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .critic-logs-container::-webkit-scrollbar-thumb {
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 2px;
+    }
+
+    .critic-card {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .critic-card.selected {
+      border-color: #34D399;
+      background: rgba(52, 211, 153, 0.03);
+    }
+
+    .critic-card.rejected {
+      border-color: #F87171;
+      background: rgba(248, 113, 113, 0.02);
+      opacity: 0.6;
+    }
+
+    .critic-badge {
+      display: inline-block;
+      font-size: 8px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .critic-badge.selected { background-color: #065F46; color: #34D399; }
+    .critic-badge.rejected { background-color: #991B1B; color: #F87171; }
+
+    .critic-text {
+      font-size: 11.5px;
+      line-height: 1.4;
+      color: #E2E8F0;
+      margin-bottom: 6px;
+    }
+
+    .critic-eval {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      color: #94A3B8;
+    }
+
+    /* YAML Console representation */
+    .yaml-console {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: #070B14;
+      border-radius: 12px;
+      padding: 14px;
+      overflow-y: auto;
+      flex-grow: 1;
+      color: #A7F3D0;
+      border: 1px solid rgba(255,255,255,0.02);
+      white-space: pre-wrap;
+    }
+
+    .yaml-key { color: #FBBF24; }
+    .yaml-str { color: #34D399; }
+    .yaml-num { color: #60A5FA; }
+    .yaml-bool { color: #F472B6; }
+
+    /* Fiduciary tools triggers */
+    .fiduciary-hub {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    .tool-trigger-card {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+
+    .tool-trigger-card.active {
+      background: rgba(96, 165, 250, 0.06);
+      border-color: #60A5FA;
+    }
+
+    .tool-led {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: rgba(255,255,255,0.1);
+    }
+
+    .tool-trigger-card.active .tool-led {
+      background-color: #60A5FA;
+      animation: toolPulse 1.5s infinite;
+    }
+
+    @keyframes toolPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .tool-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #E2E8F0;
+    }
+
+    /* Connected settings hub in Dashboard */
+    .trust-sync-panel {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .sync-text-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sync-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
+    .sync-subtitle {
+      font-size: 11px;
+      color: #94A3B8;
+      line-height: 1.4;
+    }
+
+    .toggles-group {
+      display: flex;
+      gap: 16px;
+    }
+
+    /* Slide Switch Styling */
+    .switch-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .switch-label {
+      font-size: 8.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #94A3B8;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.1);
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #34D399;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Dynamic UI Expand classes */
+    .app-container.expanded {
+      max-width: 95%;
+    }
+
+    .app-container.expanded .phone-wrapper {
+      transform: scale(0.98);
+    }
+
+    .app-container.expanded .orchestrator-console {
+      display: flex;
+    }
+
+    /* ============================================================
+       kyfr. — SCREEN STYLES (Stacked Deck / Flip Card)
+       ============================================================ */
+
+    /* Status bar theming per screen */
+    .phone-status { transition: background-color 0.4s ease, color 0.4s ease; }
+    .phone-status.status-light { color: #FFFFFF; }
+    .phone-status.status-light .status-dot { background-color: #FFFFFF; }
+
+    /* ---- SCREEN 3 — STACKED DECK QUESTIONNAIRE ---- */
+    #screenQuestions {
+      padding: 0 !important;
+      background: #0E0E10;
+    }
+    .deck-wrap {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 22px 20px 16px;
+      color: #FFFFFF;
+    }
+    .deck-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .deck-logo {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+    }
+    .deck-logo .logo-square {
+      background-color: #FFFFFF;
+      color: #0E0E10;
+    }
+    .deck-timer {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .deck-progress {
+      display: flex;
+      gap: 5px;
+      margin-top: 13px;
+    }
+    .deck-pdot {
+      height: 6px;
+      width: 6px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.16);
+      transition: all 0.35s cubic-bezier(.4,0,.2,1);
+    }
+    .deck-pdot.done { background: rgba(255, 255, 255, 0.5); }
+    .deck-pdot.active {
+      width: 24px;
+      background: #FFFFFF;
+    }
+    .deck-stack {
+      position: relative;
+      flex-grow: 1;
+      margin-top: 16px;
+    }
+    .deck-peek {
+      position: absolute;
+      left: 0; right: 0;
+      border-radius: 22px;
+      background: #17171A;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .deck-peek.p1 { top: 14px; bottom: -14px; transform: scale(0.94); }
+    .deck-peek.p2 { top: 7px;  bottom: -7px;  transform: scale(0.97); }
+    .deck-card {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.42s cubic-bezier(.5,0,.2,1), opacity 0.42s ease;
+    }
+    .deck-card.slide-out {
+      transform: translateX(-130%) rotate(-9deg);
+      opacity: 0;
+    }
+    .deck-ring {
+      margin: 2px 0 6px;
+    }
+    .deck-qmeta {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .deck-question {
+      width: 100%;
+      font-size: 25px;
+      font-weight: 700;
+      line-height: 1.26;
+      letter-spacing: -0.3px;
+      margin: 12px 0 18px;
+    }
+    .deck-options {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .deck-opt {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      width: 100%;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 16px;
+      padding: 14px 15px;
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 14.5px;
+      font-weight: 500;
+      line-height: 1.35;
+      cursor: pointer;
+      transition: background 0.18s ease, transform 0.18s ease, color 0.18s ease;
+    }
+    .deck-opt:hover {
+      background: rgba(255, 255, 255, 0.11);
+    }
+    .deck-opt.picked {
+      background: #FFFFFF;
+      color: #0E0E10;
+    }
+    .deck-glyph {
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .deck-foot {
+      width: 100%;
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 0.3px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: auto;
+      padding-top: 14px;
+    }
+
+    /* ---- SCREEN 5 — ARCHETYPE FLIP CARD REVEAL ---- */
+    #screenCardReveal {
+      padding: 0 !important;
+      background: #1A1714;
+      align-items: center;
+      justify-content: center;
+    }
+    .flip-stage {
+      perspective: 1600px;
+      width: 340px;
+      max-width: 91%;
+    }
+    .flip-card {
+      position: relative;
+      width: 100%;
+      height: 600px;
+      transform-style: preserve-3d;
+      transition: transform 900ms cubic-bezier(.7,0,.2,1);
+      cursor: pointer;
+    }
+    .flip-card.flipped { transform: rotateY(180deg); }
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      overflow: hidden;
+    }
+    .flip-back {
+      transform: rotateY(180deg);
+      background: #FBFAF5;
+    }
+    .fc-blob {
+      position: absolute;
+      right: -60px; top: -60px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      filter: blur(20px);
+      opacity: 0.13;
+      pointer-events: none;
+    }
+    .fc-wash {
+      position: absolute;
+      inset: 0;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .fc-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+    .fc-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .fc-pips { display: flex; gap: 6px; align-items: center; }
+    .fc-pip {
+      height: 6px;
+      border-radius: 99px;
+      transition: all 320ms cubic-bezier(.4,0,.2,1);
+    }
+    .fc-archname {
+      margin-top: 18px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      opacity: 0.6;
+      position: relative;
+    }
+    .fc-superpower {
+      margin-top: 6px;
+      font-size: 54px;
+      font-weight: 600;
+      letter-spacing: -2px;
+      line-height: 0.98;
+      position: relative;
+    }
+    .fc-hype {
+      margin-top: 16px;
+      font-size: 14.5px;
+      line-height: 1.55;
+      opacity: 0.78;
+      position: relative;
+    }
+    .fc-spacer { flex: 1; min-height: 10px; }
+    .fc-gaugebox {
+      padding: 16px 16px 12px;
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: 18px;
+      backdrop-filter: blur(8px);
+      position: relative;
+    }
+    .fc-gauge-row { display: flex; align-items: flex-end; gap: 14px; }
+    .fc-gauge-label {
+      font-size: 10px;
+      font-weight: 600;
+      opacity: 0.55;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+    .fc-gauge-val {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -1.2px;
+      line-height: 1;
+      margin-top: 4px;
+    }
+    .fc-reveal-btn {
+      margin-top: 14px;
+      width: 100%;
+      height: 44px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.6);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+    }
+    .fc-q-eyebrow {
+      position: relative;
+      margin-top: 18px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .fc-question {
+      position: relative;
+      margin-top: 8px;
+      font-size: 21px;
+      font-weight: 500;
+      line-height: 1.3;
+      letter-spacing: -0.4px;
+    }
+    .fc-insightbox {
+      position: relative;
+      padding: 20px 18px 22px;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 20px;
+    }
+    .fc-closing {
+      position: relative;
+      margin-top: 14px;
+      font-size: 12.5px;
+      font-style: italic;
+      opacity: 0.7;
+      line-height: 1.5;
+      text-align: center;
+    }
+    .fc-bridge {
+      position: relative;
+      margin-top: 14px;
+      width: 100%;
+      height: 54px;
+      border: 0;
+      border-radius: 999px;
+      color: #FFFFFF;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      animation: bridgePulse 2s infinite;
+    }
+    @keyframes bridgePulse {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.025); }
+      100% { transform: scale(1); }
+    }
+    .fc-backbtn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      opacity: 0.55;
+      padding: 0;
+    }
+    /* metric bar */
+    .ib-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+    .ib-track {
+      position: relative;
+      height: 36px;
+      border-radius: 12px;
+      overflow: visible;
+    }
+    .ib-healthy {
+      position: absolute;
+      top: 0; bottom: 0; right: 0;
+      border-radius: 0 12px 12px 0;
+    }
+    .ib-fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      border-radius: 12px 4px 4px 12px;
+      transition: width 900ms 200ms cubic-bezier(.4,0,.2,1);
+    }
+    .ib-youtag {
+      position: absolute;
+      top: -22px;
+      transform: translateX(-50%);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .ib-readout {
+      margin-top: 38px;
+      padding-top: 14px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    /* ============================================================
+       kyfr. — DARK + NEON: SPLASH & DISCOVERY HUB
+       ============================================================ */
+
+    /* ---- SCREEN 0 — SPLASH ---- */
+    #screenSplash {
+      padding: 0 !important;
+      background: var(--obsidian);
+      overflow: hidden;
+      align-items: center;
+      justify-content: center;
+    }
+    .splash-glow, .dark-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      pointer-events: none;
+    }
+    .glow-violet { width: 280px; height: 280px; background: rgba(124,58,237,0.45); top: -70px; left: -60px; }
+    .glow-gold   { width: 260px; height: 260px; background: rgba(249,115,22,0.32); bottom: -60px; right: -50px; }
+    .splash-loops {
+      position: absolute;
+      inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+      opacity: 0.38;
+      animation: loopSpin 44s linear infinite;
+    }
+    @keyframes loopSpin { to { transform: rotate(360deg); } }
+    .splash-logo {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 15px;
+      opacity: 0;
+      animation: splashFade 1.5s ease forwards;
+    }
+    @keyframes splashFade { to { opacity: 1; } }
+    .splash-mark {
+      filter: drop-shadow(0 0 18px rgba(236,72,153,0.55)) drop-shadow(0 0 38px rgba(124,58,237,0.4));
+    }
+    .splash-wordmark {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 38px;
+      letter-spacing: -1.6px;
+      color: var(--ink-hi);
+    }
+    .splash-tag {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 2.6px;
+      text-transform: uppercase;
+      color: var(--ink-low);
+      margin-top: -4px;
+    }
+
+    /* ---- SCREEN 1 — WELCOME (DISCOVERY HUB) ---- */
+    #screenWelcome {
+      padding: 0 !important;
+      background: var(--obsidian);
+      overflow: hidden;
+    }
+    .glow-violet-tl { width: 300px; height: 300px; background: rgba(124,58,237,0.30); top: -120px; left: -90px; }
+    .glow-gold-br   { width: 280px; height: 280px; background: rgba(249,115,22,0.20); bottom: -130px; right: -90px; }
+    .zen-welcome {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      height: 100%;
+      padding: 28px 26px 30px;
+    }
+    .zen-brandrow {
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+    }
+    .zen-brandrow .splash-wordmark { font-size: 17px; letter-spacing: -0.6px; }
+    .zen-brandrow .splash-mark { filter: drop-shadow(0 0 8px rgba(236,72,153,0.5)); }
+    .zen-header { margin-top: 30px; }
+    .zen-title {
+      font-family: var(--font-display);
+      font-size: 32px; font-weight: 700;
+      letter-spacing: -1.3px; line-height: 1.18;
+      color: var(--ink-hi);
+    }
+    .zen-sub {
+      font-family: var(--font-display);
+      font-size: 32px; font-weight: 700;
+      letter-spacing: -1.3px; line-height: 1.18;
+      background: var(--neon-grad);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .zen-carousel {
+      flex-grow: 1;
+      display: flex; flex-direction: column; justify-content: center;
+      gap: 13px; padding: 16px 2px;
+    }
+    .zen-card {
+      display: flex; align-items: center; gap: 15px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-radius: 22px;
+      padding: 16px 18px;
+    }
+    .zen-card:nth-child(1) { box-shadow: 0 0 32px rgba(124,58,237,0.14); animation: floatA 6s ease-in-out infinite; }
+    .zen-card:nth-child(2) { box-shadow: 0 0 32px rgba(236,72,153,0.14); animation: floatB 7s ease-in-out infinite; }
+    .zen-card:nth-child(3) { box-shadow: 0 0 32px rgba(249,115,22,0.14); animation: floatA 6.6s ease-in-out infinite 0.4s; }
+    @keyframes floatA { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    @keyframes floatB { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+    .zen-card-icon {
+      width: 46px; height: 46px; border-radius: 14px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .zen-card-text { display: flex; flex-direction: column; gap: 2px; }
+    .zen-card-word {
+      font-family: var(--font-display);
+      font-size: 18px; font-weight: 600; letter-spacing: -0.4px;
+      color: var(--ink-hi);
+    }
+    .zen-card-tag { font-size: 12px; color: var(--ink-mid); }
+    .zen-cta { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+    .zen-btn {
+      width: 100%; border: none; cursor: pointer;
+      background: var(--neon-grad);
+      color: #FFFFFF;
+      border-radius: 999px; padding: 18px;
+      font-family: var(--font-display);
+      font-size: 15px; font-weight: 700; letter-spacing: 0.1px;
+      box-shadow: 0 8px 28px -6px rgba(236,72,153,0.5);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .zen-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 34px -6px rgba(236,72,153,0.62); }
+    .zen-btn:active { transform: translateY(1px); }
+    .zen-link {
+      background: none; border: none; cursor: pointer; font-family: inherit;
+      font-size: 13.5px; color: var(--ink-mid);
+    }
+    .zen-link:hover { color: var(--ink-hi); }
+
+    /* ---- QUIZ ENTRANCE + THIN PROGRESS BAR ---- */
+    #screenQuestions.active { animation: slideUp 0.5s cubic-bezier(.25,.8,.25,1); }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(64px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .quiz-progress-track {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; background: rgba(255,255,255,0.08); z-index: 60;
+    }
+    .quiz-progress-fill {
+      height: 100%; width: 0%;
+      background: var(--neon-grad);
+      transition: width 0.45s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ============================================================
+       kyfr. — DARK + NEON RE-SKIN (OTP / Loader / Chat / Reveal)
+       ============================================================ */
+
+    /* ---- OTP ---- */
+    .logo-square {
+      background: var(--neon-grad);
+      color: #FFFFFF;
+    }
+    .progress-dot { background-color: rgba(255,255,255,0.18); }
+    .progress-dot.active { background-color: var(--neon-magenta); }
+    .progress-dash { background: var(--neon-grad); }
+    .welcome-title { font-family: var(--font-display); color: var(--ink-hi); }
+    .welcome-body { color: var(--ink-mid); }
+    .welcome-tag { color: var(--neon-magenta); }
+    .otp-digit {
+      background: var(--charcoal);
+      border: 1px solid var(--glass-border);
+      color: var(--ink-hi);
+    }
+    .otp-digit:focus { border-color: var(--neon-magenta); }
+    .otp-resend { color: var(--ink-mid); }
+    .otp-change-number { color: var(--neon-magenta); }
+    .btn-primary {
+      background: var(--neon-grad);
+      box-shadow: 0 8px 26px -8px rgba(236,72,153,0.55);
+    }
+
+    /* ---- LOADER ---- */
+    .loader-spinner {
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: var(--neon-magenta);
+    }
+    .loader-title { font-family: var(--font-display); color: var(--ink-hi); }
+    .loader-logs {
+      background: var(--charcoal);
+      border: 1px solid var(--glass-border);
+      color: var(--ink-mid);
+    }
+    .log-line.success { color: #34D399; }
+
+    /* ---- CHAT SURFACE ---- */
+    .chat-screen { background-color: var(--obsidian); }
+    .chat-header {
+      background-color: var(--midnight);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .chat-avatar { background: var(--neon-grad); color: #FFFFFF; }
+    .chat-username { font-family: var(--font-display); color: var(--ink-hi); }
+    .chat-tagline { color: var(--ink-low); }
+    .chat-messages-container { background-color: var(--obsidian); }
+    .message-bubble.user {
+      background: var(--neon-grad);
+      color: #FFFFFF;
+    }
+    .message-bubble.system {
+      background-color: var(--charcoal);
+      color: var(--ink-hi);
+      border: 1px solid var(--glass-border);
+      box-shadow: none;
+    }
+    .typing-indicator {
+      background-color: var(--charcoal);
+      border: 1px solid var(--glass-border);
+    }
+    .chips-container {
+      background-color: var(--midnight);
+      border-top: 1px solid var(--glass-border);
+    }
+    .chip-btn {
+      background-color: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--ink-mid);
+    }
+    .chip-btn:hover {
+      background-color: rgba(255,255,255,0.1);
+      color: var(--ink-hi);
+      border-color: rgba(255,255,255,0.2);
+    }
+    .chat-input-area {
+      background-color: var(--midnight);
+      border-top: 1px solid var(--glass-border);
+    }
+    .chat-input-box {
+      background-color: var(--charcoal);
+      border: 1px solid var(--glass-border);
+      color: var(--ink-hi);
+    }
+    .chat-input-box::placeholder { color: var(--ink-low); }
+    .chat-input-box:focus { border-color: var(--neon-magenta); }
+    .chat-send-btn { background: var(--neon-grad); }
+    .inline-insight-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+      box-shadow: none;
+    }
+    .inline-insight-title { color: var(--ink-hi); }
+    .inline-aff-bar { background-color: rgba(255,255,255,0.1); }
+    .inline-card-reco {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+    }
+    .reco-card-name { color: var(--ink-hi); }
+
+    /* ---- REVEAL ---- */
+    #screenCardReveal { background: var(--obsidian); }
+
+    /* ---- SCREEN 6 — HOME (feature artifact + embedded chat) ---- */
+    #screenHome {
+      padding: 0 !important;
+      background: var(--obsidian);
+      overflow: hidden;
+    }
+    .confetti-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 80;
+    }
+    .confetti-bit {
+      position: absolute;
+      top: -20px;
+      width: 8px;
+      height: 13px;
+      border-radius: 2px;
+      will-change: transform, opacity;
+    }
+    @keyframes confettiFall {
+      0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(680px) rotate(760deg); opacity: 0; }
+    }
+    .home-panel {
+      flex: 0 0 45%;
+      padding: 20px 22px 16px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .home-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+    .home-brand { display: flex; align-items: center; gap: 6px; }
+    .home-brand .splash-wordmark { font-size: 15px; letter-spacing: -0.5px; }
+    .home-brand .splash-mark { filter: drop-shadow(0 0 6px rgba(236,72,153,0.5)); }
+    .home-greeting {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-mid);
+    }
+    .artifact-hero {
+      flex-grow: 1;
+      border-radius: 22px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 11px;
+      position: relative;
+      overflow: hidden;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+    }
+    .artifact-glow {
+      position: absolute;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      filter: blur(58px);
+      opacity: 0.5;
+      top: -85px; right: -55px;
+      pointer-events: none;
+    }
+    .artifact-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+    }
+    .artifact-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: relative;
+    }
+    .artifact-icon {
+      width: 60px; height: 60px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .artifact-name {
+      font-family: var(--font-display);
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--ink-hi);
+    }
+    .artifact-sub {
+      font-size: 12px;
+      color: var(--ink-mid);
+      line-height: 1.45;
+      position: relative;
+    }
+    .artifact-meta {
+      display: flex;
+      gap: 8px;
+      position: relative;
+      margin-top: 2px;
+    }
+    .artifact-tag {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--glass-border);
+      color: var(--ink-mid);
+    }
+    .home-chat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    /* ---- HOME ENTRANCE CHOREOGRAPHY ----
+       intro:  artifact overlaid centre-screen, chat + head hidden.
+       settle: artifact glides up into place, head + chat fade in after. */
+    .home-panel { transition: border-color 0.4s ease 0.5s; }
+    .home-head { transition: opacity 0.45s ease 0.55s; }
+    .artifact-hero {
+      transition: transform 0.72s cubic-bezier(.34,.8,.3,1), box-shadow 0.6s ease;
+    }
+    .home-chat {
+      transition: opacity 0.55s ease 0.5s,
+                  transform 0.55s cubic-bezier(.25,.8,.3,1) 0.5s;
+    }
+    #screenHome.intro .home-panel { border-bottom-color: transparent; transition-delay: 0s; }
+    #screenHome.intro .home-head { opacity: 0; transition-delay: 0s; }
+    #screenHome.intro .artifact-hero {
+      transform: translateY(182px) scale(1.045);
+      box-shadow: 0 30px 70px -20px rgba(124,58,237,0.55),
+                  0 0 64px rgba(236,72,153,0.32);
+    }
+    #screenHome.intro .home-chat {
+      opacity: 0;
+      transform: translateY(38px);
+      pointer-events: none;
+      transition-delay: 0s;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container" id="appContainer">
+    
+    <!-- MOBILE FRAME -->
+    <div class="phone-wrapper" id="phoneWrapper">
+      <div class="phone-notch"></div>
+      
+      <!-- STATUS BAR -->
+      <div class="phone-status">
+        <div id="phoneTime">12:30</div>
+        <div class="status-icons">
+          <span>📶</span>
+          <span>🔋</span>
+        </div>
+      </div>
+      
+      <!-- PHONE CONTENT -->
+      <div class="phone-content" id="phoneContent">
+        
+        <!-- Global gradient defs (referenced by all loop logos) -->
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+          <defs>
+            <linearGradient id="kyfrGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#7C3AED"/>
+              <stop offset="52%" stop-color="#EC4899"/>
+              <stop offset="100%" stop-color="#F97316"/>
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <!-- SCREEN 0: SPLASH (dark + neon) -->
+        <div class="screen active" id="screenSplash">
+          <div class="splash-glow glow-violet"></div>
+          <div class="splash-glow glow-gold"></div>
+          <div class="splash-loops">
+            <svg width="430" height="430" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+              <path d="M100 100 C100 52 188 52 188 100 C188 148 100 148 100 100 C100 52 12 52 12 100 C12 148 100 148 100 100 Z"
+                stroke="url(#kyfrGrad)" stroke-width="1.1"/>
+              <path d="M100 100 C100 68 156 68 156 100 C156 132 100 132 100 100 C100 68 44 68 44 100 C44 132 100 132 100 100 Z"
+                stroke="url(#kyfrGrad)" stroke-width="1.1"/>
+            </svg>
+          </div>
+          <div class="splash-logo">
+            <div class="splash-mark">
+              <svg width="112" height="68" viewBox="0 0 100 60" fill="none" aria-hidden="true">
+                <path d="M50 30 C50 9 86 9 86 30 C86 51 50 51 50 30 C50 9 14 9 14 30 C14 51 50 51 50 30 Z"
+                  stroke="url(#kyfrGrad)" stroke-width="8.5" stroke-linecap="round"/>
+                <line x1="50" y1="7" x2="50" y2="53" stroke="url(#kyfrGrad)" stroke-width="8.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="splash-wordmark">kyfr.</div>
+            <div class="splash-tag">know your financial rizz</div>
+          </div>
+        </div>
+
+        <!-- SCREEN 1: WELCOME (DISCOVERY HUB) -->
+        <div class="screen" id="screenWelcome">
+          <div class="dark-glow glow-violet-tl"></div>
+          <div class="dark-glow glow-gold-br"></div>
+          <div class="zen-welcome">
+            <div class="zen-brandrow">
+              <div class="splash-mark">
+                <svg width="32" height="20" viewBox="0 0 100 60" fill="none" aria-hidden="true">
+                  <path d="M50 30 C50 9 86 9 86 30 C86 51 50 51 50 30 C50 9 14 9 14 30 C14 51 50 51 50 30 Z"
+                    stroke="url(#kyfrGrad)" stroke-width="9" stroke-linecap="round"/>
+                  <line x1="50" y1="8" x2="50" y2="52" stroke="url(#kyfrGrad)" stroke-width="9" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="splash-wordmark">kyfr.</div>
+            </div>
+
+            <div class="zen-header">
+              <div class="zen-title">your money has<br>a personality.</div>
+              <div class="zen-sub">let's find yours.</div>
+            </div>
+
+            <div class="zen-carousel">
+              <div class="zen-card">
+                <div class="zen-card-icon" style="background:rgba(124,58,237,0.16);box-shadow:inset 0 0 0 1px rgba(124,58,237,0.3)">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2l3 6 6 .9-4.5 4.3 1.1 6.3L12 17.8 6.4 19.5 7.5 13.2 3 8.9 9 8z"/></svg>
+                </div>
+                <div class="zen-card-text">
+                  <span class="zen-card-word">taste</span>
+                  <span class="zen-card-tag">an eye for what lasts</span>
+                </div>
+              </div>
+              <div class="zen-card">
+                <div class="zen-card-icon" style="background:rgba(236,72,153,0.16);box-shadow:inset 0 0 0 1px rgba(236,72,153,0.3)">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                </div>
+                <div class="zen-card-text">
+                  <span class="zen-card-word">freedom</span>
+                  <span class="zen-card-tag">capital into stories</span>
+                </div>
+              </div>
+              <div class="zen-card">
+                <div class="zen-card-icon" style="background:rgba(249,115,22,0.16);box-shadow:inset 0 0 0 1px rgba(249,115,22,0.3)">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FB923C" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5l8-3z"/></svg>
+                </div>
+                <div class="zen-card-text">
+                  <span class="zen-card-word">safety</span>
+                  <span class="zen-card-tag">peace of mind, protected</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="zen-cta">
+              <button class="zen-btn" id="btnStartDiscovery">start discovery (2 min)</button>
+              <button class="zen-link" id="btnAlreadyKnow">i already know my vibe. log in.</button>
+            </div>
+          </div>
+        </div>
+        <!-- SCREEN 2: OTP VERIFICATION -->
+        <div class="screen" id="screenOtp">
+          <div class="brand-header">
+            <div class="brand-logo">
+              <div class="logo-square">k</div>
+              <span>kyfr.</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-dot"></div>
+              <div class="progress-dash"></div>
+              <div class="progress-dot"></div>
+              <div class="progress-dot"></div>
+            </div>
+          </div>
+          
+          <div class="welcome-intro">
+            <div class="welcome-tag">verification</div>
+            <div class="welcome-title">enter your <br><span class="serif-italic">code</span></div>
+            <div class="welcome-body">
+              sent to <span id="displayMobile" style="font-weight: 600;">+91 98765 XXXXX</span> · <span class="otp-change-number" id="changeNumberBtn">change</span>
+            </div>
+            
+            <div class="otp-wrapper">
+              <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]*" inputmode="numeric">
+              <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]*" inputmode="numeric">
+              <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]*" inputmode="numeric">
+              <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]*" inputmode="numeric">
+              <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]*" inputmode="numeric">
+              <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]*" inputmode="numeric">
+            </div>
+            
+            <div class="otp-resend">resend code in <span id="otpTimer">0:22</span></div>
+            
+            <button class="btn-primary" id="btnOtpVerify" style="margin-top: auto;" disabled>
+              <span>verify code</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- SCREEN 3: STACKED DECK QUESTIONNAIRE -->
+        <div class="screen" id="screenQuestions">
+          <div class="quiz-progress-track">
+            <div class="quiz-progress-fill" id="quizProgressFill"></div>
+          </div>
+          <div class="deck-wrap">
+            <div class="deck-topbar">
+              <div class="deck-logo">
+                <div class="logo-square">k</div>
+                <span>kyfr.</span>
+              </div>
+              <div class="deck-timer">60 sec</div>
+            </div>
+            <div class="deck-progress" id="deckProgress">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="deck-stack">
+              <div class="deck-peek p1"></div>
+              <div class="deck-peek p2"></div>
+              <div class="deck-card" id="deckCard">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN 4: PROFILING LOADER -->
+        <div class="screen" id="screenLoader">
+          <div class="loader-container">
+            <div class="loader-spinner"></div>
+            <div class="loader-title">mapping your <span class="serif-italic">archetype</span></div>
+            <div class="loader-logs" id="loaderLogs">
+              <!-- Log lines added programmatically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN 5: ARCHETYPE FLIP CARD REVEAL -->
+        <div class="screen card-screen" id="screenCardReveal">
+          <div class="flip-stage">
+            <div class="flip-card" id="flipCard">
+              <!-- front + back faces rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN 6: HOME (feature-bridge artifact + embedded chat) -->
+        <div class="screen" id="screenHome">
+          <div class="confetti-layer" id="confettiLayer"></div>
+
+          <!-- TOP HALF — home / artifact -->
+          <div class="home-panel">
+            <div class="home-head">
+              <div class="home-brand">
+                <div class="splash-mark">
+                  <svg width="26" height="16" viewBox="0 0 100 60" fill="none" aria-hidden="true">
+                    <path d="M50 30 C50 9 86 9 86 30 C86 51 50 51 50 30 C50 9 14 9 14 30 C14 51 50 51 50 30 Z"
+                      stroke="url(#kyfrGrad)" stroke-width="9" stroke-linecap="round"/>
+                    <line x1="50" y1="8" x2="50" y2="52" stroke="url(#kyfrGrad)" stroke-width="9" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <span class="splash-wordmark">kyfr.</span>
+              </div>
+              <div class="home-greeting" id="homeGreeting">your home.</div>
+            </div>
+            <div class="artifact-hero" id="artifactHero">
+              <!-- built by JS from the feature bridge -->
+            </div>
+          </div>
+
+          <!-- BOTTOM HALF — embedded chat -->
+          <div class="home-chat">
+            <div class="chat-header">
+              <div class="chat-profile-row">
+                <div class="chat-avatar" id="avatarLetter">A</div>
+                <div>
+                  <div class="chat-username" id="displayUsername">Arjun</div>
+                  <div class="chat-tagline">conversational companion</div>
+                </div>
+              </div>
+              <div class="trust-badge-pill" id="trustStatusBadge">
+                <span class="badge-dot" style="background-color: currentColor;"></span>
+                <span id="trustStatusText">cold start</span>
+              </div>
+            </div>
+
+            <div class="chat-messages-container" id="chatMessages">
+              <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+              </div>
+            </div>
+
+            <div class="chips-container" id="chatChips">
+              <!-- Rendered by JS -->
+            </div>
+
+            <div class="chat-input-area">
+              <input type="text" class="chat-input-box" id="chatInput" placeholder="ask anything money-shaped...">
+              <button class="chat-send-btn" id="chatSendBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: ORCHESTRATION CONSOLE -->
+    <div class="orchestrator-console" id="orchestratorConsole">
+      <div class="console-header">
+        <div class="console-title">
+          <div class="pulse-dot"></div>
+          <span>kyfr. Behavioural Orchestration Engine</span>
+        </div>
+        <div class="console-subtitle">v2.1 runtime compiler</div>
+      </div>
+
+      <!-- TrustSync Control Panel -->
+      <div class="trust-sync-panel">
+        <div class="sync-text-group">
+          <div class="sync-title">Fiduciary Trust Integrations</div>
+          <div class="sync-subtitle">Link real data channels to shift response logic from "cold start assumptions" to "fiduciary grade context."</div>
+        </div>
+        <div class="toggles-group">
+          <div class="switch-wrapper">
+            <span class="switch-label">Account Aggregator (AA)</span>
+            <label class="switch">
+              <input type="checkbox" id="syncAACheckbox">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="switch-wrapper">
+            <span class="switch-label">Gmail Parsing</span>
+            <label class="switch">
+              <input type="checkbox" id="syncGmailCheckbox">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- State Vector (5 Gauges) -->
+      <div class="panel-title">Hydrated State Vector (Layer 1 metrics)</div>
+      <div class="state-vector-grid">
+        <div class="state-card">
+          <div class="state-name">Anxiety</div>
+          <div class="state-meter-bg"><div class="state-meter-fill" id="meterAnxiety" style="background-color: var(--color-anxiety)"></div></div>
+          <div class="state-val" id="valAnxiety">0.30</div>
+        </div>
+        <div class="state-card">
+          <div class="state-name">Shame</div>
+          <div class="state-meter-bg"><div class="state-meter-fill" id="meterShame" style="background-color: var(--color-shame)"></div></div>
+          <div class="state-val" id="valShame">false</div>
+        </div>
+        <div class="state-card">
+          <div class="state-name">Avoidance</div>
+          <div class="state-meter-bg"><div class="state-meter-fill" id="meterAvoidance" style="background-color: var(--color-avoidance)"></div></div>
+          <div class="state-val" id="valAvoidance">0.20</div>
+        </div>
+        <div class="state-card">
+          <div class="state-name">Stability</div>
+          <div class="state-meter-bg"><div class="state-meter-fill" id="meterStability" style="background-color: var(--color-stability)"></div></div>
+          <div class="state-val" id="valStability">0.50</div>
+        </div>
+        <div class="state-card">
+          <div class="state-name">Receptivity</div>
+          <div class="state-meter-bg"><div class="state-meter-fill" id="meterReceptivity" style="background-color: var(--color-receptivity)"></div></div>
+          <div class="state-val" id="valReceptivity">0.70</div>
+        </div>
+      </div>
+
+      <!-- Console Split Area -->
+      <div class="console-split">
+        
+        <!-- Left Side: Routing and Critique logs -->
+        <div class="console-left-split">
+          
+          <div class="console-panel" style="flex-shrink: 0;">
+            <div class="panel-title">Active Need State Routing</div>
+            <div class="need-state-active" id="activeNeedState">GRANT_CLARITY</div>
+            <div class="need-state-desc" id="activeNeedStateDesc">Answer one specific financial question clearly, specifically, without overwhelming. Suppress recommendations if anxiety is high.</div>
+          </div>
+
+          <div class="console-panel" style="flex-grow: 1;">
+            <div class="panel-title">Adversarial Critic Evaluation (Generator vs Critic)</div>
+            <div class="critic-logs-container" id="criticLogs">
+              <!-- Logs loaded dynamically -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Side: YAML Runtime Config -->
+        <div class="console-panel">
+          <div class="panel-title">Compiled YAML Payload (Prompt context & directives)</div>
+          <div class="yaml-console" id="yamlConsole">
+            <!-- Compiled YAML loaded dynamically -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Fiduciary Tools Triggers -->
+      <div class="panel-title" style="margin-bottom: 0;">Executed Core Engine Tools (Stateless)</div>
+      <div class="fiduciary-hub">
+        <div class="tool-trigger-card" id="toolCalculator">
+          <div class="tool-led"></div>
+          <div class="tool-label">Safe-Limit Calculator</div>
+        </div>
+        <div class="tool-trigger-card" id="toolCardMatrix">
+          <div class="tool-led"></div>
+          <div class="tool-label">Card × Merchant matrix</div>
+        </div>
+        <div class="tool-trigger-card" id="toolAA">
+          <div class="tool-led"></div>
+          <div class="tool-label">MoneyOne AA pipeline</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // --- APP DATA CONFIG & STATE ---
+    // Archetype glyph + tint palette (shared by deck + reveal)
+    const ARCH_GLYPH = {
+      explorer:  { glyph: "✺", accent: "#C84F7C", tint: "#FFF0F4" },
+      saver:     { glyph: "◆", accent: "#4F6FCB", tint: "#EEF3FF" },
+      maximiser: { glyph: "↗", accent: "#1F8C77", tint: "#E7F6F0" },
+      curator:   { glyph: "◈", accent: "#B07A2A", tint: "#FFF6E4" },
+      simplist:  { glyph: "◯", accent: "#5C6873", tint: "#F4F5F7" }
+    };
+
+    const QUESTIONS = [
+      {
+        tag: "dream trip",
+        question: "A dream trip invite lands for next weekend. You:",
+        options: [
+          { text: "Drop everything and book it.", score: "explorer" },
+          { text: "Check if your safety net covers it first.", score: "saver" },
+          { text: "Spend an hour finding the best deal before deciding.", score: "maximiser" }
+        ]
+      },
+      {
+        tag: "new phone",
+        question: "You need a new phone. You:",
+        options: [
+          { text: "Buy the one built to last, whatever it costs.", score: "curator" },
+          { text: "Get the most practical option that fits the budget.", score: "saver" },
+          { text: "Keep it simple — whatever works is fine.", score: "simplist" }
+        ]
+      },
+      {
+        tag: "unexpected money",
+        question: "Money lands in your account unexpectedly. You:",
+        options: [
+          { text: "Plan something you've been wanting to experience.", score: "explorer" },
+          { text: "Put it away without thinking twice.", score: "simplist" },
+          { text: "Research the highest-returning place to put it.", score: "maximiser" }
+        ]
+      },
+      {
+        tag: "payday",
+        question: "Your salary just hit your account. First instinct:",
+        options: [
+          { text: "Move a chunk straight into savings.", score: "saver" },
+          { text: "Set aside funds for something well-made you've wanted.", score: "curator" },
+          { text: "Map which card and offers to ride this month.", score: "maximiser" }
+        ]
+      },
+      {
+        tag: "a free evening",
+        question: "A free evening and a little money to spend. You:",
+        options: [
+          { text: "Find a new place or experience to try.", score: "explorer" },
+          { text: "Do something easy and familiar — no fuss.", score: "simplist" },
+          { text: "Treat yourself to one really good thing.", score: "curator" }
+        ]
+      }
+    ];
+
+    // Archetype reveal data — flip card (front hype / back insight)
+    const ARCHETYPES = {
+      curator: {
+        name: "the curator",
+        superpower: "taste",
+        accent: "#B07A2A",
+        accentSoft: "rgba(176,122,42,0.14)",
+        gradient: "linear-gradient(155deg, #FFF6E4 0%, #FFE7C3 100%)",
+        ink: "#3A2A12",
+        score: 92,
+        hype: "you have an eye for the exceptional. you don't just buy things — you invest in quality that lasts a lifetime.",
+        question: "but with your wealth tied up in premium goods — is enough of your capital liquid and ready to move if life shifts tomorrow?",
+        metricName: "liquidity ratio",
+        metricUnit: "% liquid",
+        metricValue: 30,
+        metricHealthy: 65,
+        metricLabel: "70% locked",
+        feature: "the liquidity ladder",
+        bridgeCta: "build my liquidity ladder",
+        closing: "your taste is an asset — let's make it liquid."
+      },
+      saver: {
+        name: "the saver",
+        superpower: "safety",
+        accent: "#4F6FCB",
+        accentSoft: "rgba(79,111,203,0.14)",
+        gradient: "linear-gradient(155deg, #EEF3FF 0%, #D7E0FA 100%)",
+        ink: "#1A2444",
+        score: 96,
+        hype: "you've built an incredible fortress. your peace of mind is your superpower — you are always protected.",
+        question: "but is your shield so heavy that it's slowing you down? while your money is 'safe,' is it growing fast enough to outrun inflation?",
+        metricName: "cash drag",
+        metricUnit: "% real return",
+        metricValue: 42,
+        metricHealthy: 70,
+        metricLabel: "-4.2% / year",
+        feature: "the growth shield",
+        bridgeCta: "upgrade my shield",
+        closing: "a shield that doesn't grow eventually shrinks."
+      },
+      maximiser: {
+        name: "the maximiser",
+        superpower: "math",
+        accent: "#1F8C77",
+        accentSoft: "rgba(31,140,119,0.14)",
+        gradient: "linear-gradient(155deg, #E7F6F0 0%, #CDEDDF 100%)",
+        ink: "#0F2A24",
+        score: 94,
+        hype: "you have a brilliant eye for the mathematical edge. nothing slips past your analytical radar.",
+        question: "but in the hunt for the perfect deal — are you accidentally trading away your most precious asset: your time and mental bandwidth?",
+        metricName: "time-to-savings roi",
+        metricUnit: "value / hour",
+        metricValue: 25,
+        metricHealthy: 80,
+        metricLabel: "negative hourly yield",
+        feature: "the bandwidth buyer",
+        bridgeCta: "deploy the bandwidth buyer",
+        closing: "your brain is for big things — we'll handle the small math."
+      },
+      explorer: {
+        name: "the explorer",
+        superpower: "freedom",
+        accent: "#C84F7C",
+        accentSoft: "rgba(200,79,124,0.14)",
+        gradient: "linear-gradient(155deg, #FFF0F4 0%, #FFDCE6 100%)",
+        ink: "#3A1A2A",
+        score: 88,
+        hype: "you are a master of life-dividends. you convert capital into stories and experiences that never fade or depreciate.",
+        question: "memories are priceless — but they have zero resale value. is your adventure runway ready to handle a sudden macro-shock?",
+        metricName: "financial runway",
+        metricUnit: "days of cover",
+        metricValue: 14,
+        metricHealthy: 90,
+        metricLabel: "14 days",
+        feature: "the adventure runway",
+        bridgeCta: "start my adventure runway",
+        closing: "protect the adventures you haven't had yet."
+      },
+      simplist: {
+        name: "the simplist",
+        superpower: "peace",
+        accent: "#5C6873",
+        accentSoft: "rgba(92,104,115,0.14)",
+        gradient: "linear-gradient(155deg, #F4F5F7 0%, #DDE1E6 100%)",
+        ink: "#1B2230",
+        score: 90,
+        hype: "you've mastered the art of mental peace. you keep your financial life uncluttered so you can focus on what truly matters.",
+        question: "while you're tuning out the noise — is a silent tax of high fees and missed advantages slowly eroding the wealth you work so hard for?",
+        metricName: "passive erosion",
+        metricUnit: "lost / month",
+        metricValue: 35,
+        metricHealthy: 90,
+        metricLabel: "₹2,400 / mo lost",
+        feature: "the auto-pilot radar",
+        bridgeCta: "turn on the radar",
+        closing: "simplicity shouldn't cost you your progress."
+      }
+    };
+
+    // Chat Pre-sets / Prompt chips database
+    const CHIP_PROMPTS = [
+      { id: "p1", text: "Can I buy a new phone for ₹15,000?", label: "affordability" },
+      { id: "p2", text: "MacBook or wait for Amazon sale?", label: "decision_support" },
+      { id: "p3", text: "I just sent ₹12,000 home to my parents.", label: "family_care" },
+      { id: "p4", text: "I spent ₹8,000 at dinner last night and feel terrible.", label: "shame_rebound" },
+      { id: "p5", text: "I want to save for a trip to Goa in December.", label: "goal_crystallise" }
+    ];
+
+    // Main App State
+    let state = {
+      currentScreen: "Welcome",
+      mobileNum: "",
+      onboardingScores: { curator: 0, saver: 0, maximiser: 0, explorer: 0, simplist: 0 },
+      currentQuestionIdx: 0,
+      assignedArchetype: "saver", // default
+      aaConnected: false,
+      gmailConnected: false,
+      chatHistory: [],
+      
+      // Dynamic State Vector (Orchestrator Console metrics)
+      stateVector: {
+        anxiety: 0.30,
+        shame: false,
+        avoidance: 0.15,
+        stability: 0.50,
+        receptivity: 0.70
+      },
+      currentNeedState: "GRANT_CLARITY",
+      currentNeedStateDesc: "Answer one specific financial question clearly, specifically, without overwhelming. Suppress recommendations if anxiety is high."
+    };
+
+    // --- UI NAVIGATION & ROUTING ---
+    // Status-bar chrome per screen ({ bg, light })
+    const SCREEN_CHROME = {
+      Splash:     { bg: '#0B0B0F', light: true },
+      Welcome:    { bg: '#0B0B0F', light: true },
+      Otp:        { bg: '#0B0B0F', light: true },
+      Questions:  { bg: '#0E0E10', light: true },
+      Loader:     { bg: '#0B0B0F', light: true },
+      CardReveal: { bg: '#0B0B0F', light: true },
+      Home:       { bg: '#121218', light: true }
+    };
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
+      const activeScreen = document.getElementById('screen' + screenId);
+      if (activeScreen) {
+        activeScreen.classList.add('active');
+        state.currentScreen = screenId;
+
+        // Scroll to top of phone content
+        document.getElementById('phoneContent').scrollTop = 0;
+      }
+
+      // Theme the iOS status bar to match the screen background
+      const chrome = SCREEN_CHROME[screenId];
+      if (chrome) {
+        const statusBar = document.querySelector('.phone-status');
+        statusBar.style.backgroundColor = chrome.bg;
+        statusBar.classList.toggle('status-light', chrome.light);
+      }
+    }
+
+    // Time Updater
+    function updatePhoneTime() {
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      document.getElementById('phoneTime').textContent = `${hours}:${minutes}`;
+    }
+    setInterval(updatePhoneTime, 30000);
+    updatePhoneTime();
+
+    // --- OTP INPUT AUTO-FORWARD ---
+    const otpInputs = document.querySelectorAll('.otp-digit');
+    otpInputs.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        const val = e.target.value;
+        if (val.length === 1 && index < otpInputs.length - 1) {
+          otpInputs[index + 1].focus();
+        }
+        checkOtpVerificationState();
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+          otpInputs[index - 1].focus();
+        }
+      });
+    });
+
+    function checkOtpVerificationState() {
+      const allFilled = Array.from(otpInputs).every(inp => inp.value.length === 1);
+      document.getElementById('btnOtpVerify').disabled = !allFilled;
+    }
+
+    // --- SPLASH + WELCOME (DISCOVERY HUB) ---
+    // Apply splash status chrome on first paint, then ease into the welcome hub.
+    showScreen("Splash");
+    setTimeout(() => showScreen("Welcome"), 2600);
+
+    // "start discovery" → the situational quiz (slides up via CSS)
+    document.getElementById('btnStartDiscovery').addEventListener('click', () => {
+      showScreen("Questions");
+      renderQuestion();
+    });
+
+    // "i already know my vibe. log in." → OTP login
+    document.getElementById('btnAlreadyKnow').addEventListener('click', () => {
+      showScreen("Otp");
+      setTimeout(() => otpInputs[0].focus(), 150);
+    });
+
+    document.getElementById('changeNumberBtn').addEventListener('click', () => {
+      showScreen("Welcome");
+    });
+
+    // Returning user logging in → straight to their home + chat (skip the quiz)
+    document.getElementById('btnOtpVerify').addEventListener('click', () => {
+      goToHome(false);
+    });
+
+    // --- STACKED DECK QUESTIONNAIRE ---
+    function deckRing(accent) {
+      return `<svg class="deck-ring" width="148" height="148" viewBox="0 0 150 150">
+        <circle cx="75" cy="75" r="70" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1.5"/>
+        <circle cx="75" cy="75" r="52" fill="none" stroke="rgba(255,255,255,0.11)" stroke-width="1.5"/>
+        <circle cx="75" cy="75" r="33" fill="none" stroke="${accent}" stroke-width="2" opacity="0.6"/>
+        <circle cx="75" cy="75" r="6" fill="${accent}"/>
+      </svg>`;
+    }
+
+    function renderQuestion() {
+      const idx = state.currentQuestionIdx;
+      const current = QUESTIONS[idx];
+
+      // Progress dots
+      const prog = document.getElementById('deckProgress');
+      prog.innerHTML = '';
+      for (let i = 0; i < QUESTIONS.length; i++) {
+        const d = document.createElement('div');
+        d.className = 'deck-pdot' + (i === idx ? ' active' : (i < idx ? ' done' : ''));
+        prog.appendChild(d);
+      }
+
+      // Thin top progress bar
+      document.getElementById('quizProgressFill').style.width =
+        (((idx + 1) / QUESTIONS.length) * 100) + '%';
+
+      // Decorative accent — archetype tint of the first option
+      const accent = ARCH_GLYPH[current.options[0].score].accent;
+      const num = String(idx + 1).padStart(2, '0');
+
+      const card = document.getElementById('deckCard');
+      card.classList.remove('slide-out');
+      card.innerHTML = `
+        ${deckRing(accent)}
+        <div class="deck-qmeta">
+          <span>Q${num} · ${current.tag}</span>
+          <span>${idx + 1} / ${QUESTIONS.length}</span>
+        </div>
+        <div class="deck-question">${current.question}</div>
+        <div class="deck-options"></div>
+        <div class="deck-foot">tap to slide · no wrong answers</div>
+      `;
+
+      // One-directional swipe: each new card slides in from the right
+      // (the previous one exited to the left).
+      if (idx > 0) {
+        card.style.transition = 'none';
+        card.style.transform = 'translateX(112%)';
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          card.style.transition = '';
+          card.style.transform = '';
+        }));
+      }
+
+      const optBox = card.querySelector('.deck-options');
+      current.options.forEach(opt => {
+        const g = ARCH_GLYPH[opt.score];
+        const btn = document.createElement('button');
+        btn.className = 'deck-opt';
+        btn.innerHTML = `
+          <span class="deck-glyph" style="background:${g.tint};color:${g.accent}">${g.glyph}</span>
+          <span>${opt.text}</span>
+        `;
+        btn.addEventListener('click', () => {
+          if (card.classList.contains('slide-out')) return;
+          btn.classList.add('picked');
+          state.onboardingScores[opt.score] += 1;
+          setTimeout(() => {
+            card.classList.add('slide-out');
+            setTimeout(() => {
+              if (state.currentQuestionIdx < QUESTIONS.length - 1) {
+                state.currentQuestionIdx++;
+                renderQuestion();
+              } else {
+                calculatePersonality();
+              }
+            }, 420);
+          }, 240);
+        });
+        optBox.appendChild(btn);
+      });
+    }
+
+    function calculatePersonality() {
+      showScreen("Loader");
+      
+      // Score calculation
+      let maxScore = -1;
+      let winner = 'saver';
+      for (const [key, val] of Object.entries(state.onboardingScores)) {
+        if (val > maxScore) {
+          maxScore = val;
+          winner = key;
+        }
+      }
+      state.assignedArchetype = winner;
+
+      // Logging Simulation
+      const logs = [
+        { text: "initializing state vectors...", delay: 200 },
+        { text: "scoring psychometric behavioral signals...", delay: 600 },
+        { text: "mapping responses to CRISP pillars...", delay: 1000 },
+        { text: `detected highest affinity: ${winner.toUpperCase()}`, delay: 1400, success: true },
+        { text: "assembling personalized visual context...", delay: 1800 },
+        { text: "compiling core engine YAML direct...", delay: 2200, success: true }
+      ];
+
+      const logsBox = document.getElementById('loaderLogs');
+      logsBox.innerHTML = '';
+
+      logs.forEach(log => {
+        setTimeout(() => {
+          const div = document.createElement('div');
+          div.className = `log-line ${log.success ? 'success' : ''}`;
+          div.innerHTML = `<span class="log-bullet">❯</span> <span>${log.text}</span>`;
+          logsBox.appendChild(div);
+          logsBox.scrollTop = logsBox.scrollHeight;
+        }, log.delay);
+      });
+
+      // Navigate to Card Reveal
+      setTimeout(() => {
+        showAhaCard();
+        showScreen("CardReveal");
+      }, 2700);
+    }
+
+    // --- ARCHETYPE FLIP CARD REVEAL ---
+    let flipAutoTimer = null;
+
+    function gaugeSVG(value, accent, ink) {
+      const R = 64, C = Math.PI * R;
+      const filled = (value / 100) * C;
+      const ang = Math.PI - (value / 100) * Math.PI;
+      const cx = 80 + R * Math.cos(ang), cy = 80 - R * Math.sin(ang);
+      return `<svg width="150" height="88" viewBox="0 0 160 92" style="overflow:visible">
+        <path d="M 16 80 A ${R} ${R} 0 0 1 144 80" stroke="${ink}1A" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <path d="M 16 80 A ${R} ${R} 0 0 1 144 80" stroke="${accent}" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="${filled} ${C}"/>
+        <circle cx="${cx}" cy="${cy}" r="6" fill="${accent}" stroke="#fff" stroke-width="2"/>
+      </svg>`;
+    }
+
+    function insightBarHTML(a) {
+      const v = Math.max(0, Math.min(100, Math.abs(a.metricValue)));
+      const h = Math.max(0, Math.min(100, a.metricHealthy));
+      return `
+        <div class="ib-head">
+          <span style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:${a.ink};opacity:.55">${a.metricName}</span>
+          <span style="font-size:11px;color:${a.ink};opacity:.5">${a.metricUnit}</span>
+        </div>
+        <div class="ib-track" style="background:${a.ink}10">
+          <div class="ib-healthy" style="left:${h}%;background:${a.accent}1F;border-left:1px dashed ${a.accent}66"></div>
+          <div class="ib-fill" style="width:${v}%;background:linear-gradient(90deg, ${a.accent}, ${a.accent}CC)"></div>
+          <div class="ib-youtag" style="left:${v}%;color:${a.ink};box-shadow:0 2px 6px ${a.ink}1A">you</div>
+        </div>
+        <div class="ib-readout" style="border-top:1px dashed ${a.ink}1F">
+          <span style="font-size:12px;color:${a.ink};opacity:.6">your current reading</span>
+          <span style="font-size:18px;font-weight:800;color:${a.accent};letter-spacing:-.4px">${a.metricLabel}</span>
+        </div>
+      `;
+    }
+
+    function showAhaCard() {
+      const a = ARCHETYPES[state.assignedArchetype];
+      const fc = document.getElementById('flipCard');
+      fc.classList.remove('flipped');
+
+      fc.innerHTML = `
+        <div class="flip-face flip-front" style="background:${a.gradient};color:${a.ink};box-shadow:0 24px 50px -28px ${a.ink}66, inset 0 1px 0 rgba(255,255,255,.6)">
+          <div class="fc-blob" style="background:${a.accent}"></div>
+          <div class="fc-row">
+            <span class="fc-eyebrow" style="color:${a.accent}">your archetype</span>
+            <div class="fc-pips">
+              <div class="fc-pip" style="width:22px;background:${a.accent}"></div>
+              <div class="fc-pip" style="width:6px;background:${a.ink}22"></div>
+            </div>
+          </div>
+          <div class="fc-archname">${a.name}</div>
+          <div class="fc-superpower">${a.superpower}.</div>
+          <div class="fc-hype">${a.hype}</div>
+          <div class="fc-spacer"></div>
+          <div class="fc-gaugebox" style="border:1px solid ${a.ink}10">
+            <div class="fc-gauge-row">
+              ${gaugeSVG(a.score, a.accent, a.ink)}
+              <div style="padding-bottom:6px">
+                <div class="fc-gauge-label">superpower index</div>
+                <div class="fc-gauge-val" style="color:${a.accent}">${a.score}<span style="font-size:14px;opacity:.55"> /100</span></div>
+              </div>
+            </div>
+          </div>
+          <button class="fc-reveal-btn" id="fcRevealBtn" style="border:1px solid ${a.ink}22;color:${a.ink}">
+            tap to see what's underneath  &#8964;
+          </button>
+        </div>
+        <div class="flip-face flip-back" style="color:${a.ink};box-shadow:0 24px 50px -28px ${a.ink}66, inset 0 1px 0 rgba(255,255,255,.6)">
+          <div class="fc-wash" style="background:${a.gradient}"></div>
+          <div class="fc-row">
+            <button class="fc-backbtn" id="fcBackBtn" style="color:${a.ink}">&#8249;&nbsp;back to hype</button>
+            <div class="fc-pips">
+              <div class="fc-pip" style="width:6px;background:${a.ink}22"></div>
+              <div class="fc-pip" style="width:22px;background:${a.accent}"></div>
+            </div>
+          </div>
+          <div class="fc-q-eyebrow" style="color:${a.accent}">a gentle question</div>
+          <div class="fc-question">${a.question}</div>
+          <div class="fc-spacer"></div>
+          <div class="fc-insightbox" style="border:1px solid ${a.ink}10">${insightBarHTML(a)}</div>
+          <div class="fc-closing">"${a.closing}"</div>
+          <button class="fc-bridge" id="btnBridgeCta" style="background:${a.ink};box-shadow:0 10px 26px -10px ${a.accent}">
+            <span>${a.bridgeCta}</span>
+            <span>&#8594;</span>
+          </button>
+        </div>
+      `;
+
+      const flip = (to) => {
+        if (flipAutoTimer) { clearTimeout(flipAutoTimer); flipAutoTimer = null; }
+        fc.classList.toggle('flipped', to);
+      };
+      document.getElementById('fcRevealBtn').addEventListener('click', (e) => { e.stopPropagation(); flip(true); });
+      document.getElementById('fcBackBtn').addEventListener('click', (e) => { e.stopPropagation(); flip(false); });
+      fc.addEventListener('click', (e) => {
+        if (e.target.closest('button')) return;
+        flip(!fc.classList.contains('flipped'));
+      });
+      document.getElementById('btnBridgeCta').addEventListener('click', () => goToHome(true));
+
+      // Auto-flip to the insight side after a beat
+      flipAutoTimer = setTimeout(() => fc.classList.add('flipped'), 3400);
+    }
+
+    // --- FEATURE-BRIDGE ARTIFACT ICONS (per archetype) ---
+    const ARCH_FEATURE_ICON = {
+      saver:     '<path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5l8-3z"/><path d="M9 12l2 2 4-4"/>',
+      curator:   '<path d="M8 3v18M16 3v18M8 7.5h8M8 12h8M8 16.5h8"/>',
+      maximiser: '<path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/>',
+      explorer:  '<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>',
+      simplist:  '<circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="8.4"/><path d="M12 12l6-4.4"/>'
+    };
+
+    // --- BUILD THE HOME ARTIFACT (from the feature bridge) ---
+    function buildArtifact(celebrate) {
+      const a = ARCHETYPES[state.assignedArchetype];
+      const icon = ARCH_FEATURE_ICON[state.assignedArchetype] || ARCH_FEATURE_ICON.saver;
+      document.getElementById('artifactHero').innerHTML = `
+        <div class="artifact-glow" style="background:${a.accent}"></div>
+        <div class="artifact-eyebrow" style="color:${a.accent}">
+          <span>&#10022;</span>
+          <span>${celebrate ? 'artifact unlocked' : 'your artifact'}</span>
+        </div>
+        <div class="artifact-row">
+          <div class="artifact-icon" style="background:${a.accent}26;box-shadow:inset 0 0 0 1px ${a.accent}55, 0 0 30px ${a.accent}3D">
+            <svg width="29" height="29" viewBox="0 0 24 24" fill="none" stroke="${a.accent}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${icon}</svg>
+          </div>
+          <div>
+            <div class="artifact-name">${a.feature}</div>
+            <div class="artifact-sub">built for the ${state.assignedArchetype} in you.</div>
+          </div>
+        </div>
+        <div class="artifact-sub" style="font-style:italic">"${a.closing}"</div>
+        <div class="artifact-meta">
+          <span class="artifact-tag">momentum</span>
+          <span class="artifact-tag">tracked here</span>
+        </div>
+      `;
+    }
+
+    // --- CONFETTI BURST ---
+    function fireConfetti() {
+      const layer = document.getElementById('confettiLayer');
+      layer.innerHTML = '';
+      const colors = ['#7C3AED', '#EC4899', '#F97316', '#F4F4F8'];
+      for (let i = 0; i < 60; i++) {
+        const bit = document.createElement('div');
+        bit.className = 'confetti-bit';
+        bit.style.left = (Math.random() * 100) + '%';
+        bit.style.background = colors[i % colors.length];
+        bit.style.animation = `confettiFall ${(1.6 + Math.random() * 1.5).toFixed(2)}s cubic-bezier(.25,.6,.5,1) ${(Math.random() * 0.5).toFixed(2)}s forwards`;
+        layer.appendChild(bit);
+      }
+      setTimeout(() => { layer.innerHTML = ''; }, 3800);
+    }
+
+    // --- TRANSITION INTO THE HOME SCREEN (artifact + embedded chat) ---
+    function goToHome(celebrate) {
+      buildArtifact(celebrate);
+      document.getElementById('homeGreeting').textContent = celebrate ? 'just unlocked.' : 'welcome back.';
+      showScreen("Home");
+      initializeChatSession();
+
+      const home = document.getElementById('screenHome');
+      if (celebrate) {
+        // Choreographed entrance:
+        // 1) confetti  2) artifact overlaid centre-screen
+        // 3) artifact glides up into place  4) chat layer fades in below
+        home.classList.add('intro');
+        fireConfetti();
+        setTimeout(() => home.classList.remove('intro'), 1500);
+      } else {
+        home.classList.remove('intro');
+      }
+    }
+
+    // --- CONVERSATION LAYER SIMULATOR ---
+    function initializeChatSession() {
+      // Init gauges
+      updateStateGauges(state.stateVector);
+      
+      // System opening message based on Archetype
+      const name = state.mobileNum ? "Arjun" : "Arjun";
+      document.getElementById('displayUsername').textContent = name;
+      document.getElementById('avatarLetter').textContent = name.charAt(0);
+      
+      let openingMsg = "";
+      switch(state.assignedArchetype) {
+        case 'saver':
+          openingMsg = `hi ${name.toLowerCase()}. it looks like building your fortress keeps you steady. i'm here to help you protect that buffer without feeling guilty when you decide to spend. what's on your mind financially today?`;
+          break;
+        case 'simplist':
+          openingMsg = `hi ${name.toLowerCase()}. i noticed you value simplicity and tuning out the noise. i'll keep things direct — no notification spam, no complex spreadsheets. what purchase decision are you weighing right now?`;
+          break;
+        case 'explorer':
+          openingMsg = `hi ${name.toLowerCase()}. i see you prioritize travel stories and experiences. let's build that adventure runway so your next getaway is already paid for. what are you about to buy?`;
+          break;
+        case 'curator':
+          openingMsg = `hi ${name.toLowerCase()}. you have an eye for quality and things that last. my job is balancing your premium buys with cash flow. what's the latest craft item on your mind?`;
+          break;
+        case 'maximiser':
+          openingMsg = `hi ${name.toLowerCase()}. you've got a brilliant eye for the mathematical edge. let's get those yields on autopilot so you aren't losing hours in banking apps. what are we optimising today?`;
+          break;
+      }
+
+      appendSystemMessage(openingMsg);
+
+      // Render prompt chips
+      renderPromptChips();
+
+      // Hydrate initial console states
+      triggerConsoleOrchestration({
+        raw_text: "[onboarding payload completed]",
+        need_state: "CRYSTALLISE_GOAL",
+        anxiety: 0.30,
+        shame: false,
+        avoidance: 0.15,
+        stability: 0.50,
+        receptivity: 0.85,
+        generator_candidates: [
+          { text: `system welcome payload for ${state.assignedArchetype}`, selected: true, reason: "matches persona initialization profile vector." }
+        ],
+        tool_calculator: false,
+        tool_card: false,
+        tool_aa: false
+      });
+    }
+
+    function renderPromptChips() {
+      const chipsBox = document.getElementById('chatChips');
+      chipsBox.innerHTML = '';
+      
+      CHIP_PROMPTS.forEach(chip => {
+        const btn = document.createElement('button');
+        btn.className = 'chip-btn';
+        btn.textContent = chip.text;
+        btn.addEventListener('click', () => {
+          handleUserSend(chip.text);
+        });
+        chipsBox.appendChild(btn);
+      });
+    }
+
+    function appendUserMessage(text) {
+      const container = document.getElementById('chatMessages');
+      const msg = document.createElement('div');
+      msg.className = 'message-bubble user';
+      msg.innerHTML = `
+        <div>${text}</div>
+        <div class="message-time">${getCurrentTimeStr()}</div>
+      `;
+      container.appendChild(msg);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function appendSystemMessage(text, inlineCardHTML = null) {
+      const container = document.getElementById('chatMessages');
+      const msg = document.createElement('div');
+      msg.className = 'message-bubble system';
+      msg.innerHTML = `
+        <div>${text}</div>
+        ${inlineCardHTML ? inlineCardHTML : ''}
+        <div class="message-time" style="text-align: left;">${getCurrentTimeStr()}</div>
+      `;
+      container.appendChild(msg);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function showTypingIndicator(show) {
+      const indicator = document.getElementById('typingIndicator');
+      if (show) {
+        indicator.style.display = 'flex';
+        const container = document.getElementById('chatMessages');
+        container.scrollTop = container.scrollHeight;
+      } else {
+        indicator.style.display = 'none';
+      }
+    }
+
+    function getCurrentTimeStr() {
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      let ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      return `${hours}:${minutes} ${ampm}`;
+    }
+
+    // --- CHAT LOGIC SIMULATOR ---
+    function handleUserSend(text) {
+      if (!text.trim()) return;
+      
+      appendUserMessage(text);
+      document.getElementById('chatInput').value = '';
+      
+      showTypingIndicator(true);
+      
+      // Simulate compiler delay
+      setTimeout(() => {
+        showTypingIndicator(false);
+        processEngineResponse(text);
+      }, 1200);
+    }
+
+    // Bind inputs
+    document.getElementById('chatSendBtn').addEventListener('click', () => {
+      const text = document.getElementById('chatInput').value;
+      handleUserSend(text);
+    });
+
+    document.getElementById('chatInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const text = document.getElementById('chatInput').value;
+        handleUserSend(text);
+      }
+    });
+
+    // --- STATE MACHINE RUNTIME & COMPILER IN JS ---
+    function processEngineResponse(userMsg) {
+      const cleanMsg = userMsg.toLowerCase();
+      let responseText = "";
+      let inlineCardHTML = null;
+      
+      // Runtime simulation details
+      let needState = "GRANT_CLARITY";
+      let anxiety = 0.30;
+      let shame = false;
+      let avoidance = 0.15;
+      let stability = 0.60;
+      let receptivity = 0.70;
+      
+      let candidates = [];
+      let toolCalc = false;
+      let toolCard = false;
+      let toolAA = state.aaConnected;
+
+      // SPECIFIC INTENT FLOW ROUTING
+      if (cleanMsg.includes("phone") || cleanMsg.includes("₹15,000") || cleanMsg.includes("15k")) {
+        // Affordability Check Intent (S1)
+        needState = "GRANT_CLARITY";
+        anxiety = 0.35;
+        stability = 0.75;
+        receptivity = 0.80;
+        toolCalc = true;
+        toolCard = true;
+        
+        let limit = state.aaConnected ? 24000 : 18000;
+        let isWithin = 15000 <= limit;
+
+        responseText = `the phone fits within your safe limit of ₹${limit.toLocaleString()} for this month. if you buy it, i suggest using your ${state.aaConnected ? 'HDFC Millennia card to lock in 5% cashback (₹750)' : 'primary credit card'}.`;
+        
+        inlineCardHTML = `
+          <div class="inline-insight-card">
+            <div class="inline-insight-header">
+              <span>Affordability Calculation</span>
+              <span style="color: #059669; font-weight: 700;">safe to spend</span>
+            </div>
+            <div class="inline-insight-title">₹15,000 Purchase</div>
+            <div style="font-size:12px; color:var(--ink-mid);">Your Monthly Safe Limit: ₹${limit.toLocaleString()}</div>
+            <div class="inline-aff-bar">
+              <div class="inline-aff-progress" style="width: ${(15000/limit * 100).toFixed(0)}%"></div>
+            </div>
+            ${state.aaConnected ? `
+              <div class="inline-card-reco">
+                <div>
+                  <div class="reco-card-name">HDFC Millennia</div>
+                  <div style="font-size: 9px; color: var(--ink-mid);">5% Cashback Gated</div>
+                </div>
+                <div class="reco-card-benefit">+₹750 saved</div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+
+        candidates = [
+          { text: `no, ₹15,000 is too much. you shouldn't splurge and exceed your savings buffer.`, selected: false, reason: "Violates voice principle: uses shame-framing ('splurge') and scolding tone." },
+          { text: `the phone fits within your safe limit of ₹${limit.toLocaleString()} for this month. if you buy it, i suggest using your ${state.aaConnected ? 'HDFC Millennia card to lock in 5% cashback (₹750)' : 'primary card'}.`, selected: true, reason: "Excellent. Answers the question directly using specific safety limit, suggests best card dynamically." },
+          { text: `you can afford the phone. by the way, we also have premium partner listings offering personal loans for gadgets.`, selected: false, reason: "Rejected: Proactively pushing product partner listings at early stage dings user trust." }
+        ];
+
+      } else if (cleanMsg.includes("macbook") || cleanMsg.includes("sale") || cleanMsg.includes("decide")) {
+        // Purchase Decision Support (S3)
+        needState = "STABILISE_DECISION";
+        anxiety = 0.45;
+        stability = 0.25; // Oscillating
+        receptivity = 0.85;
+        toolCalc = true;
+        toolCard = true;
+
+        responseText = `a macbook is a major buy. if you wait for the amazon sale, the price drop could save you ₹12,000, and it buys you 3 weeks of time to see if this is a need or a passing spark. which card to use? we'll evaluate that closer to the date once we see the exact merchant rewards matrix.`;
+        
+        inlineCardHTML = `
+          <div class="inline-insight-card">
+            <div class="inline-insight-header">
+              <span>Decision Comparison</span>
+              <span style="color: var(--ink-mid);">oscillating</span>
+            </div>
+            <div class="inline-insight-title">MacBook Purchase</div>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top:10px;">
+              <div style="display:flex; justify-content:space-between; font-size:12px;">
+                <span>Option A: Buy Now (Instant satisfaction)</span>
+                <strong>₹85,000</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; color: #059669;">
+                <span>Option B: Wait for Sale (Estimated)</span>
+                <strong>₹73,000 (-14%)</strong>
+              </div>
+            </div>
+          </div>
+        `;
+
+        candidates = [
+          { text: `i think you should wait. you don't need a laptop right now and it will hurt your bank account.`, selected: false, reason: "Rejected: System is making the choice for the user, violating STABILISE_DECISION directive ('let the user decide')." },
+          { text: `a macbook is a major buy. if you wait for the amazon sale, the price drop could save you ₹12,000, and it buys you 3 weeks of time to see if this is a need or a passing spark.`, selected: true, reason: "Perfect. Lays out the tradeoffs (price vs time delay) neutrally and leaves decision agency with user." },
+          { text: `the system suggests HDFC Swiggy card to get 1% rewards. buy now to get points.`, selected: false, reason: "Rejected: Disregards the decision stability signal and pushes card transaction over decision support." }
+        ];
+
+      } else if (cleanMsg.includes("parents") || cleanMsg.includes("family") || cleanMsg.includes("sent money")) {
+        // Family & Care Spend Intent (S7)
+        needState = "T7_MOMENT_PRESERVED"; // Routes to Moment preservation
+        anxiety = 0.20;
+        stability = 0.85;
+        receptivity = 0.90;
+
+        responseText = `noted. transferring money to your parents is an act of care. i've logged this as a family memory in your trust profile. we don't count it as a budget drain or try to optimize it.`;
+        
+        inlineCardHTML = `
+          <div class="inline-insight-card" style="border-left: 3px solid var(--color-receptivity);">
+            <div class="inline-insight-header">
+              <span>Private Moment Preserved</span>
+              <span>❤️ care</span>
+            </div>
+            <div class="inline-insight-title">Family Transfer</div>
+            <div style="font-size:12px; color:var(--ink-mid); line-height: 1.4;">
+              Logged ₹12,000 sent home. This act is private to you and will not be optimized or gamified.
+            </div>
+          </div>
+        `;
+
+        candidates = [
+          { text: `noted. transferring money to your parents is an act of care. i've logged this as a family memory in your trust profile. we don't count it as a budget drain or try to optimize it.`, selected: true, reason: "Excellent. Strictly respects the family care rules (no optimization, no budgets, warm witness acknowledgment)." },
+          { text: `you sent ₹12,000. you've hit 40% of your monthly family budget threshold. you should cut down on this next month.`, selected: false, reason: "CRITICAL FAIL: Violates family care policy rule 3 ('no system-set budgets or cut down recommendations')." }
+        ];
+
+      } else if (cleanMsg.includes("dinner") || cleanMsg.includes("terrible") || cleanMsg.includes("feel bad") || cleanMsg.includes("spent")) {
+        // Post-Spend Share with Shame (S4 + shame)
+        needState = "GROUND_FIRST";
+        anxiety = 0.75; // Triggered anxiety
+        shame = true;   // Triggered shame
+        stability = 0.40;
+        receptivity = 0.50;
+
+        responseText = `take a breath. you went out for a nice dinner, and that's okay. you're building a life, not a spreadsheet. a single dinner won't scratch the walls of what you're building. sit with it, we can check the numbers tomorrow.`;
+
+        candidates = [
+          { text: `spending ₹8,000 on dinner was an overspend. you are now 15% behind your weekly goals.`, selected: false, reason: "CRITICAL FAIL: Amplifies shame on a GROUND_FIRST need state. Completely blocks trust." },
+          { text: `take a breath. you went out for a nice dinner, and that's okay. you're building a life, not a spreadsheet. a single dinner won't scratch the walls of what you're building. sit with it, we can check the numbers tomorrow.`, selected: true, reason: "Perfect. Warm, zero financial calculations, de-escalates shame immediately." }
+        ];
+
+      } else if (cleanMsg.includes("goa") || cleanMsg.includes("trip") || cleanMsg.includes("save")) {
+        // Planned Purchase / Goal Crystallize (S5)
+        needState = "CRYSTALLISE_GOAL";
+        anxiety = 0.25;
+        stability = 0.60;
+        receptivity = 0.85;
+        toolCalc = true;
+
+        responseText = `planning a goa trip sounds wonderful. to make it happen by december, we would need to set aside roughly ₹4,000 each month starting now. would you like to set this as a commitment in your profile?`;
+        
+        inlineCardHTML = `
+          <div class="inline-insight-card" style="border-left: 3px solid var(--color-receptivity);">
+            <div class="inline-insight-header">
+              <span>Goal Crystallisation</span>
+              <span>✈️ travel</span>
+            </div>
+            <div class="inline-insight-title">Goa Trip Buffer</div>
+            <div style="font-size:12.5px; color:var(--ink-mid);">
+              Target: <strong>₹24,000</strong> by December 2026<br>
+              Monthly Contribution: <strong>₹4,000/mo</strong>
+            </div>
+            <button class="chip-btn" style="margin-top: 10px; font-weight:600; border-color:var(--neon-magenta); color:var(--neon-magenta);" onclick="alert('Goal linked in your Momentum tracker!')">Link Goa Goal</button>
+          </div>
+        `;
+
+        candidates = [
+          { text: `planning a goa trip sounds wonderful. to make it happen by december, we would need to set aside roughly ₹4,000 each month starting now. would you like to set this as a commitment in your profile?`, selected: true, reason: "Excellent. Encouraging, maps out the simple math, offers clear crystallisation call to action." },
+          { text: `goa is expensive. you currently have credit card debt, so traveling is not recommended.`, selected: false, reason: "Rejected: Adversarial scolding tone. Pushes restrictions without prompting." }
+        ];
+
+      } else {
+        // Default / Factual response based on connection state
+        needState = "GRANT_CLARITY";
+        
+        if (state.aaConnected) {
+          responseText = `i see your linked HDFC account balance is ₹42,100, and your Swiggy card has ₹4,800 left on its monthly cap. what specific spending detail would you like me to parse?`;
+        } else {
+          responseText = `i can give you precise bank information if you'd like to link your account aggregator in the dashboard. for now, i can only compute estimates based on what you tell me.`;
+        }
+
+        candidates = [
+          { text: responseText, selected: true, reason: "Answers correctly based on the current trust profile connectivity state." }
+        ];
+      }
+
+      // Update State Vector object
+      state.stateVector = { anxiety, shame, avoidance, stability, receptivity };
+      state.currentNeedState = needState;
+      
+      let descs = {
+        "GROUND_FIRST": "Make the user feel safe and heard. Do not give financial guidance. Do not problem-solve.",
+        "STABILISE_DECISION": "Help the user arrive at a decision they feel at peace with. Do not decide for them.",
+        "GRANT_CLARITY": "Answer one specific financial question clearly and specifically. Suppress card recommendations if anxiety is high.",
+        "CRYSTALLISE_GOAL": "Help the user articulate their goal clearly enough to become a tracked Momentum artifact.",
+        "T7_MOMENT_PRESERVED": "Capture an emotionally significant financial act as a private Moment artifact. Never gamify or optimize."
+      };
+      state.currentNeedStateDesc = descs[needState] || "Standard fiduciary conversation processing.";
+
+      // Append System Message to Chat
+      appendSystemMessage(responseText, inlineCardHTML);
+
+      // Trigger console UI updates
+      triggerConsoleOrchestration({
+        raw_text: userMsg,
+        need_state: needState,
+        anxiety, shame, avoidance, stability, receptivity,
+        generator_candidates: candidates,
+        tool_calculator: toolCalc,
+        tool_card: toolCard,
+        tool_aa: toolAA
+      });
+    }
+
+    // --- ORCHESTRATION CONSOLE RENDERER ---
+    function triggerConsoleOrchestration(payload) {
+      // 1. Update Gauges
+      updateStateGauges(payload);
+
+      // 2. Active Need State
+      document.getElementById('activeNeedState').textContent = payload.need_state;
+      document.getElementById('activeNeedStateDesc').textContent = state.currentNeedStateDesc;
+
+      // 3. Update Tools Leds
+      updateToolLed('toolCalculator', payload.tool_calculator);
+      updateToolLed('toolCardMatrix', payload.tool_card);
+      updateToolLed('toolAA', payload.tool_aa);
+
+      // 4. Adversarial Critic Log
+      const criticLogs = document.getElementById('criticLogs');
+      criticLogs.innerHTML = '';
+      payload.generator_candidates.forEach((cand, idx) => {
+        const div = document.createElement('div');
+        div.className = `critic-card ${cand.selected ? 'selected' : 'rejected'}`;
+        div.innerHTML = `
+          <div class="critic-badge ${cand.selected ? 'selected' : 'rejected'}">${cand.selected ? 'selected' : 'rejected'}</div>
+          <div class="critic-text">"${cand.text}"</div>
+          <div class="critic-eval"><strong>Critic reasoning:</strong> ${cand.reason}</div>
+        `;
+        criticLogs.appendChild(div);
+      });
+
+      // 5. Update YAML payload
+      const yamlBox = document.getElementById('yamlConsole');
+      yamlBox.innerHTML = renderYaml(payload);
+    }
+
+    function updateStateGauges(payload) {
+      document.getElementById('valAnxiety').textContent = payload.anxiety.toFixed(2);
+      document.getElementById('meterAnxiety').style.width = (payload.anxiety * 100) + '%';
+      
+      document.getElementById('valShame').textContent = payload.shame.toString();
+      document.getElementById('meterShame').style.width = (payload.shame ? 100 : 0) + '%';
+      
+      document.getElementById('valAvoidance').textContent = payload.avoidance.toFixed(2);
+      document.getElementById('meterAvoidance').style.width = (payload.avoidance * 100) + '%';
+      
+      document.getElementById('valStability').textContent = payload.stability.toFixed(2);
+      document.getElementById('meterStability').style.width = (payload.stability * 100) + '%';
+      
+      document.getElementById('valReceptivity').textContent = payload.receptivity.toFixed(2);
+      document.getElementById('meterReceptivity').style.width = (payload.receptivity * 100) + '%';
+    }
+
+    function updateToolLed(elementId, active) {
+      const card = document.getElementById(elementId);
+      if (active) {
+        card.classList.add('active');
+      } else {
+        card.classList.remove('active');
+      }
+    }
+
+    function renderYaml(payload) {
+      return `
+<span class="yaml-key">session_type:</span> <span class="yaml-str">"spend_right"</span>
+<span class="yaml-key">classified_intent:</span> <span class="yaml-str">"${payload.need_state}"</span>
+<span class="yaml-key">onboarding_persona:</span> <span class="yaml-str">"${state.assignedArchetype}"</span>
+<span class="yaml-key">state_vector:</span>
+  <span class="yaml-key">anxiety:</span> <span class="yaml-num">${payload.anxiety.toFixed(2)}</span>
+  <span class="yaml-key">shame:</span> <span class="yaml-bool">${payload.shame}</span>
+  <span class="yaml-key">avoidance_level:</span> <span class="yaml-num">${payload.avoidance.toFixed(2)}</span>
+  <span class="yaml-key">decision_stability:</span> <span class="yaml-num">${payload.stability.toFixed(2)}</span>
+  <span class="yaml-key">guidance_receptivity:</span> <span class="yaml-num">${payload.receptivity.toFixed(2)}</span>
+
+<span class="yaml-key">active_artifacts:</span>
+  <span class="yaml-key">- type:</span> <span class="yaml-str">"goal"</span>
+    <span class="yaml-key">reseed_summary:</span> <span class="yaml-str">"user wants to live stories over physical assets."</span>
+    
+<span class="yaml-key">fiduciary_trust_profile:</span>
+  <span class="yaml-key">account_aggregator:</span> <span class="yaml-bool">${state.aaConnected}</span>
+  <span class="yaml-key">gmail_parser:</span> <span class="yaml-bool">${state.gmailConnected}</span>
+  <span class="yaml-key">status:</span> <span class="yaml-str">"${state.aaConnected ? 'fiduciary_precision' : 'cold_start_estimates'}"</span>
+
+<span class="yaml-key">generator_compilation:</span>
+  <span class="yaml-key">need_state:</span> <span class="yaml-str">"${payload.need_state}"</span>
+  <span class="yaml-key">adversarial_candidates:</span> <span class="yaml-num">3</span>
+  <span class="yaml-key">critic_threshold:</span> <span class="yaml-num">0.85</span>
+      `;
+    }
+
+    // --- TRUST HUB & DATA SYNC SIGNALS ---
+    document.getElementById('syncAACheckbox').addEventListener('change', (e) => {
+      state.aaConnected = e.target.checked;
+      handleTrustChange();
+    });
+
+    document.getElementById('syncGmailCheckbox').addEventListener('change', (e) => {
+      state.gmailConnected = e.target.checked;
+      handleTrustChange();
+    });
+
+    function handleTrustChange() {
+      const isConnected = state.aaConnected || state.gmailConnected;
+      const isFull = state.aaConnected && state.gmailConnected;
+      
+      const badge = document.getElementById('trustStatusBadge');
+      const label = document.getElementById('trustStatusText');
+      
+      if (isFull) {
+        badge.className = 'trust-badge-pill connected';
+        label.textContent = 'completely onboarded';
+        
+        // Update states
+        state.stateVector.avoidance = 0.05;
+        state.stateVector.guidance_receptivity = 0.95;
+      } else if (isConnected) {
+        badge.className = 'trust-badge-pill connected';
+        label.textContent = 'fiduciary precision';
+        
+        state.stateVector.avoidance = 0.10;
+        state.stateVector.guidance_receptivity = 0.85;
+      } else {
+        badge.className = 'trust-badge-pill';
+        label.textContent = 'cold start';
+        
+        state.stateVector.avoidance = 0.20;
+        state.stateVector.guidance_receptivity = 0.70;
+      }
+
+      updateStateGauges(state.stateVector);
+
+      // Re-trigger visual tools check
+      triggerConsoleOrchestration({
+        raw_text: "[trust sync updated]",
+        need_state: state.currentNeedState,
+        anxiety: state.stateVector.anxiety,
+        shame: state.stateVector.shame,
+        avoidance: state.stateVector.avoidance,
+        stability: state.stateVector.stability,
+        receptivity: state.stateVector.receptivity,
+        generator_candidates: [
+          { text: `re-seeding trust configuration. AA: ${state.aaConnected}, Gmail: ${state.gmailConnected}`, selected: true, reason: "data sync toggled by client. state vector re-hydrated." }
+        ],
+        tool_calculator: false,
+        tool_card: false,
+        tool_aa: state.aaConnected
+      });
+
+      // Quick system notification in Chat
+      appendSystemMessage(`[trust update] linked data feeds have changed. i have updated my context profile to ${isFull ? 'fully onboarded (complete fiduciary trust)' : isConnected ? 'fiduciary precision' : 'cold start estimates'}.`);
+    }
+  </script>
+</body>
+</html>
