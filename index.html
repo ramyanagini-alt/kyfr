@@ -1678,26 +1678,30 @@
     }
     .fc-archname {
       margin-top: 18px;
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 2.4px;
-      text-transform: uppercase;
-      opacity: 0.6;
-      position: relative;
-    }
-    .fc-superpower {
-      margin-top: 6px;
       font-size: 54px;
       font-weight: 600;
       letter-spacing: -2px;
       line-height: 0.98;
       position: relative;
     }
+    .fc-superpower {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.4;
+      opacity: 0.9;
+      position: relative;
+    }
+    .fc-superpower em {
+      font-style: normal;
+      font-weight: 700;
+      opacity: 1;
+    }
     .fc-hype {
-      margin-top: 16px;
-      font-size: 14.5px;
+      margin-top: 20px;
+      font-size: 13.5px;
       line-height: 1.55;
-      opacity: 0.78;
+      opacity: 0.55;
       position: relative;
     }
     .fc-spacer { flex: 1; min-height: 10px; }
@@ -2890,15 +2894,15 @@
     // Archetype reveal data — flip card (front hype / back insight)
     const ARCHETYPES = {
       curator: {
-        name: "",
-        superpower: "The Curator",
+        name: "The Curator",
+        superpower: "taste",
         accent: "#B07A2A",
         accentSoft: "rgba(176,122,42,0.14)",
         gradient: "linear-gradient(155deg, #FFF6E4 0%, #FFE7C3 100%)",
         ink: "#3A2A12",
         score: 92,
-        hype: "you have an eye for the exceptional. you don't just buy things — you invest in quality that lasts a lifetime.",
-        question: "but with your wealth tied up in premium goods — is enough of your capital liquid and ready to move if life shifts tomorrow?",
+        hype: "Only 12% of buyers research quality before a purchase. you're part of the rare group who buys once and buys right.",
+        question: "but if life threw a curveball tomorrow — could you move fast without selling what you love?",
         metricName: "liquidity ratio",
         metricUnit: "% liquid",
         metricValue: 30,
@@ -2909,15 +2913,15 @@
         closing: "your taste is an asset — let's make it liquid."
       },
       saver: {
-        name: "",
-        superpower: "The Guardian",
+        name: "The Guardian",
+        superpower: "safety",
         accent: "#4F6FCB",
         accentSoft: "rgba(79,111,203,0.14)",
         gradient: "linear-gradient(155deg, #EEF3FF 0%, #D7E0FA 100%)",
         ink: "#1A2444",
         score: 96,
-        hype: "you've built an incredible fortress. your peace of mind is your superpower — you are always protected.",
-        question: "but is your shield so heavy that it's slowing you down? while your money is 'safe,' is it growing fast enough to outrun inflation?",
+        hype: "60% of people couldn't survive 30 days without a salary. you could survive a year.",
+        question: "but while your money is 'safe' for the future — are you actually enjoying the present?",
         metricName: "cash drag",
         metricUnit: "% real return",
         metricValue: 42,
@@ -2928,15 +2932,15 @@
         closing: "a shield that doesn't grow eventually shrinks."
       },
       maximiser: {
-        name: "",
-        superpower: "The Optimiser",
+        name: "The Optimiser",
+        superpower: "math",
         accent: "#1F8C77",
         accentSoft: "rgba(31,140,119,0.14)",
         gradient: "linear-gradient(155deg, #E7F6F0 0%, #CDEDDF 100%)",
         ink: "#0F2A24",
         score: 94,
-        hype: "you have a brilliant eye for the mathematical edge. nothing slips past your analytical radar.",
-        question: "but in the hunt for the perfect deal — are you accidentally trading away your most precious asset: your time and mental bandwidth?",
+        hype: "Most people leave ₹40,000+ on the table every year in missed cashback and bad timing. you never do.",
+        question: "but how many hours a week do you spend chasing deals — and what's that time actually worth?",
         metricName: "time-to-savings roi",
         metricUnit: "value / hour",
         metricValue: 25,
@@ -2947,15 +2951,15 @@
         closing: "your brain is for big things — we'll handle the small math."
       },
       explorer: {
-        name: "",
-        superpower: "The Explorer",
+        name: "The Explorer",
+        superpower: "freedom",
         accent: "#C84F7C",
         accentSoft: "rgba(200,79,124,0.14)",
         gradient: "linear-gradient(155deg, #FFF0F4 0%, #FFDCE6 100%)",
         ink: "#3A1A2A",
         score: 88,
-        hype: "you are a master of life-dividends. you convert capital into stories and experiences that never fade or depreciate.",
-        question: "memories are priceless — but they have zero resale value. is your adventure runway ready to handle a sudden macro-shock?",
+        hype: "People who spend on experiences report 40% higher life satisfaction than those who don't. you already know this.",
+        question: "but what happens to the next adventure if an unexpected bill lands tomorrow?",
         metricName: "financial runway",
         metricUnit: "days of cover",
         metricValue: 14,
@@ -2966,15 +2970,15 @@
         closing: "protect the adventures you haven't had yet."
       },
       simplist: {
-        name: "",
-        superpower: "The Essentialist",
+        name: "The Essentialist",
+        superpower: "peace",
         accent: "#5C6873",
         accentSoft: "rgba(92,104,115,0.14)",
         gradient: "linear-gradient(155deg, #F4F5F7 0%, #DDE1E6 100%)",
         ink: "#1B2230",
         score: 90,
-        hype: "you've mastered the art of mental peace. you keep your financial life uncluttered so you can focus on what truly matters.",
-        question: "while you're tuning out the noise — is a silent tax of high fees and missed advantages slowly eroding the wealth you work so hard for?",
+        hype: "The average person makes 35,000 decisions a day. you've cut yours in half — and your brain is better for it.",
+        question: "but is 'set it and forget it' quietly costing you more than you think?",
         metricName: "passive erosion",
         metricUnit: "lost / month",
         metricValue: 35,
@@ -3322,14 +3326,13 @@
         <div class="flip-face flip-front" style="background:${a.gradient};color:${a.ink};box-shadow:0 24px 50px -28px ${a.ink}66, inset 0 1px 0 rgba(255,255,255,.6)">
           <div class="fc-blob" style="background:${a.accent}"></div>
           <div class="fc-row">
-            <span class="fc-eyebrow" style="color:${a.accent}">your archetype</span>
             <div class="fc-pips">
               <div class="fc-pip" style="width:22px;background:${a.accent}"></div>
               <div class="fc-pip" style="width:6px;background:${a.ink}22"></div>
             </div>
           </div>
           <div class="fc-archname">${a.name}</div>
-          <div class="fc-superpower">${a.superpower}.</div>
+          <div class="fc-superpower">your superpower is <em>${a.superpower}</em>.</div>
           <div class="fc-hype">${a.hype}</div>
           <div class="fc-spacer"></div>
           <div class="fc-gaugebox" style="border:1px solid ${a.ink}10">
