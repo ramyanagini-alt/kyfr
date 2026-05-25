@@ -1634,10 +1634,11 @@
 
     /* ---- SCREEN 5 — ARCHETYPE FLIP CARD REVEAL ---- */
     #screenCardReveal {
-      padding: 0 !important;
+      padding: 20px 16px !important;
       background: #1A1714;
       align-items: center;
       justify-content: center;
+      gap: 16px;
     }
     .flip-stage {
       perspective: 1600px;
@@ -3226,6 +3227,7 @@
     // Welcome screen "go to cards" shortcut
     document.getElementById('btnGoToCards').addEventListener('click', (e) => {
       e.stopPropagation();
+      skipAutoFlip = true;
       state.assignedArchetype = 'curator';
       showAhaCard();
       showScreen("CardReveal");
@@ -3384,6 +3386,7 @@
 
     // --- ARCHETYPE FLIP CARD REVEAL ---
     let flipAutoTimer = null;
+    let skipAutoFlip = false;
 
     // FRONT CARD — per-persona hype artifact
     function frontArtifactHTML(a, key) {
@@ -3584,7 +3587,10 @@
 
     function showAhaCard() {
       const a = ARCHETYPES[state.assignedArchetype];
-      const fc = document.getElementById('flipCard');
+      // Replace node to strip all stale event listeners
+      const oldFc = document.getElementById('flipCard');
+      const fc = oldFc.cloneNode(false);
+      oldFc.parentNode.replaceChild(fc, oldFc);
       fc.classList.remove('flipped');
 
       fc.innerHTML = `
@@ -3640,14 +3646,18 @@
       });
       document.getElementById('btnBridgeCta').addEventListener('click', () => goToHome(true));
 
-      // Auto-flip to the insight side after a beat
-      flipAutoTimer = setTimeout(() => fc.classList.add('flipped'), 3400);
+      // Auto-flip to the insight side after a beat (suppressed in preview mode)
+      if (!skipAutoFlip) {
+        flipAutoTimer = setTimeout(() => fc.classList.add('flipped'), 3400);
+      }
 
       // Archetype switcher
       const switcher = document.getElementById('archSwitcher');
       switcher.querySelectorAll('.arch-sw-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.key === state.assignedArchetype);
         btn.addEventListener('click', () => {
+          if (flipAutoTimer) { clearTimeout(flipAutoTimer); flipAutoTimer = null; }
+          skipAutoFlip = true;
           state.assignedArchetype = btn.dataset.key;
           showAhaCard();
         });
