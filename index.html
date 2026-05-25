@@ -2228,7 +2228,7 @@
     /* ---- SCREEN 6 — HOME (feature artifact + embedded chat) ---- */
     #screenHome {
       padding: 0 !important;
-      background: var(--obsidian);
+      background: #F3F1EC;
       overflow: hidden;
     }
     .confetti-layer {
@@ -2251,40 +2251,40 @@
       100% { transform: translateY(680px) rotate(760deg); opacity: 0; }
     }
     .home-panel {
-      flex: 0 0 45%;
-      padding: 20px 22px 16px;
+      flex: 0 0 46%;
+      padding: 20px 16px 14px;
       display: flex;
       flex-direction: column;
       position: relative;
-      border-bottom: 1px solid var(--glass-border);
+      border-bottom: 1px solid rgba(27,34,48,0.08);
     }
     .home-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
     .home-brand { display: flex; align-items: center; gap: 6px; }
-    .home-brand .splash-wordmark { font-size: 15px; letter-spacing: -0.5px; }
-    .home-brand .splash-mark { filter: drop-shadow(0 0 6px rgba(236,72,153,0.5)); }
+    .home-brand .splash-wordmark { font-size: 15px; letter-spacing: -0.5px; color: #1B2230; }
+    .home-brand .splash-mark { filter: drop-shadow(0 0 6px rgba(236,72,153,0.4)); }
     .home-greeting {
-      font-family: var(--font-display);
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--ink-mid);
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(27,34,48,0.45);
     }
     .artifact-hero {
       flex-grow: 1;
       border-radius: 22px;
-      padding: 20px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       gap: 11px;
       position: relative;
       overflow: hidden;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
+      background: #fff;
+      border: 1px solid rgba(27,34,48,0.07);
+      box-shadow: 0 8px 24px rgba(27,34,48,0.07);
     }
     .artifact-glow {
       position: absolute;
@@ -2352,6 +2352,7 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
+      background: #fff;
     }
 
     /* ---- HOME ENTRANCE CHOREOGRAPHY ----
@@ -2395,7 +2396,6 @@
 
     /* ---- OTP / LOADER — light ---- */
     .progress-dot { background-color: rgba(22,18,46,0.14); }
-    .loader-spinner { border: 3px solid rgba(22,18,46,0.10); border-top-color: var(--neon-magenta); }
 
     /* ---- CHAT — light ---- */
     .chip-btn:hover { background-color: rgba(22,18,46,0.06); color: var(--ink-hi); border-color: var(--hairline); }
@@ -2669,11 +2669,15 @@
         <!-- SCREEN 4: PROFILING LOADER -->
         <div class="screen" id="screenLoader">
           <div class="loader-container">
-            <div class="loader-spinner"></div>
-            <div class="loader-title">mapping your <span class="serif-italic">archetype</span></div>
-            <div class="loader-logs" id="loaderLogs">
-              <!-- Log lines added programmatically -->
+            <div class="loader-pips">
+              <div class="loader-pip"></div>
+              <div class="loader-pip"></div>
+              <div class="loader-pip"></div>
+              <div class="loader-pip"></div>
             </div>
+            <div class="loader-title">mapping your archetype</div>
+            <div class="loader-sub" id="loaderSub">reading your patterns…</div>
+            <div class="loader-logs" id="loaderLogs"></div>
           </div>
         </div>
 
@@ -3302,27 +3306,16 @@
       }
       state.assignedArchetype = winner;
 
-      // Logging Simulation
-      const logs = [
-        { text: "initializing state vectors...", delay: 200 },
-        { text: "scoring psychometric behavioral signals...", delay: 600 },
-        { text: "mapping responses to CRISP pillars...", delay: 1000 },
-        { text: `detected highest affinity: ${winner.toUpperCase()}`, delay: 1400, success: true },
-        { text: "assembling personalized visual context...", delay: 1800 },
-        { text: "compiling core engine YAML direct...", delay: 2200, success: true }
+      // Rotating sub-text phrases
+      const phrases = [
+        "reading your patterns…",
+        "weighing your choices…",
+        "finding your type…",
+        "almost there…"
       ];
-
-      const logsBox = document.getElementById('loaderLogs');
-      logsBox.innerHTML = '';
-
-      logs.forEach(log => {
-        setTimeout(() => {
-          const div = document.createElement('div');
-          div.className = `log-line ${log.success ? 'success' : ''}`;
-          div.innerHTML = `<span class="log-bullet">❯</span> <span>${log.text}</span>`;
-          logsBox.appendChild(div);
-          logsBox.scrollTop = logsBox.scrollHeight;
-        }, log.delay);
+      const subEl = document.getElementById('loaderSub');
+      phrases.forEach((p, i) => {
+        setTimeout(() => { if (subEl) subEl.textContent = p; }, i * 600);
       });
 
       // Navigate to Card Reveal
