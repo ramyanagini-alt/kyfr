@@ -3392,197 +3392,185 @@
     function frontArtifactHTML(a, key) {
       const ink = a.ink, accent = a.accent;
       if (key === 'curator') {
-        // Percentile crowd — dots, top 12% lit
-        const total = 50, lit = Math.round(total * 0.12);
-        let dots = '';
-        for (let i = 0; i < total; i++) {
-          const isLit = i < lit;
-          dots += `<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin:2px;background:${isLit ? accent : ink + '18'};transition:background .3s"></span>`;
-        }
+        const total = 10, lit = 1;
+        const dots = Array.from({length: total}, (_, i) =>
+          `<div style="width:12px;height:12px;border-radius:50%;background:${i < lit ? accent : ink + '18'}"></div>`
+        ).join('');
         return `
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:10px">your buyer percentile</div>
-          <div style="line-height:1">${dots}</div>
-          <div style="margin-top:10px;font-size:13px;opacity:.65">you're in the <strong style="color:${accent};opacity:1">top 12%</strong> of quality-conscious buyers</div>`;
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:14px">out of 10 buyers</div>
+          <div style="display:flex;gap:6px;align-items:center;margin-bottom:14px">${dots}</div>
+          <div style="font-size:34px;font-weight:800;color:${accent};letter-spacing:-1.5px;line-height:1">top 12%</div>
+          <div style="font-size:12px;opacity:.55;margin-top:6px">only you research before buying.</div>`;
       }
       if (key === 'saver') {
-        // Two runway bars: you vs average
         return `
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">financial runway</div>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div>
-              <div style="font-size:11px;opacity:.55;margin-bottom:4px">average person</div>
-              <div style="height:10px;border-radius:99px;background:${ink}12;overflow:hidden">
-                <div style="width:8%;height:100%;border-radius:99px;background:${ink}30"></div>
-              </div>
-              <div style="font-size:11px;opacity:.45;margin-top:3px">~3 weeks</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:16px">if your salary stopped today</div>
+          <div style="display:flex;gap:0;align-items:stretch">
+            <div style="flex:1;text-align:center;padding:14px 8px;background:${ink}0D;border-radius:12px 0 0 12px;border-right:1px solid ${ink}10">
+              <div style="font-size:11px;opacity:.45;margin-bottom:6px">average person</div>
+              <div style="font-size:28px;font-weight:800;opacity:.35;letter-spacing:-1px;line-height:1">3</div>
+              <div style="font-size:11px;opacity:.4;margin-top:4px">weeks</div>
             </div>
-            <div>
-              <div style="font-size:11px;font-weight:700;margin-bottom:4px">you</div>
-              <div style="height:10px;border-radius:99px;background:${ink}12;overflow:hidden">
-                <div style="width:100%;height:100%;border-radius:99px;background:linear-gradient(90deg,${accent},${accent}CC)"></div>
-              </div>
-              <div style="font-size:12px;font-weight:700;color:${accent};margin-top:3px">12 months covered</div>
+            <div style="flex:1;text-align:center;padding:14px 8px;background:${accent}18;border-radius:0 12px 12px 0">
+              <div style="font-size:11px;font-weight:700;color:${accent};margin-bottom:6px">you</div>
+              <div style="font-size:28px;font-weight:800;color:${accent};letter-spacing:-1px;line-height:1">12</div>
+              <div style="font-size:11px;color:${accent};opacity:.7;margin-top:4px">months</div>
             </div>
           </div>`;
       }
       if (key === 'maximiser') {
-        // Savings rate badge
         return `
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">savings efficiency</div>
-          <div style="display:flex;align-items:center;gap:14px">
-            <div style="text-align:center">
-              <div style="font-size:36px;font-weight:800;color:${accent};letter-spacing:-2px;line-height:1">+23%</div>
-              <div style="font-size:11px;opacity:.55;margin-top:2px">more saved per purchase</div>
-            </div>
-            <div style="flex:1">
-              <div style="font-size:11px;opacity:.5;margin-bottom:6px">vs average buyer</div>
-              <div style="height:8px;border-radius:99px;background:${ink}12;overflow:hidden;margin-bottom:6px">
-                <div style="width:48%;height:100%;border-radius:99px;background:${ink}28"></div>
-              </div>
-              <div style="height:8px;border-radius:99px;background:${ink}12;overflow:hidden">
-                <div style="width:71%;height:100%;border-radius:99px;background:linear-gradient(90deg,${accent},${accent}CC)"></div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:16px">your deal radar vs the rest</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="opacity:.5">average buyer</span><span style="opacity:.4">saves 5%</span></div>
+              <div style="height:10px;border-radius:99px;background:${ink}12;overflow:hidden">
+                <div style="width:25%;height:100%;border-radius:99px;background:${ink}25"></div>
               </div>
             </div>
-          </div>`;
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="font-weight:700">you</span><span style="font-weight:700;color:${accent}">saves 28%</span></div>
+              <div style="height:10px;border-radius:99px;background:${ink}12;overflow:hidden">
+                <div style="width:100%;height:100%;border-radius:99px;background:linear-gradient(90deg,${accent},${accent}CC)"></div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:14px;font-size:13px;opacity:.6">you consistently outperform <strong style="color:${accent}">9 in 10 buyers</strong></div>`;
       }
       if (key === 'explorer') {
-        // Things vs experiences happiness split
         return `
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">happiness ROI</div>
-          <div style="display:flex;gap:8px;align-items:flex-end">
-            <div style="flex:1;text-align:center">
-              <div style="height:40px;border-radius:8px 8px 0 0;background:${ink}15;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px">
-                <span style="font-size:11px;opacity:.45">things</span>
-              </div>
-              <div style="font-size:13px;font-weight:700;opacity:.4;margin-top:4px">1×</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:16px">what you actually buy</div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div style="flex:1;padding:14px 10px;background:${ink}0D;border-radius:12px;text-align:center">
+              <div style="font-size:11px;opacity:.45;margin-bottom:4px">stuff</div>
+              <div style="font-size:28px;font-weight:800;opacity:.3;letter-spacing:-1px">fades</div>
             </div>
-            <div style="flex:1;text-align:center">
-              <div style="height:110px;border-radius:8px 8px 0 0;background:linear-gradient(180deg,${accent}CC,${accent});display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px">
-                <span style="font-size:11px;font-weight:700;color:#fff">experiences</span>
-              </div>
-              <div style="font-size:16px;font-weight:800;color:${accent};margin-top:4px">3×</div>
+            <div style="font-size:20px;opacity:.3">→</div>
+            <div style="flex:1;padding:14px 10px;background:${accent}18;border-radius:12px;text-align:center">
+              <div style="font-size:11px;font-weight:700;color:${accent};margin-bottom:4px">memories</div>
+              <div style="font-size:28px;font-weight:800;color:${accent};letter-spacing:-1px">lasts</div>
             </div>
           </div>
-          <div style="font-size:11px;opacity:.5;margin-top:8px">experiences retain 3× more happiness value</div>`;
+          <div style="margin-top:14px;font-size:13px;opacity:.6">experiences make you <strong style="color:${accent}">40% happier</strong> than buying things</div>`;
       }
-      // simplist — clarity score / decisions cut
+      // simplist
       return `
-        <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">mental clarity score</div>
-        <div style="display:flex;align-items:center;gap:16px">
-          <div style="position:relative;width:72px;height:72px;flex-shrink:0">
-            <svg width="72" height="72" viewBox="0 0 72 72">
-              <circle cx="36" cy="36" r="28" stroke="${ink}15" stroke-width="8" fill="none"/>
-              <circle cx="36" cy="36" r="28" stroke="${accent}" stroke-width="8" fill="none" stroke-dasharray="${2*Math.PI*28*0.6} ${2*Math.PI*28}" stroke-dashoffset="${2*Math.PI*28*0.25}" stroke-linecap="round"/>
-            </svg>
-            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:${accent}">60%</div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:16px">daily financial decisions</div>
+        <div style="display:flex;gap:10px;align-items:stretch">
+          <div style="flex:1;text-align:center;padding:14px 8px;background:${ink}0D;border-radius:12px 0 0 12px;border-right:1px solid ${ink}10">
+            <div style="font-size:11px;opacity:.45;margin-bottom:6px">most people</div>
+            <div style="font-size:32px;font-weight:800;opacity:.3;letter-spacing:-1px;line-height:1">70</div>
+            <div style="font-size:11px;opacity:.35;margin-top:4px">/ day</div>
           </div>
-          <div>
-            <div style="font-size:22px;font-weight:800;color:${accent};letter-spacing:-1px;line-height:1">fewer</div>
-            <div style="font-size:13px;opacity:.6;margin-top:2px">daily financial decisions than average</div>
+          <div style="flex:1;text-align:center;padding:14px 8px;background:${accent}18;border-radius:0 12px 12px 0">
+            <div style="font-size:11px;font-weight:700;color:${accent};margin-bottom:6px">you</div>
+            <div style="font-size:32px;font-weight:800;color:${accent};letter-spacing:-1px;line-height:1">28</div>
+            <div style="font-size:11px;color:${accent};opacity:.7;margin-top:4px">/ day</div>
           </div>
-        </div>`;
+        </div>
+        <div style="margin-top:14px;font-size:13px;opacity:.6">60% less mental noise. <strong style="color:${accent}">that's your edge.</strong></div>`;
     }
 
     // BACK CARD — per-persona insight artifact
     function insightBarHTML(a, key) {
       const ink = a.ink, accent = a.accent;
       if (key === 'curator') {
-        // Locked vs movable split
-        const locked = 70, movable = 30, target = 50;
         return `
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">your money split today</div>
-          <div style="display:flex;height:36px;border-radius:12px;overflow:hidden;gap:2px">
-            <div style="flex:${locked};background:${accent};border-radius:10px 4px 4px 10px;display:flex;align-items:center;justify-content:center">
-              <span style="font-size:11px;font-weight:700;color:#fff">${locked}% locked</span>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:14px">if an emergency hit tomorrow</div>
+          <div style="display:flex;gap:8px">
+            <div style="flex:7;padding:14px 12px;background:${accent};border-radius:12px">
+              <div style="font-size:11px;font-weight:700;color:#fff;opacity:.8;margin-bottom:4px">locked in things</div>
+              <div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1">70%</div>
+              <div style="font-size:11px;color:#fff;opacity:.6;margin-top:4px">can't touch it</div>
             </div>
-            <div style="flex:${movable};background:${ink}12;border-radius:4px 10px 10px 4px;display:flex;align-items:center;justify-content:center">
-              <span style="font-size:11px;opacity:.5">${movable}% free</span>
+            <div style="flex:3;padding:14px 12px;background:${ink}0D;border-radius:12px">
+              <div style="font-size:11px;opacity:.5;margin-bottom:4px">free cash</div>
+              <div style="font-size:26px;font-weight:800;opacity:.4;letter-spacing:-1px;line-height:1">30%</div>
+              <div style="font-size:11px;opacity:.35;margin-top:4px">to move</div>
             </div>
           </div>
-          <div style="margin-top:10px;display:flex;align-items:center;gap:6px">
-            <div style="flex:1;height:1px;background:${accent}33;position:relative">
-              <div style="position:absolute;left:${target}%;top:-3px;width:1px;height:7px;background:${accent}"></div>
-            </div>
-            <span style="font-size:11px;opacity:.55">healthy target: 50% free</span>
-          </div>
-          <div style="margin-top:10px;font-size:18px;font-weight:800;color:${accent};letter-spacing:-.4px">₹20K short of movable</div>`;
+          <div style="margin-top:12px;font-size:13px;opacity:.65">kyfr helps you keep <strong style="color:${accent}">at least 50% free</strong> without selling what you love</div>`;
       }
       if (key === 'saver') {
-        // Inflation erosion — shrinking bar
         return `
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">what sitting still costs</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:11px;opacity:.5;margin-bottom:4px"><span>today</span><span>₹1,00,000</span></div>
-              <div style="height:12px;border-radius:99px;background:linear-gradient(90deg,${accent},${accent}CC);width:100%"></div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:14px">₹1,00,000 sitting in savings</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:linear-gradient(90deg,${accent}22,${accent}11);border-radius:10px;border-left:3px solid ${accent}">
+              <span style="font-size:12px;font-weight:600">today</span>
+              <span style="font-size:18px;font-weight:800;color:${accent}">₹1,00,000</span>
             </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:11px;opacity:.5;margin-bottom:4px"><span>in 5 years (inflation)</span><span>₹85,000</span></div>
-              <div style="height:12px;border-radius:99px;background:${ink}18;width:85%"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:${ink}08;border-radius:10px;border-left:3px solid ${ink}20">
+              <span style="font-size:12px;opacity:.55">in 5 years</span>
+              <span style="font-size:18px;font-weight:700;opacity:.45">₹85,000</span>
             </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:11px;opacity:.5;margin-bottom:4px"><span>in 10 years</span><span>₹72,000</span></div>
-              <div style="height:12px;border-radius:99px;background:${ink}10;width:72%"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:${ink}06;border-radius:10px;border-left:3px solid ${ink}15">
+              <span style="font-size:12px;opacity:.4">in 10 years</span>
+              <span style="font-size:18px;font-weight:700;opacity:.3">₹72,000</span>
             </div>
           </div>
-          <div style="margin-top:12px;font-size:13px;opacity:.6">your ₹1L loses <strong style="color:${accent}">₹28,000 in real value</strong> over 10 years sitting still</div>`;
+          <div style="margin-top:12px;font-size:13px;opacity:.65"><strong style="color:${accent}">₹28,000 gone</strong> — not spent, just eroded by inflation</div>`;
       }
       if (key === 'maximiser') {
-        // Time vs money — two side-by-side bars
         return `
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">this month's deal hunt</div>
-          <div style="display:flex;gap:12px">
-            <div style="flex:1;text-align:center">
-              <div style="font-size:28px;font-weight:800;color:${ink};opacity:.7;letter-spacing:-1px">6 hrs</div>
-              <div style="font-size:11px;opacity:.45;margin-top:2px">researching</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:14px">this month's deal hunt</div>
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <div style="flex:1;text-align:center;padding:12px 8px;background:${ink}0D;border-radius:12px">
+              <div style="font-size:11px;opacity:.45;margin-bottom:4px">time spent</div>
+              <div style="font-size:26px;font-weight:800;opacity:.5;letter-spacing:-1px;line-height:1">6h</div>
             </div>
-            <div style="width:1px;background:${ink}15"></div>
-            <div style="flex:1;text-align:center">
-              <div style="font-size:28px;font-weight:800;color:${ink};opacity:.7;letter-spacing:-1px">₹600</div>
-              <div style="font-size:11px;opacity:.45;margin-top:2px">saved</div>
+            <div style="display:flex;align-items:center;font-size:18px;opacity:.2">→</div>
+            <div style="flex:1;text-align:center;padding:12px 8px;background:${ink}0D;border-radius:12px">
+              <div style="font-size:11px;opacity:.45;margin-bottom:4px">saved</div>
+              <div style="font-size:26px;font-weight:800;opacity:.5;letter-spacing:-1px;line-height:1">₹600</div>
             </div>
           </div>
-          <div style="margin-top:10px;padding:10px 12px;background:${accent}18;border-radius:10px;display:flex;justify-content:space-between;align-items:center">
-            <span style="font-size:12px;opacity:.65">effective rate</span>
-            <span style="font-size:16px;font-weight:800;color:${accent}">₹100 / hr</span>
-          </div>
-          <div style="margin-top:8px;font-size:12px;opacity:.55">your time is worth <strong style="color:${accent}">₹800/hr</strong> — kyfr handles the math</div>`;
+          <div style="display:flex;gap:8px">
+            <div style="flex:1;padding:12px;background:${ink}0D;border-radius:12px;text-align:center">
+              <div style="font-size:11px;opacity:.45;margin-bottom:4px">your rate</div>
+              <div style="font-size:20px;font-weight:800;opacity:.45;letter-spacing:-1px">₹100/hr</div>
+            </div>
+            <div style="flex:1;padding:12px;background:${accent}20;border-radius:12px;text-align:center;border:1px solid ${accent}30">
+              <div style="font-size:11px;font-weight:700;color:${accent};margin-bottom:4px">kyfr rate</div>
+              <div style="font-size:20px;font-weight:800;color:${accent};letter-spacing:-1px">₹800/hr</div>
+            </div>
+          </div>`;
       }
       if (key === 'explorer') {
-        // Runway timeline strip
         return `
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:14px">your safety runway</div>
-          <div style="position:relative;height:8px;border-radius:99px;background:${ink}12;overflow:visible">
-            <div style="position:absolute;left:0;top:0;height:100%;width:15%;border-radius:99px;background:${accent}"></div>
-            <div style="position:absolute;left:15%;top:-18px;transform:translateX(-50%);font-size:10px;font-weight:700;color:${accent}">you</div>
-            <div style="position:absolute;left:15%;top:14px;transform:translateX(-50%);font-size:9px;opacity:.45">14d</div>
-            <div style="position:absolute;left:100%;top:-18px;transform:translateX(-50%);font-size:10px;opacity:.45">goal</div>
-            <div style="position:absolute;left:100%;top:14px;transform:translateX(-50%);font-size:9px;opacity:.45">90d</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:14px">how long you can cover yourself</div>
+          <div style="display:flex;gap:8px;align-items:stretch;margin-bottom:12px">
+            <div style="flex:1;padding:14px 12px;background:${accent}18;border-radius:12px;border:1px solid ${accent}30;text-align:center">
+              <div style="font-size:11px;font-weight:700;color:${accent};margin-bottom:4px">you today</div>
+              <div style="font-size:32px;font-weight:800;color:${accent};letter-spacing:-1px;line-height:1">14</div>
+              <div style="font-size:11px;color:${accent};opacity:.7;margin-top:4px">days</div>
+            </div>
+            <div style="display:flex;align-items:center;font-size:18px;opacity:.2">→</div>
+            <div style="flex:1;padding:14px 12px;background:${ink}0D;border-radius:12px;text-align:center">
+              <div style="font-size:11px;opacity:.45;margin-bottom:4px">safe zone</div>
+              <div style="font-size:32px;font-weight:800;opacity:.35;letter-spacing:-1px;line-height:1">90</div>
+              <div style="font-size:11px;opacity:.35;margin-top:4px">days</div>
+            </div>
           </div>
-          <div style="margin-top:28px;display:flex;justify-content:space-between;align-items:baseline">
-            <span style="font-size:12px;opacity:.55">days left to cover</span>
-            <span style="font-size:22px;font-weight:800;color:${accent};letter-spacing:-1px">76 days short</span>
-          </div>
-          <div style="margin-top:8px;font-size:12px;opacity:.5">one unexpected bill and the next adventure is on hold</div>`;
+          <div style="font-size:13px;opacity:.65">one big bill and the next trip is on hold. kyfr builds your <strong style="color:${accent}">adventure buffer.</strong></div>`;
       }
-      // simplist — monthly silent drain
+      // simplist
       return `
-        <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">your silent monthly drain</div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:${ink}08;border-radius:10px">
-            <span style="font-size:12px;opacity:.6">avoidable fees</span>
-            <span style="font-size:14px;font-weight:700;color:${accent}">₹900 / mo</span>
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:14px">money leaving every month</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:${ink}08;border-radius:10px">
+            <span style="font-size:12px;opacity:.6">bank fees you don't notice</span>
+            <span style="font-size:15px;font-weight:700;color:${accent}">₹900</span>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:${ink}08;border-radius:10px">
-            <span style="font-size:12px;opacity:.6">missed rewards</span>
-            <span style="font-size:14px;font-weight:700;color:${accent}">₹1,100 / mo</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:${ink}08;border-radius:10px">
+            <span style="font-size:12px;opacity:.6">rewards you never claimed</span>
+            <span style="font-size:15px;font-weight:700;color:${accent}">₹1,100</span>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 10px;background:${accent}18;border-radius:10px;border:1px solid ${accent}30">
-            <span style="font-size:12px;font-weight:600">total leak</span>
-            <span style="font-size:18px;font-weight:800;color:${accent};letter-spacing:-.5px">₹2,400 / mo</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:${accent}18;border-radius:10px;border:1px solid ${accent}30;margin-top:2px">
+            <span style="font-size:13px;font-weight:700">leaking every month</span>
+            <span style="font-size:20px;font-weight:800;color:${accent};letter-spacing:-.5px">₹2,000</span>
           </div>
         </div>
-        <div style="margin-top:10px;font-size:12px;opacity:.5">that's <strong style="color:${accent}">₹28,800 / year</strong> leaving quietly</div>`;
+        <div style="margin-top:10px;font-size:12px;opacity:.55">that's <strong style="color:${accent}">₹24,000 a year</strong> — silently gone</div>`;
     }
 
     function showAhaCard() {
