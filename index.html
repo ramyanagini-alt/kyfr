@@ -461,69 +461,60 @@
     }
 
     /* --- SCREEN 4: PROFILING LOADER --- */
+    #screenLoader {
+      background: #F3F1EC;
+      align-items: center;
+      justify-content: center;
+    }
     .loader-container {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       flex-grow: 1;
-      padding: 0 12px;
+      gap: 28px;
+      padding: 0 32px;
     }
-
-    .loader-spinner {
-      width: 48px;
-      height: 48px;
-      border: 3px solid rgba(0, 0, 0, 0.1);
-      border-radius: 50%;
-      border-top-color: var(--text-dark);
-      animation: spin 1s linear infinite;
-      margin-bottom: 40px;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .loader-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 24px;
-      text-align: center;
-    }
-
-    .loader-logs {
-      width: 100%;
-      background: #FFFFFF;
-      border: 1px solid #E5E7EB;
-      border-radius: 12px;
-      padding: 16px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: #4B5563;
-      height: 180px;
-      overflow-y: auto;
-    }
-
-    .log-line {
-      margin-bottom: 8px;
+    .loader-pips {
       display: flex;
-      gap: 8px;
-      align-items: flex-start;
-      opacity: 0;
-      animation: logFadeIn 0.3s forwards;
+      gap: 7px;
+      align-items: center;
     }
-
-    .log-line.success {
-      color: #059669;
+    .loader-pip {
+      height: 6px;
+      width: 6px;
+      border-radius: 99px;
+      background: rgba(27,34,48,0.2);
+      animation: loaderPipPulse 1.4s ease-in-out infinite;
     }
-
-    .log-bullet {
-      color: #9CA3AF;
+    .loader-pip:nth-child(2) { animation-delay: 0.2s; }
+    .loader-pip:nth-child(3) { animation-delay: 0.4s; width: 22px; }
+    .loader-pip:nth-child(4) { animation-delay: 0.6s; }
+    @keyframes loaderPipPulse {
+      0%, 100% { opacity: 0.25; transform: scaleX(1); }
+      50% { opacity: 1; transform: scaleX(1.15); background: #1B2230; }
     }
-
-    @keyframes logFadeIn {
-      to { opacity: 1; }
+    .loader-title {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+      text-align: center;
+      color: #1B2230;
+      line-height: 1.3;
     }
+    .loader-sub {
+      font-size: 13px;
+      color: rgba(27,34,48,0.4);
+      text-align: center;
+      animation: loaderSubFade 2s ease-in-out infinite;
+    }
+    @keyframes loaderSubFade {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+    .loader-logs { display: none; }
+    .log-line { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* --- SCREEN 5: PERSONALITY CARD --- */
     .card-screen {
@@ -1483,67 +1474,62 @@
 
     /* ---- SCREEN 3 — STACKED DECK QUESTIONNAIRE ---- */
     #screenQuestions {
-      padding: 0 !important;
-      background: #0E0E10;
+      padding: 20px 16px !important;
+      background: #F3F1EC;
+      align-items: center;
+      justify-content: center;
     }
     .deck-wrap {
       display: flex;
       flex-direction: column;
+      width: 100%;
+      max-width: 340px;
       height: 100%;
-      padding: 22px 20px 16px;
-      color: #FFFFFF;
+      color: #1B2230;
     }
     .deck-topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 14px;
     }
-    .deck-logo {
+    .deck-pips {
       display: flex;
+      gap: 6px;
       align-items: center;
-      gap: 7px;
-      font-weight: 800;
-      font-size: 14px;
-      letter-spacing: 0.3px;
     }
-    .deck-logo .logo-square {
-      background-color: #FFFFFF;
-      color: #0E0E10;
+    .deck-pip {
+      height: 6px;
+      border-radius: 99px;
+      transition: all 0.35s cubic-bezier(.4,0,.2,1);
+      background: rgba(27,34,48,0.15);
     }
-    .deck-timer {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-      color: rgba(255, 255, 255, 0.5);
-    }
+    .deck-pip.done { background: rgba(27,34,48,0.35); }
+    .deck-pip.active { width: 22px !important; background: #1B2230; }
     .deck-progress {
       display: flex;
-      gap: 5px;
-      margin-top: 13px;
+      gap: 6px;
+      align-items: center;
     }
     .deck-pdot {
       height: 6px;
       width: 6px;
       border-radius: 99px;
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(27,34,48,0.15);
       transition: all 0.35s cubic-bezier(.4,0,.2,1);
     }
-    .deck-pdot.done { background: rgba(255, 255, 255, 0.5); }
-    .deck-pdot.active {
-      width: 24px;
-      background: #FFFFFF;
-    }
+    .deck-pdot.done { background: rgba(27,34,48,0.35); }
+    .deck-pdot.active { width: 22px; background: #1B2230; }
     .deck-stack {
       position: relative;
       flex-grow: 1;
-      margin-top: 16px;
     }
     .deck-peek {
       position: absolute;
       left: 0; right: 0;
-      border-radius: 22px;
-      background: #17171A;
-      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 28px;
+      background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(27,34,48,0.06);
     }
     .deck-peek.p1 { top: 14px; bottom: -14px; transform: scale(0.94); }
     .deck-peek.p2 { top: 7px;  bottom: -7px;  transform: scale(0.97); }
@@ -1552,82 +1538,85 @@
       inset: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      border-radius: 28px;
+      padding: 26px;
+      background: #fff;
+      box-shadow: 0 14px 40px rgba(27,34,48,0.10), inset 0 1px 0 rgba(255,255,255,.8);
       transition: transform 0.42s cubic-bezier(.5,0,.2,1), opacity 0.42s ease;
+      overflow: hidden;
     }
     .deck-card.slide-out {
-      transform: translateX(-130%) rotate(-9deg);
+      transform: translateX(-130%) rotate(-6deg);
       opacity: 0;
     }
-    .deck-ring {
-      margin: 2px 0 6px;
-    }
+    .deck-ring { display: none; }
     .deck-qmeta {
       width: 100%;
-      display: flex;
-      justify-content: space-between;
       font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 1.2px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.5);
+      color: rgba(27,34,48,0.4);
+      margin-bottom: 14px;
     }
     .deck-question {
       width: 100%;
-      font-size: 25px;
-      font-weight: 700;
-      line-height: 1.26;
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.3;
       letter-spacing: -0.3px;
-      margin: 12px 0 18px;
+      color: #1B2230;
+      margin-bottom: 24px;
     }
     .deck-options {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 9px;
     }
     .deck-opt {
-      display: flex;
-      align-items: center;
-      gap: 13px;
       width: 100%;
       text-align: left;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      border-radius: 16px;
-      padding: 14px 15px;
-      color: #FFFFFF;
+      background: #F3F1EC;
+      border: 1px solid rgba(27,34,48,0.08);
+      border-radius: 14px;
+      padding: 14px 16px;
+      color: #1B2230;
       font-family: inherit;
-      font-size: 14.5px;
+      font-size: 13.5px;
       font-weight: 500;
-      line-height: 1.35;
+      line-height: 1.4;
       cursor: pointer;
-      transition: background 0.18s ease, transform 0.18s ease, color 0.18s ease;
+      transition: background 0.15s ease, border-color 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
-    .deck-opt:hover {
-      background: rgba(255, 255, 255, 0.11);
-    }
+    .deck-opt:hover { background: #EAE8E3; border-color: rgba(27,34,48,0.14); }
     .deck-opt.picked {
-      background: #FFFFFF;
-      color: #0E0E10;
+      background: #1B2230;
+      color: #fff;
+      border-color: transparent;
     }
     .deck-glyph {
-      width: 34px;
-      height: 34px;
+      width: 30px;
+      height: 30px;
       flex-shrink: 0;
-      border-radius: 10px;
+      border-radius: 9px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
+      opacity: 0.85;
     }
+    .deck-opt.picked .deck-glyph { opacity: 1; }
     .deck-foot {
       width: 100%;
       text-align: center;
       font-size: 11px;
       letter-spacing: 0.3px;
-      color: rgba(255, 255, 255, 0.4);
+      color: rgba(27,34,48,0.35);
       margin-top: auto;
       padding-top: 14px;
     }
@@ -2402,37 +2391,7 @@
     .glow-gold-br  { background: rgba(249,115,22,0.12); }
     .splash-loops  { opacity: 0.26; }
 
-    /* ---- DECK (questionnaire) — light ---- */
-    #screenQuestions { background: #ECEBF2; }
-    .deck-wrap { color: var(--ink-hi); }
-    .deck-timer { color: var(--ink-low); }
-    .deck-logo .logo-square { background: var(--neon-grad); color: #FFFFFF; }
-    .deck-pdot { background: rgba(22,18,46,0.12); }
-    .deck-pdot.done { background: rgba(22,18,46,0.34); }
-    .deck-pdot.active { background: var(--neon-magenta); }
-    .deck-peek {
-      background: #FFFFFF;
-      border: 1px solid var(--hairline);
-      box-shadow: 0 6px 18px rgba(22,18,46,0.05);
-    }
-    .deck-card {
-      background: #FFFFFF;
-      border: 1px solid var(--hairline);
-      border-radius: 24px;
-      padding: 20px 18px;
-      box-shadow: 0 14px 36px rgba(22,18,46,0.09);
-    }
-    .deck-qmeta { color: var(--ink-low); }
-    .deck-question { color: var(--ink-hi); }
-    .deck-opt {
-      background: #F4F3F8;
-      border: 1px solid var(--hairline);
-      color: var(--ink-hi);
-    }
-    .deck-opt:hover { background: #ECEBF2; }
-    .deck-opt.picked { background: var(--ink-hi); color: #FFFFFF; }
-    .deck-foot { color: var(--ink-low); }
-    .quiz-progress-track { background: rgba(22,18,46,0.08); }
+    .quiz-progress-track { background: rgba(27,34,48,0.08); }
 
     /* ---- OTP / LOADER — light ---- */
     .progress-dot { background-color: rgba(22,18,46,0.14); }
@@ -2694,14 +2653,7 @@
           </div>
           <div class="deck-wrap">
             <div class="deck-topbar">
-              <div class="deck-logo">
-                <div class="logo-square">k</div>
-                <span>kyfr.</span>
-              </div>
-              <div class="deck-timer">60 sec</div>
-            </div>
-            <div class="deck-progress" id="deckProgress">
-              <!-- Rendered via JS -->
+              <div class="deck-progress" id="deckProgress"><!-- Rendered via JS --></div>
             </div>
 
             <div class="deck-stack">
@@ -3290,14 +3242,10 @@
       const card = document.getElementById('deckCard');
       card.classList.remove('slide-out');
       card.innerHTML = `
-        ${deckRing(accent)}
-        <div class="deck-qmeta">
-          <span>Q${num} · ${current.tag}</span>
-          <span>${idx + 1} / ${QUESTIONS.length}</span>
-        </div>
+        <div class="deck-qmeta">${idx + 1} of ${QUESTIONS.length}</div>
         <div class="deck-question">${current.question}</div>
         <div class="deck-options"></div>
-        <div class="deck-foot">tap to slide · no wrong answers</div>
+        <div class="deck-foot">no wrong answers</div>
       `;
 
       // One-directional swipe: each new card slides in from the right
