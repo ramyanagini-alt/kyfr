@@ -530,6 +530,31 @@
       padding: 16px !important;
       background-color: #F3F1EC;
     }
+    .arch-switcher {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 14px;
+    }
+    .arch-sw-btn {
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 99px;
+      padding: 5px 13px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      color: #555;
+      transition: all 180ms ease;
+    }
+    .arch-sw-btn.active {
+      background: #1B2230;
+      color: #fff;
+      border-color: transparent;
+    }
 
     .aha-card {
       background-color: #FFFFFF;
@@ -1609,10 +1634,11 @@
 
     /* ---- SCREEN 5 — ARCHETYPE FLIP CARD REVEAL ---- */
     #screenCardReveal {
-      padding: 0 !important;
+      padding: 20px 16px !important;
       background: #1A1714;
       align-items: center;
       justify-content: center;
+      gap: 16px;
     }
     .flip-stage {
       perspective: 1600px;
@@ -1678,26 +1704,30 @@
     }
     .fc-archname {
       margin-top: 18px;
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 2.4px;
-      text-transform: uppercase;
-      opacity: 0.6;
-      position: relative;
-    }
-    .fc-superpower {
-      margin-top: 6px;
       font-size: 54px;
       font-weight: 600;
       letter-spacing: -2px;
       line-height: 0.98;
       position: relative;
     }
+    .fc-superpower {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.4;
+      opacity: 0.9;
+      position: relative;
+    }
+    .fc-superpower em {
+      font-style: normal;
+      font-weight: 700;
+      opacity: 1;
+    }
     .fc-hype {
-      margin-top: 16px;
-      font-size: 14.5px;
+      margin-top: 20px;
+      font-size: 13.5px;
       line-height: 1.55;
-      opacity: 0.78;
+      opacity: 0.55;
       position: relative;
     }
     .fc-spacer { flex: 1; min-height: 10px; }
@@ -1905,6 +1935,47 @@
       margin-top: -4px;
     }
 
+    .dev-skip-bar {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+    }
+    .dev-skip-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-right: 4px;
+    }
+    .dev-skip-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 99px;
+      padding: 4px 11px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.75);
+      cursor: pointer;
+      transition: all 160ms ease;
+    }
+    .dev-skip-btn:hover {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+    }
+
     /* ---- SCREEN 1 — WELCOME (DISCOVERY HUB / sliding carousel) ---- */
     #screenWelcome {
       padding: 0 !important;
@@ -2022,6 +2093,23 @@
     .zen-link {
       background: none; border: none; cursor: pointer; font-family: inherit;
       font-size: 13.5px; color: var(--ink-mid);
+    }
+    .welcome-skip-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 4px;
+    }
+    .welcome-skip-btn {
+      background: rgba(0,0,0,0.05) !important;
+      border: 1px solid rgba(0,0,0,0.1) !important;
+      color: rgba(0,0,0,0.5) !important;
+    }
+    .welcome-skip-btn:hover {
+      background: rgba(0,0,0,0.1) !important;
+      color: rgba(0,0,0,0.8) !important;
     }
     .zen-link:hover { color: var(--ink-hi); }
 
@@ -2532,6 +2620,7 @@
             <div class="zen-cta">
               <button class="zen-btn" id="btnStartDiscovery">start discovery (2 min)</button>
               <button class="zen-link" id="btnAlreadyKnow">i already know my vibe. log in.</button>
+              <button class="dev-skip-btn welcome-skip-btn" id="btnGoToCards">go to cards</button>
             </div>
           </div>
         </div>
@@ -2642,6 +2731,13 @@
             <div class="flip-card" id="flipCard">
               <!-- front + back faces rendered via JS -->
             </div>
+          </div>
+          <div class="arch-switcher" id="archSwitcher">
+            <button class="arch-sw-btn" data-key="curator">curator</button>
+            <button class="arch-sw-btn" data-key="saver">saver</button>
+            <button class="arch-sw-btn" data-key="maximiser">maximiser</button>
+            <button class="arch-sw-btn" data-key="explorer">explorer</button>
+            <button class="arch-sw-btn" data-key="simplist">simplist</button>
           </div>
         </div>
 
@@ -2890,15 +2986,15 @@
     // Archetype reveal data — flip card (front hype / back insight)
     const ARCHETYPES = {
       curator: {
-        name: "the curator",
+        name: "The Curator",
         superpower: "taste",
         accent: "#B07A2A",
         accentSoft: "rgba(176,122,42,0.14)",
         gradient: "linear-gradient(155deg, #FFF6E4 0%, #FFE7C3 100%)",
         ink: "#3A2A12",
         score: 92,
-        hype: "you have an eye for the exceptional. you don't just buy things — you invest in quality that lasts a lifetime.",
-        question: "but with your wealth tied up in premium goods — is enough of your capital liquid and ready to move if life shifts tomorrow?",
+        hype: "Only 12% of buyers research quality before a purchase. you're part of the rare group who buys once and buys right.",
+        question: "but if life threw a curveball tomorrow — do you have cash ready to move fast?",
         metricName: "liquidity ratio",
         metricUnit: "% liquid",
         metricValue: 30,
@@ -2906,18 +3002,18 @@
         metricLabel: "70% locked",
         feature: "the liquidity ladder",
         bridgeCta: "build my liquidity ladder",
-        closing: "your taste is an asset — let's make it liquid."
+        closing: ""
       },
       saver: {
-        name: "the saver",
+        name: "The Saver",
         superpower: "safety",
         accent: "#4F6FCB",
         accentSoft: "rgba(79,111,203,0.14)",
         gradient: "linear-gradient(155deg, #EEF3FF 0%, #D7E0FA 100%)",
         ink: "#1A2444",
         score: 96,
-        hype: "you've built an incredible fortress. your peace of mind is your superpower — you are always protected.",
-        question: "but is your shield so heavy that it's slowing you down? while your money is 'safe,' is it growing fast enough to outrun inflation?",
+        hype: "60% of people couldn't survive 30 days without a salary. you could survive a year.",
+        question: "but while your money is 'safe' for the future — are you actually enjoying the present?",
         metricName: "cash drag",
         metricUnit: "% real return",
         metricValue: 42,
@@ -2925,18 +3021,18 @@
         metricLabel: "-4.2% / year",
         feature: "the growth shield",
         bridgeCta: "upgrade my shield",
-        closing: "a shield that doesn't grow eventually shrinks."
+        closing: ""
       },
       maximiser: {
-        name: "the maximiser",
+        name: "The Maximiser",
         superpower: "math",
         accent: "#1F8C77",
         accentSoft: "rgba(31,140,119,0.14)",
         gradient: "linear-gradient(155deg, #E7F6F0 0%, #CDEDDF 100%)",
         ink: "#0F2A24",
         score: 94,
-        hype: "you have a brilliant eye for the mathematical edge. nothing slips past your analytical radar.",
-        question: "but in the hunt for the perfect deal — are you accidentally trading away your most precious asset: your time and mental bandwidth?",
+        hype: "Most people leave ₹40,000+ on the table every year in missed cashback and bad timing. you never do.",
+        question: "but how many hours a week do you spend chasing deals — and what's that time actually worth?",
         metricName: "time-to-savings roi",
         metricUnit: "value / hour",
         metricValue: 25,
@@ -2944,18 +3040,18 @@
         metricLabel: "negative hourly yield",
         feature: "the bandwidth buyer",
         bridgeCta: "deploy the bandwidth buyer",
-        closing: "your brain is for big things — we'll handle the small math."
+        closing: ""
       },
       explorer: {
-        name: "the explorer",
+        name: "The Explorer",
         superpower: "freedom",
         accent: "#C84F7C",
         accentSoft: "rgba(200,79,124,0.14)",
         gradient: "linear-gradient(155deg, #FFF0F4 0%, #FFDCE6 100%)",
         ink: "#3A1A2A",
         score: 88,
-        hype: "you are a master of life-dividends. you convert capital into stories and experiences that never fade or depreciate.",
-        question: "memories are priceless — but they have zero resale value. is your adventure runway ready to handle a sudden macro-shock?",
+        hype: "People who spend on experiences report 40% higher life satisfaction than those who don't. you already know this.",
+        question: "but what happens to the next adventure if an unexpected bill lands tomorrow?",
         metricName: "financial runway",
         metricUnit: "days of cover",
         metricValue: 14,
@@ -2963,18 +3059,18 @@
         metricLabel: "14 days",
         feature: "the adventure runway",
         bridgeCta: "start my adventure runway",
-        closing: "protect the adventures you haven't had yet."
+        closing: ""
       },
       simplist: {
-        name: "the simplist",
+        name: "The Simplist",
         superpower: "peace",
         accent: "#5C6873",
         accentSoft: "rgba(92,104,115,0.14)",
         gradient: "linear-gradient(155deg, #F4F5F7 0%, #DDE1E6 100%)",
         ink: "#1B2230",
         score: 90,
-        hype: "you've mastered the art of mental peace. you keep your financial life uncluttered so you can focus on what truly matters.",
-        question: "while you're tuning out the noise — is a silent tax of high fees and missed advantages slowly eroding the wealth you work so hard for?",
+        hype: "The average person makes 35,000 decisions a day. you've cut yours in half — and your brain is better for it.",
+        question: "but is 'set it and forget it' quietly costing you more than you think?",
         metricName: "passive erosion",
         metricUnit: "lost / month",
         metricValue: 35,
@@ -2982,7 +3078,7 @@
         metricLabel: "₹2,400 / mo lost",
         feature: "the auto-pilot radar",
         bridgeCta: "turn on the radar",
-        closing: "simplicity shouldn't cost you your progress."
+        closing: ""
       }
     };
 
@@ -3090,6 +3186,7 @@
     showScreen("Splash");
     setTimeout(() => { showScreen("Welcome"); startCarousel(); }, 2600);
 
+
     // Sliding single-card archetype carousel on the welcome screen
     const CAROUSEL = [
       { word: 'taste',   desc: 'curated experiences', icon: '<path d="M12 2l3 6 6 .9-4.5 4.3 1.1 6.3L12 17.8 6.4 19.5 7.5 13.2 3 8.9 9 8z"/>' },
@@ -3126,6 +3223,15 @@
       dots[prev].classList.remove('active');
       dots[carouselIdx].classList.add('active');
     }
+
+    // Welcome screen "go to cards" shortcut
+    document.getElementById('btnGoToCards').addEventListener('click', (e) => {
+      e.stopPropagation();
+      skipAutoFlip = true;
+      state.assignedArchetype = 'curator';
+      showAhaCard();
+      showScreen("CardReveal");
+    });
 
     // "start discovery" → the situational quiz (slides up via CSS)
     document.getElementById('btnStartDiscovery').addEventListener('click', () => {
@@ -3280,66 +3386,206 @@
 
     // --- ARCHETYPE FLIP CARD REVEAL ---
     let flipAutoTimer = null;
+    let skipAutoFlip = false;
 
-    function gaugeSVG(value, accent, ink) {
-      const R = 64, C = Math.PI * R;
-      const filled = (value / 100) * C;
-      const ang = Math.PI - (value / 100) * Math.PI;
-      const cx = 80 + R * Math.cos(ang), cy = 80 - R * Math.sin(ang);
-      return `<svg width="150" height="88" viewBox="0 0 160 92" style="overflow:visible">
-        <path d="M 16 80 A ${R} ${R} 0 0 1 144 80" stroke="${ink}1A" stroke-width="10" fill="none" stroke-linecap="round"/>
-        <path d="M 16 80 A ${R} ${R} 0 0 1 144 80" stroke="${accent}" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="${filled} ${C}"/>
-        <circle cx="${cx}" cy="${cy}" r="6" fill="${accent}" stroke="#fff" stroke-width="2"/>
-      </svg>`;
+    // FRONT CARD — per-persona hype artifact
+    function frontArtifactHTML(a, key) {
+      const ink = a.ink, accent = a.accent;
+      if (key === 'curator') {
+        const total = 10, lit = 1;
+        const dots = Array.from({length: total}, (_, i) =>
+          `<div style="width:12px;height:12px;border-radius:50%;background:${i < lit ? accent : ink + '18'}"></div>`
+        ).join('');
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:14px">out of 10 buyers</div>
+          <div style="display:flex;gap:6px;align-items:center;margin-bottom:14px">${dots}</div>
+          <div style="font-size:34px;font-weight:800;color:${accent};letter-spacing:-1.5px;line-height:1">top 12%</div>
+          <div style="font-size:12px;opacity:.55;margin-top:6px">only you research before buying.</div>`;
+      }
+      if (key === 'saver') {
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:16px">if your salary stopped today</div>
+          <div style="display:flex;gap:0;align-items:stretch">
+            <div style="flex:1;text-align:center;padding:14px 8px;background:${ink}0D;border-radius:12px 0 0 12px;border-right:1px solid ${ink}10">
+              <div style="font-size:11px;opacity:.45;margin-bottom:6px">average person lasts</div>
+              <div style="font-size:28px;font-weight:800;opacity:.35;letter-spacing:-1px;line-height:1">3</div>
+              <div style="font-size:11px;opacity:.4;margin-top:4px">weeks</div>
+            </div>
+            <div style="flex:1;text-align:center;padding:14px 8px;background:${accent}18;border-radius:0 12px 12px 0">
+              <div style="font-size:11px;font-weight:700;color:${accent};margin-bottom:6px">you last</div>
+              <div style="font-size:28px;font-weight:800;color:${accent};letter-spacing:-1px;line-height:1">12</div>
+              <div style="font-size:11px;color:${accent};opacity:.7;margin-top:4px">months</div>
+            </div>
+          </div>`;
+      }
+      if (key === 'maximiser') {
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:16px">your deal radar vs the rest</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="opacity:.5">average buyer</span><span style="opacity:.4">saves 5%</span></div>
+              <div style="height:10px;border-radius:99px;background:${ink}12;overflow:hidden">
+                <div style="width:25%;height:100%;border-radius:99px;background:${ink}25"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="font-weight:700">you</span><span style="font-weight:700;color:${accent}">saves 28%</span></div>
+              <div style="height:10px;border-radius:99px;background:${ink}12;overflow:hidden">
+                <div style="width:100%;height:100%;border-radius:99px;background:linear-gradient(90deg,${accent},${accent}CC)"></div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:14px;font-size:13px;opacity:.6">you consistently outperform <strong style="color:${accent}">9 in 10 buyers</strong></div>`;
+      }
+      if (key === 'explorer') {
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:16px">what you actually buy</div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div style="flex:1;padding:14px 10px;background:${ink}0D;border-radius:12px;text-align:center">
+              <div style="font-size:11px;opacity:.45;margin-bottom:4px">things</div>
+              <div style="font-size:28px;font-weight:800;opacity:.3;letter-spacing:-1px">fade</div>
+            </div>
+            <div style="font-size:20px;opacity:.3">→</div>
+            <div style="flex:1;padding:14px 10px;background:${accent}18;border-radius:12px;text-align:center">
+              <div style="font-size:11px;font-weight:700;color:${accent};margin-bottom:4px">memories</div>
+              <div style="font-size:28px;font-weight:800;color:${accent};letter-spacing:-1px">last</div>
+            </div>
+          </div>
+          <div style="margin-top:14px;font-size:13px;opacity:.6">experiences make you <strong style="color:${accent}">40% happier</strong> than buying things</div>`;
+      }
+      // simplist
+      return `
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:16px">daily financial decisions</div>
+        <div style="display:flex;gap:10px;align-items:stretch">
+          <div style="flex:1;text-align:center;padding:14px 8px;background:${ink}0D;border-radius:12px 0 0 12px;border-right:1px solid ${ink}10">
+            <div style="font-size:11px;opacity:.45;margin-bottom:6px">most people</div>
+            <div style="font-size:32px;font-weight:800;opacity:.3;letter-spacing:-1px;line-height:1">70</div>
+            <div style="font-size:11px;opacity:.35;margin-top:4px">/ day</div>
+          </div>
+          <div style="flex:1;text-align:center;padding:14px 8px;background:${accent}18;border-radius:0 12px 12px 0">
+            <div style="font-size:11px;font-weight:700;color:${accent};margin-bottom:6px">you</div>
+            <div style="font-size:32px;font-weight:800;color:${accent};letter-spacing:-1px;line-height:1">28</div>
+            <div style="font-size:11px;color:${accent};opacity:.7;margin-top:4px">/ day</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;font-size:13px;opacity:.6">60% less mental noise. <strong style="color:${accent}">that's your edge.</strong></div>`;
     }
 
-    function insightBarHTML(a) {
-      const v = Math.max(0, Math.min(100, Math.abs(a.metricValue)));
-      const h = Math.max(0, Math.min(100, a.metricHealthy));
+    // BACK CARD — per-persona insight artifact
+    function insightBarHTML(a, key) {
+      const ink = a.ink, accent = a.accent;
+      if (key === 'curator') {
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:14px">if an emergency hits tomorrow</div>
+          <div style="display:flex;gap:8px">
+            <div style="flex:7;padding:14px 12px;background:${accent};border-radius:12px">
+              <div style="font-size:11px;font-weight:700;color:#fff;opacity:.8;margin-bottom:4px">locked cash</div>
+              <div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1">70%</div>
+              <div style="font-size:11px;color:#fff;opacity:.6;margin-top:4px">can't touch it</div>
+            </div>
+            <div style="flex:3;padding:14px 12px;background:${ink}0D;border-radius:12px">
+              <div style="font-size:11px;opacity:.5;margin-bottom:4px">free cash</div>
+              <div style="font-size:26px;font-weight:800;opacity:.4;letter-spacing:-1px;line-height:1">30%</div>
+              <div style="font-size:11px;opacity:.35;margin-top:4px">to move</div>
+            </div>
+          </div>
+          <div style="margin-top:12px;font-size:13px;opacity:.65">kyfr helps you always keep <strong style="color:${accent}">at least 50% liquid</strong> and ready to move</div>`;
+      }
+      if (key === 'saver') {
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:14px">₹1,00,000 sitting in savings</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:linear-gradient(90deg,${accent}22,${accent}11);border-radius:10px;border-left:3px solid ${accent}">
+              <span style="font-size:12px;font-weight:600">today</span>
+              <span style="font-size:18px;font-weight:800;color:${accent}">₹1,00,000</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:${ink}08;border-radius:10px;border-left:3px solid ${ink}20">
+              <span style="font-size:12px;opacity:.55">in 5 years</span>
+              <span style="font-size:18px;font-weight:700;opacity:.45">₹85,000</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:${ink}06;border-radius:10px;border-left:3px solid ${ink}15">
+              <span style="font-size:12px;opacity:.4">in 10 years</span>
+              <span style="font-size:18px;font-weight:700;opacity:.3">₹72,000</span>
+            </div>
+          </div>
+          <div style="margin-top:12px;font-size:13px;opacity:.65"><strong style="color:${accent}">₹28,000 gone</strong> — not spent, just eroded by inflation</div>`;
+      }
+      if (key === 'maximiser') {
+        return `
+          <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:6px">
+            <div style="padding:12px 14px;background:${ink}08;border-radius:10px">
+              <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;opacity:.4;margin-bottom:8px">you</div>
+              <div style="font-size:13px;opacity:.5;margin-bottom:2px">2 hrs spent</div>
+              <div style="font-size:20px;font-weight:700;opacity:.45;letter-spacing:-.5px">₹600 saved</div>
+            </div>
+            <div style="padding:12px 14px;background:${accent}18;border-radius:10px;border:1px solid ${accent}30">
+              <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${accent};margin-bottom:8px">kyfr</div>
+              <div style="font-size:13px;color:${accent};opacity:.7;margin-bottom:2px">30 mins spent</div>
+              <div style="font-size:20px;font-weight:800;color:${accent};letter-spacing:-.5px">₹1,800 saved</div>
+            </div>
+          </div>`;
+      }
+      if (key === 'explorer') {
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:14px">how long you can cover yourself</div>
+          <div style="display:flex;gap:8px;align-items:stretch;margin-bottom:12px">
+            <div style="flex:1;padding:14px 12px;background:${accent}18;border-radius:12px;border:1px solid ${accent}30;text-align:center">
+              <div style="font-size:11px;font-weight:700;color:${accent};margin-bottom:4px">you today</div>
+              <div style="font-size:32px;font-weight:800;color:${accent};letter-spacing:-1px;line-height:1">14</div>
+              <div style="font-size:11px;color:${accent};opacity:.7;margin-top:4px">days</div>
+            </div>
+            <div style="display:flex;align-items:center;font-size:18px;opacity:.2">→</div>
+            <div style="flex:1;padding:14px 12px;background:${ink}0D;border-radius:12px;text-align:center">
+              <div style="font-size:11px;opacity:.45;margin-bottom:4px">safe zone</div>
+              <div style="font-size:32px;font-weight:800;opacity:.35;letter-spacing:-1px;line-height:1">90</div>
+              <div style="font-size:11px;opacity:.35;margin-top:4px">days</div>
+            </div>
+          </div>
+          <div style="font-size:13px;opacity:.65">one big bill and the next trip is on hold. kyfr builds your <strong style="color:${accent}">adventure buffer.</strong></div>`;
+      }
+      // simplist
       return `
-        <div class="ib-head">
-          <span style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:${a.ink};opacity:.55">${a.metricName}</span>
-          <span style="font-size:11px;color:${a.ink};opacity:.5">${a.metricUnit}</span>
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:14px">money leaving every month</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:${ink}08;border-radius:10px">
+            <span style="font-size:12px;opacity:.6">bank fees you don't notice</span>
+            <span style="font-size:15px;font-weight:700;color:${accent}">₹900</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:${ink}08;border-radius:10px">
+            <span style="font-size:12px;opacity:.6">rewards you never claimed</span>
+            <span style="font-size:15px;font-weight:700;color:${accent}">₹1,100</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:${accent}18;border-radius:10px;border:1px solid ${accent}30;margin-top:2px">
+            <span style="font-size:13px;font-weight:700">leaking every month</span>
+            <span style="font-size:20px;font-weight:800;color:${accent};letter-spacing:-.5px">₹2,000</span>
+          </div>
         </div>
-        <div class="ib-track" style="background:${a.ink}10">
-          <div class="ib-healthy" style="left:${h}%;background:${a.accent}1F;border-left:1px dashed ${a.accent}66"></div>
-          <div class="ib-fill" style="width:${v}%;background:linear-gradient(90deg, ${a.accent}, ${a.accent}CC)"></div>
-          <div class="ib-youtag" style="left:${v}%;color:${a.ink};box-shadow:0 2px 6px ${a.ink}1A">you</div>
-        </div>
-        <div class="ib-readout" style="border-top:1px dashed ${a.ink}1F">
-          <span style="font-size:12px;color:${a.ink};opacity:.6">your current reading</span>
-          <span style="font-size:18px;font-weight:800;color:${a.accent};letter-spacing:-.4px">${a.metricLabel}</span>
-        </div>
-      `;
+        <div style="margin-top:10px;font-size:12px;opacity:.55">that's <strong style="color:${accent}">₹24,000 a year</strong> — silently gone</div>`;
     }
 
     function showAhaCard() {
       const a = ARCHETYPES[state.assignedArchetype];
-      const fc = document.getElementById('flipCard');
+      // Replace node to strip all stale event listeners
+      const oldFc = document.getElementById('flipCard');
+      const fc = oldFc.cloneNode(false);
+      oldFc.parentNode.replaceChild(fc, oldFc);
       fc.classList.remove('flipped');
 
       fc.innerHTML = `
         <div class="flip-face flip-front" style="background:${a.gradient};color:${a.ink};box-shadow:0 24px 50px -28px ${a.ink}66, inset 0 1px 0 rgba(255,255,255,.6)">
           <div class="fc-blob" style="background:${a.accent}"></div>
           <div class="fc-row">
-            <span class="fc-eyebrow" style="color:${a.accent}">your archetype</span>
             <div class="fc-pips">
               <div class="fc-pip" style="width:22px;background:${a.accent}"></div>
               <div class="fc-pip" style="width:6px;background:${a.ink}22"></div>
             </div>
           </div>
           <div class="fc-archname">${a.name}</div>
-          <div class="fc-superpower">${a.superpower}.</div>
+          <div class="fc-superpower">your superpower is <em>${a.superpower}</em>.</div>
           <div class="fc-hype">${a.hype}</div>
           <div class="fc-spacer"></div>
           <div class="fc-gaugebox" style="border:1px solid ${a.ink}10">
-            <div class="fc-gauge-row">
-              ${gaugeSVG(a.score, a.accent, a.ink)}
-              <div style="padding-bottom:6px">
-                <div class="fc-gauge-label">superpower index</div>
-                <div class="fc-gauge-val" style="color:${a.accent}">${a.score}<span style="font-size:14px;opacity:.55"> /100</span></div>
-              </div>
-            </div>
+            ${frontArtifactHTML(a, state.assignedArchetype)}
           </div>
           <button class="fc-reveal-btn" id="fcRevealBtn" style="border:1px solid ${a.ink}22;color:${a.ink}">
             tap to see what's underneath  &#8964;
@@ -3357,8 +3603,7 @@
           <div class="fc-q-eyebrow" style="color:${a.accent}">a gentle question</div>
           <div class="fc-question">${a.question}</div>
           <div class="fc-spacer"></div>
-          <div class="fc-insightbox" style="border:1px solid ${a.ink}10">${insightBarHTML(a)}</div>
-          <div class="fc-closing">"${a.closing}"</div>
+          <div class="fc-insightbox" style="border:1px solid ${a.ink}10">${insightBarHTML(a, state.assignedArchetype)}</div>
           <button class="fc-bridge" id="btnBridgeCta" style="background:${a.ink};box-shadow:0 10px 26px -10px ${a.accent}">
             <span>${a.bridgeCta}</span>
             <span>&#8594;</span>
@@ -3378,8 +3623,22 @@
       });
       document.getElementById('btnBridgeCta').addEventListener('click', () => goToHome(true));
 
-      // Auto-flip to the insight side after a beat
-      flipAutoTimer = setTimeout(() => fc.classList.add('flipped'), 3400);
+      // Auto-flip to the insight side after a beat (suppressed in preview mode)
+      if (!skipAutoFlip) {
+        flipAutoTimer = setTimeout(() => fc.classList.add('flipped'), 3400);
+      }
+
+      // Archetype switcher
+      const switcher = document.getElementById('archSwitcher');
+      switcher.querySelectorAll('.arch-sw-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.key === state.assignedArchetype);
+        btn.addEventListener('click', () => {
+          if (flipAutoTimer) { clearTimeout(flipAutoTimer); flipAutoTimer = null; }
+          skipAutoFlip = true;
+          state.assignedArchetype = btn.dataset.key;
+          showAhaCard();
+        });
+      });
     }
 
     // --- FEATURE-BRIDGE ARTIFACT ICONS (per archetype) ---
