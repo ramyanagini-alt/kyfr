@@ -530,6 +530,31 @@
       padding: 16px !important;
       background-color: #F3F1EC;
     }
+    .arch-switcher {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 14px;
+    }
+    .arch-sw-btn {
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 99px;
+      padding: 5px 13px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      color: #555;
+      transition: all 180ms ease;
+    }
+    .arch-sw-btn.active {
+      background: #1B2230;
+      color: #fff;
+      border-color: transparent;
+    }
 
     .aha-card {
       background-color: #FFFFFF;
@@ -1909,6 +1934,47 @@
       margin-top: -4px;
     }
 
+    .dev-skip-bar {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+    }
+    .dev-skip-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-right: 4px;
+    }
+    .dev-skip-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 99px;
+      padding: 4px 11px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.75);
+      cursor: pointer;
+      transition: all 160ms ease;
+    }
+    .dev-skip-btn:hover {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+    }
+
     /* ---- SCREEN 1 — WELCOME (DISCOVERY HUB / sliding carousel) ---- */
     #screenWelcome {
       padding: 0 !important;
@@ -2026,6 +2092,23 @@
     .zen-link {
       background: none; border: none; cursor: pointer; font-family: inherit;
       font-size: 13.5px; color: var(--ink-mid);
+    }
+    .welcome-skip-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 4px;
+    }
+    .welcome-skip-btn {
+      background: rgba(0,0,0,0.05) !important;
+      border: 1px solid rgba(0,0,0,0.1) !important;
+      color: rgba(0,0,0,0.5) !important;
+    }
+    .welcome-skip-btn:hover {
+      background: rgba(0,0,0,0.1) !important;
+      color: rgba(0,0,0,0.8) !important;
     }
     .zen-link:hover { color: var(--ink-hi); }
 
@@ -2536,6 +2619,7 @@
             <div class="zen-cta">
               <button class="zen-btn" id="btnStartDiscovery">start discovery (2 min)</button>
               <button class="zen-link" id="btnAlreadyKnow">i already know my vibe. log in.</button>
+              <button class="dev-skip-btn welcome-skip-btn" id="btnGoToCards">go to cards</button>
             </div>
           </div>
         </div>
@@ -2646,6 +2730,13 @@
             <div class="flip-card" id="flipCard">
               <!-- front + back faces rendered via JS -->
             </div>
+          </div>
+          <div class="arch-switcher" id="archSwitcher">
+            <button class="arch-sw-btn" data-key="curator">curator</button>
+            <button class="arch-sw-btn" data-key="saver">guardian</button>
+            <button class="arch-sw-btn" data-key="maximiser">optimiser</button>
+            <button class="arch-sw-btn" data-key="explorer">explorer</button>
+            <button class="arch-sw-btn" data-key="simplist">essentialist</button>
           </div>
         </div>
 
@@ -3094,6 +3185,7 @@
     showScreen("Splash");
     setTimeout(() => { showScreen("Welcome"); startCarousel(); }, 2600);
 
+
     // Sliding single-card archetype carousel on the welcome screen
     const CAROUSEL = [
       { word: 'taste',   desc: 'curated experiences', icon: '<path d="M12 2l3 6 6 .9-4.5 4.3 1.1 6.3L12 17.8 6.4 19.5 7.5 13.2 3 8.9 9 8z"/>' },
@@ -3130,6 +3222,14 @@
       dots[prev].classList.remove('active');
       dots[carouselIdx].classList.add('active');
     }
+
+    // Welcome screen "go to cards" shortcut
+    document.getElementById('btnGoToCards').addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.assignedArchetype = 'curator';
+      showAhaCard();
+      showScreen("CardReveal");
+    });
 
     // "start discovery" → the situational quiz (slides up via CSS)
     document.getElementById('btnStartDiscovery').addEventListener('click', () => {
@@ -3285,36 +3385,201 @@
     // --- ARCHETYPE FLIP CARD REVEAL ---
     let flipAutoTimer = null;
 
-    function gaugeSVG(value, accent, ink) {
-      const R = 64, C = Math.PI * R;
-      const filled = (value / 100) * C;
-      const ang = Math.PI - (value / 100) * Math.PI;
-      const cx = 80 + R * Math.cos(ang), cy = 80 - R * Math.sin(ang);
-      return `<svg width="150" height="88" viewBox="0 0 160 92" style="overflow:visible">
-        <path d="M 16 80 A ${R} ${R} 0 0 1 144 80" stroke="${ink}1A" stroke-width="10" fill="none" stroke-linecap="round"/>
-        <path d="M 16 80 A ${R} ${R} 0 0 1 144 80" stroke="${accent}" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="${filled} ${C}"/>
-        <circle cx="${cx}" cy="${cy}" r="6" fill="${accent}" stroke="#fff" stroke-width="2"/>
-      </svg>`;
+    // FRONT CARD — per-persona hype artifact
+    function frontArtifactHTML(a, key) {
+      const ink = a.ink, accent = a.accent;
+      if (key === 'curator') {
+        // Percentile crowd — dots, top 12% lit
+        const total = 50, lit = Math.round(total * 0.12);
+        let dots = '';
+        for (let i = 0; i < total; i++) {
+          const isLit = i < lit;
+          dots += `<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin:2px;background:${isLit ? accent : ink + '18'};transition:background .3s"></span>`;
+        }
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:10px">your buyer percentile</div>
+          <div style="line-height:1">${dots}</div>
+          <div style="margin-top:10px;font-size:13px;opacity:.65">you're in the <strong style="color:${accent};opacity:1">top 12%</strong> of quality-conscious buyers</div>`;
+      }
+      if (key === 'saver') {
+        // Two runway bars: you vs average
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">financial runway</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div>
+              <div style="font-size:11px;opacity:.55;margin-bottom:4px">average person</div>
+              <div style="height:10px;border-radius:99px;background:${ink}12;overflow:hidden">
+                <div style="width:8%;height:100%;border-radius:99px;background:${ink}30"></div>
+              </div>
+              <div style="font-size:11px;opacity:.45;margin-top:3px">~3 weeks</div>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;margin-bottom:4px">you</div>
+              <div style="height:10px;border-radius:99px;background:${ink}12;overflow:hidden">
+                <div style="width:100%;height:100%;border-radius:99px;background:linear-gradient(90deg,${accent},${accent}CC)"></div>
+              </div>
+              <div style="font-size:12px;font-weight:700;color:${accent};margin-top:3px">12 months covered</div>
+            </div>
+          </div>`;
+      }
+      if (key === 'maximiser') {
+        // Savings rate badge
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">savings efficiency</div>
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="text-align:center">
+              <div style="font-size:36px;font-weight:800;color:${accent};letter-spacing:-2px;line-height:1">+23%</div>
+              <div style="font-size:11px;opacity:.55;margin-top:2px">more saved per purchase</div>
+            </div>
+            <div style="flex:1">
+              <div style="font-size:11px;opacity:.5;margin-bottom:6px">vs average buyer</div>
+              <div style="height:8px;border-radius:99px;background:${ink}12;overflow:hidden;margin-bottom:6px">
+                <div style="width:48%;height:100%;border-radius:99px;background:${ink}28"></div>
+              </div>
+              <div style="height:8px;border-radius:99px;background:${ink}12;overflow:hidden">
+                <div style="width:71%;height:100%;border-radius:99px;background:linear-gradient(90deg,${accent},${accent}CC)"></div>
+              </div>
+            </div>
+          </div>`;
+      }
+      if (key === 'explorer') {
+        // Things vs experiences happiness split
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">happiness ROI</div>
+          <div style="display:flex;gap:8px;align-items:flex-end">
+            <div style="flex:1;text-align:center">
+              <div style="height:40px;border-radius:8px 8px 0 0;background:${ink}15;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px">
+                <span style="font-size:11px;opacity:.45">things</span>
+              </div>
+              <div style="font-size:13px;font-weight:700;opacity:.4;margin-top:4px">1×</div>
+            </div>
+            <div style="flex:1;text-align:center">
+              <div style="height:110px;border-radius:8px 8px 0 0;background:linear-gradient(180deg,${accent}CC,${accent});display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px">
+                <span style="font-size:11px;font-weight:700;color:#fff">experiences</span>
+              </div>
+              <div style="font-size:16px;font-weight:800;color:${accent};margin-top:4px">3×</div>
+            </div>
+          </div>
+          <div style="font-size:11px;opacity:.5;margin-top:8px">experiences retain 3× more happiness value</div>`;
+      }
+      // simplist — clarity score / decisions cut
+      return `
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">mental clarity score</div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="position:relative;width:72px;height:72px;flex-shrink:0">
+            <svg width="72" height="72" viewBox="0 0 72 72">
+              <circle cx="36" cy="36" r="28" stroke="${ink}15" stroke-width="8" fill="none"/>
+              <circle cx="36" cy="36" r="28" stroke="${accent}" stroke-width="8" fill="none" stroke-dasharray="${2*Math.PI*28*0.6} ${2*Math.PI*28}" stroke-dashoffset="${2*Math.PI*28*0.25}" stroke-linecap="round"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:${accent}">60%</div>
+          </div>
+          <div>
+            <div style="font-size:22px;font-weight:800;color:${accent};letter-spacing:-1px;line-height:1">fewer</div>
+            <div style="font-size:13px;opacity:.6;margin-top:2px">daily financial decisions than average</div>
+          </div>
+        </div>`;
     }
 
-    function insightBarHTML(a) {
-      const v = Math.max(0, Math.min(100, Math.abs(a.metricValue)));
-      const h = Math.max(0, Math.min(100, a.metricHealthy));
+    // BACK CARD — per-persona insight artifact
+    function insightBarHTML(a, key) {
+      const ink = a.ink, accent = a.accent;
+      if (key === 'curator') {
+        // Locked vs movable split
+        const locked = 70, movable = 30, target = 50;
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">your money split today</div>
+          <div style="display:flex;height:36px;border-radius:12px;overflow:hidden;gap:2px">
+            <div style="flex:${locked};background:${accent};border-radius:10px 4px 4px 10px;display:flex;align-items:center;justify-content:center">
+              <span style="font-size:11px;font-weight:700;color:#fff">${locked}% locked</span>
+            </div>
+            <div style="flex:${movable};background:${ink}12;border-radius:4px 10px 10px 4px;display:flex;align-items:center;justify-content:center">
+              <span style="font-size:11px;opacity:.5">${movable}% free</span>
+            </div>
+          </div>
+          <div style="margin-top:10px;display:flex;align-items:center;gap:6px">
+            <div style="flex:1;height:1px;background:${accent}33;position:relative">
+              <div style="position:absolute;left:${target}%;top:-3px;width:1px;height:7px;background:${accent}"></div>
+            </div>
+            <span style="font-size:11px;opacity:.55">healthy target: 50% free</span>
+          </div>
+          <div style="margin-top:10px;font-size:18px;font-weight:800;color:${accent};letter-spacing:-.4px">₹20K short of movable</div>`;
+      }
+      if (key === 'saver') {
+        // Inflation erosion — shrinking bar
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">what sitting still costs</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;opacity:.5;margin-bottom:4px"><span>today</span><span>₹1,00,000</span></div>
+              <div style="height:12px;border-radius:99px;background:linear-gradient(90deg,${accent},${accent}CC);width:100%"></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;opacity:.5;margin-bottom:4px"><span>in 5 years (inflation)</span><span>₹85,000</span></div>
+              <div style="height:12px;border-radius:99px;background:${ink}18;width:85%"></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;opacity:.5;margin-bottom:4px"><span>in 10 years</span><span>₹72,000</span></div>
+              <div style="height:12px;border-radius:99px;background:${ink}10;width:72%"></div>
+            </div>
+          </div>
+          <div style="margin-top:12px;font-size:13px;opacity:.6">your ₹1L loses <strong style="color:${accent}">₹28,000 in real value</strong> over 10 years sitting still</div>`;
+      }
+      if (key === 'maximiser') {
+        // Time vs money — two side-by-side bars
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">this month's deal hunt</div>
+          <div style="display:flex;gap:12px">
+            <div style="flex:1;text-align:center">
+              <div style="font-size:28px;font-weight:800;color:${ink};opacity:.7;letter-spacing:-1px">6 hrs</div>
+              <div style="font-size:11px;opacity:.45;margin-top:2px">researching</div>
+            </div>
+            <div style="width:1px;background:${ink}15"></div>
+            <div style="flex:1;text-align:center">
+              <div style="font-size:28px;font-weight:800;color:${ink};opacity:.7;letter-spacing:-1px">₹600</div>
+              <div style="font-size:11px;opacity:.45;margin-top:2px">saved</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;padding:10px 12px;background:${accent}18;border-radius:10px;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:12px;opacity:.65">effective rate</span>
+            <span style="font-size:16px;font-weight:800;color:${accent}">₹100 / hr</span>
+          </div>
+          <div style="margin-top:8px;font-size:12px;opacity:.55">your time is worth <strong style="color:${accent}">₹800/hr</strong> — kyfr handles the math</div>`;
+      }
+      if (key === 'explorer') {
+        // Runway timeline strip
+        return `
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:14px">your safety runway</div>
+          <div style="position:relative;height:8px;border-radius:99px;background:${ink}12;overflow:visible">
+            <div style="position:absolute;left:0;top:0;height:100%;width:15%;border-radius:99px;background:${accent}"></div>
+            <div style="position:absolute;left:15%;top:-18px;transform:translateX(-50%);font-size:10px;font-weight:700;color:${accent}">you</div>
+            <div style="position:absolute;left:15%;top:14px;transform:translateX(-50%);font-size:9px;opacity:.45">14d</div>
+            <div style="position:absolute;left:100%;top:-18px;transform:translateX(-50%);font-size:10px;opacity:.45">goal</div>
+            <div style="position:absolute;left:100%;top:14px;transform:translateX(-50%);font-size:9px;opacity:.45">90d</div>
+          </div>
+          <div style="margin-top:28px;display:flex;justify-content:space-between;align-items:baseline">
+            <span style="font-size:12px;opacity:.55">days left to cover</span>
+            <span style="font-size:22px;font-weight:800;color:${accent};letter-spacing:-1px">76 days short</span>
+          </div>
+          <div style="margin-top:8px;font-size:12px;opacity:.5">one unexpected bill and the next adventure is on hold</div>`;
+      }
+      // simplist — monthly silent drain
       return `
-        <div class="ib-head">
-          <span style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:${a.ink};opacity:.55">${a.metricName}</span>
-          <span style="font-size:11px;color:${a.ink};opacity:.5">${a.metricUnit}</span>
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;margin-bottom:12px">your silent monthly drain</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:${ink}08;border-radius:10px">
+            <span style="font-size:12px;opacity:.6">avoidable fees</span>
+            <span style="font-size:14px;font-weight:700;color:${accent}">₹900 / mo</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:${ink}08;border-radius:10px">
+            <span style="font-size:12px;opacity:.6">missed rewards</span>
+            <span style="font-size:14px;font-weight:700;color:${accent}">₹1,100 / mo</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 10px;background:${accent}18;border-radius:10px;border:1px solid ${accent}30">
+            <span style="font-size:12px;font-weight:600">total leak</span>
+            <span style="font-size:18px;font-weight:800;color:${accent};letter-spacing:-.5px">₹2,400 / mo</span>
+          </div>
         </div>
-        <div class="ib-track" style="background:${a.ink}10">
-          <div class="ib-healthy" style="left:${h}%;background:${a.accent}1F;border-left:1px dashed ${a.accent}66"></div>
-          <div class="ib-fill" style="width:${v}%;background:linear-gradient(90deg, ${a.accent}, ${a.accent}CC)"></div>
-          <div class="ib-youtag" style="left:${v}%;color:${a.ink};box-shadow:0 2px 6px ${a.ink}1A">you</div>
-        </div>
-        <div class="ib-readout" style="border-top:1px dashed ${a.ink}1F">
-          <span style="font-size:12px;color:${a.ink};opacity:.6">your current reading</span>
-          <span style="font-size:18px;font-weight:800;color:${a.accent};letter-spacing:-.4px">${a.metricLabel}</span>
-        </div>
-      `;
+        <div style="margin-top:10px;font-size:12px;opacity:.5">that's <strong style="color:${accent}">₹28,800 / year</strong> leaving quietly</div>`;
     }
 
     function showAhaCard() {
@@ -3336,13 +3601,7 @@
           <div class="fc-hype">${a.hype}</div>
           <div class="fc-spacer"></div>
           <div class="fc-gaugebox" style="border:1px solid ${a.ink}10">
-            <div class="fc-gauge-row">
-              ${gaugeSVG(a.score, a.accent, a.ink)}
-              <div style="padding-bottom:6px">
-                <div class="fc-gauge-label">superpower index</div>
-                <div class="fc-gauge-val" style="color:${a.accent}">${a.score}<span style="font-size:14px;opacity:.55"> /100</span></div>
-              </div>
-            </div>
+            ${frontArtifactHTML(a, state.assignedArchetype)}
           </div>
           <button class="fc-reveal-btn" id="fcRevealBtn" style="border:1px solid ${a.ink}22;color:${a.ink}">
             tap to see what's underneath  &#8964;
@@ -3360,7 +3619,7 @@
           <div class="fc-q-eyebrow" style="color:${a.accent}">a gentle question</div>
           <div class="fc-question">${a.question}</div>
           <div class="fc-spacer"></div>
-          <div class="fc-insightbox" style="border:1px solid ${a.ink}10">${insightBarHTML(a)}</div>
+          <div class="fc-insightbox" style="border:1px solid ${a.ink}10">${insightBarHTML(a, state.assignedArchetype)}</div>
           <div class="fc-closing">"${a.closing}"</div>
           <button class="fc-bridge" id="btnBridgeCta" style="background:${a.ink};box-shadow:0 10px 26px -10px ${a.accent}">
             <span>${a.bridgeCta}</span>
@@ -3383,6 +3642,16 @@
 
       // Auto-flip to the insight side after a beat
       flipAutoTimer = setTimeout(() => fc.classList.add('flipped'), 3400);
+
+      // Archetype switcher
+      const switcher = document.getElementById('archSwitcher');
+      switcher.querySelectorAll('.arch-sw-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.key === state.assignedArchetype);
+        btn.addEventListener('click', () => {
+          state.assignedArchetype = btn.dataset.key;
+          showAhaCard();
+        });
+      });
     }
 
     // --- FEATURE-BRIDGE ARTIFACT ICONS (per archetype) ---
